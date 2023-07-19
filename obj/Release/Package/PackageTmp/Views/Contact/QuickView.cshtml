@@ -1,0 +1,280 @@
+﻿@model ClientDB.Models.ContactModel
+
+
+
+
+
+<form>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function CheckboxApprovdVisitor() {
+                if ($('#IsOnCampusWithStaff').prop("checked") == true || $('#IsOnCampusAlone').prop("checked") == true || $('#IsOffCampus').prop("checked") == true) {
+                    $('#ApprovedVisitor').prop("checked", true);
+                }
+                else {
+                    $('#ApprovedVisitor').prop("checked", false);
+                }
+            }
+        });
+    </script>
+    <div id="CallLogDet">
+        <table style="width: 100%">
+
+            <tr>
+                <td colspan="4">
+                    <div>
+                        <h4 style="font-weight:100">Contact Quick View</h4>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    @*<h2>Contact Name: @Model.FirstName @Model.LastName</h2>*@
+                    <h2>Contact Name: @Model.FUllName</h2>
+                    <b>Relationship:</b> @Model.RelationName<br />
+                    @if(@Model.SpouseName!=null)
+                    { 
+                    <b>Spouse:</b> @Model.SpouseName
+                    }
+                    else
+                    {
+                        <b>Spouse: </b>
+                    }
+                    
+                </td>
+                
+                
+            </tr>
+            <tr>
+                <td colspan="4">
+
+                    <table id="tblContacList" style="width: 100%">
+                        <tr class="HeaderStyle">
+                            <th class="tdLabel">Contact Type</th>
+                            <th class="tdLabel">Phone Number</th>
+                            <th class="tdLabel">Address</th>
+                            <th class="tdLabel">Email</th>
+                        </tr>
+
+                        <tr class="RowStyle">
+                            <td>Home</td>
+                            <td>
+                                Home: @Model.HomePhone<br />
+                                Mobile: @Model.HomeMobilePhone<br />
+                                Other: @Model.HomeWorkPhone Ext: @Model.HomeExtension
+                            </td>
+                            <td>
+                                Street: @Model.HomeAddressLine2<br />
+                                Unit #: @Model.HomeAddressLine1<br />
+                                City: @Model.HomeCity<br />
+                                State:@Model.HmeState<br />
+                                Zip Code:@Model.HomeZip
+                            </td>
+                            <td>
+                                Home: @Model.HomeEmail<br />
+                                Other: @Model.HomeOtherMail
+                            </td>
+                        </tr>
+                        <tr class="RowStyle">
+                            <td>Work</td>
+                            <td>
+                                Primary Contact: @Model.WorkHomePhone Ext: @Model.WorkExtension<br />
+                                Mobile: @Model.WorkMobilePhone<br />
+                                Other: @Model.WorkPhone Ext: @Model.OtherExtension2
+                            </td>
+                            <td>
+                                Occupation: @Model.Occupation<br />
+                                Organization: @Model.Employer<br />
+                                Street: @Model.WorkAddressLine2<br />
+                                Unit #: @Model.WorkAddressLine1<br />
+                                City: @Model.WorkCity<br />
+                                State:@Model.WrkState<br />
+                                Zip Code:@Model.WorkZip
+                                
+                            </td>
+                            <td>
+                                Work: @Model.WorkEmail
+                            </td>
+                        </tr>
+
+                        <tr class="RowStyle">
+                            <td>Other</td>
+                            <td>
+                                Primary Contact: @Model.OtherHomePhone Ext: @Model.OtherExtension<br />
+                                Mobile: @Model.OtherMobilePhone<br />
+                                Other: @Model.OtherWorkPhone Ext: @Model.OtherExtension3
+                            </td>
+                            <td>
+                                Street: @Model.OtherAddressLine2<br />
+                                Unit #: @Model.OtherAddressLine1<br />
+                                City: @Model.OtherCity<br />
+                                State:@Model.OthState<br />
+                                Zip Code:@Model.OtherZip
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4">
+                    <b>Contact Notes:</b> @Model.Note
+                </td>
+                
+            </tr>
+
+            <tr>
+                @if (Model.IsGuardian == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Guardian</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Guardian</td>
+                }
+                @if (Model.IsCustody == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Custody</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Custody</td>
+                }
+                @if (Model.IsNextOfKin == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Next Of Kin</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Next Of Kin</td>
+                }
+                @if (Model.IsSchool == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />School Contact</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />School Contact</td>
+                }
+            </tr>
+             <tr>
+
+                @if (Model.IsEmergencyP == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Emergency Contact - Primary</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Emergency Contact - Primary</td>
+                }
+                @if (Model.IsEmergencyS == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Emergency Contact - Secondary</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Emergency Contact - Secondary</td>
+                }
+                @if (Model.IsEmergencyT == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Emergency Contact - Tertiary</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Emergency Contact - Tertiary</td>
+                }
+                @if (Model.IsEmergencyO == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Emergency Contact - Other</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Emergency Contact - Other</td>
+                }
+
+                </tr>
+            <tr>
+                @if (Model.IsIncident == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Incident Contact</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Incident Contact</td>
+                }
+                @if (Model.IsCorrespondence == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Correspondence Contact</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Correspondence Contact</td>
+                }
+                @if (Model.IsBilling == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Billing Contact</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Billing Contact</td>
+                }
+            </tr>
+            <tr>
+                
+            </tr>
+           
+            @*<tr>
+                
+                @if (Model.IsOnCampusWithStaff == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />On Campus, With Staff</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />On Campus, With Staff</td>
+                }
+            
+                @if (Model.IsOnCampusAlone == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />On Campus, Alone</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />On Campus, Alone</td>
+                }
+            
+                @if (Model.IsOffCampus == true)
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" checked="checked" />Off Campus</td>
+                }
+                else
+                {
+                    <td style="text-align:left"><input style="width:auto;" type="checkbox" onclick="return false" />Off Campus</td>
+                }
+            </tr>*@
+        </table>
+        <tr>
+
+            <td>
+                <fieldset>
+                    <legend style="font-size:12px;"><b>Approved Visitor</b></legend>
+                    <label class="lblSpan">On Campus, With Staff</label><span class="nospan-align">*</span>
+                    <label class="lblSpan" style="padding-left: 100px">On Campus, Alone</label><span class="nospan-align">*</span>
+                    <label class="lblSpan" style="padding-left: 90px">Off Campus</label><span class="nospan-align">*</span><br />
+
+                    @Html.CheckBoxFor(x => x.IsOnCampusWithStaff, new { onclick = "", disabled = "disabled" })
+                    @Html.CheckBoxFor(x => x.IsOnCampusAlone, new { @class = "", @style = "margin-left: 204px;", onclick = "", disabled = "disabled" })
+                    @Html.CheckBoxFor(x => x.IsOffCampus, new { @class = "", @style = "margin-left: 168px;", onclick = "", disabled = "disabled" })
+
+
+
+
+                </fieldset>
+            </td>
+        </tr>
+
+
+    </div>
+</form>

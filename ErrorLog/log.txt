@@ -1,0 +1,1329 @@
+﻿03/06/2019 17:40:12
+Param Value  1321
+03/06/2019 17:40:13
+sess.StudentId   1321
+03/06/2019 18:03:58
+Param Value  1239
+03/06/2019 18:03:58
+sess.StudentId   1239
+03/06/2019 18:05:03
+Param Value  0
+03/06/2019 18:05:03
+sess.StudentId   0
+03/06/2019 18:07:41
+Param Value  0
+03/06/2019 18:07:41
+sess.StudentId   0
+03/06/2019 18:10:46
+Param Value  0
+03/06/2019 18:10:46
+sess.StudentId   0
+03/06/2019 18:18:56
+Param Value  0
+03/06/2019 18:18:56
+sess.StudentId   2368
+03/06/2019 18:19:34
+Param Value  0
+03/06/2019 18:19:34
+sess.StudentId   2368
+03/06/2019 18:20:49
+Param Value  0
+03/06/2019 18:20:49
+sess.StudentId   2368
+03/06/2019 18:21:05
+Param Value  0
+03/06/2019 18:21:05
+sess.StudentId   2368
+03/06/2019 18:21:33
+Param Value  0
+03/06/2019 18:21:33
+sess.StudentId   2368
+03/06/2019 18:21:57
+Param Value  0
+03/06/2019 18:21:57
+sess.StudentId   2368
+03/06/2019 18:22:16
+Param Value  0
+03/06/2019 18:22:16
+sess.StudentId   2368
+03/06/2019 18:22:43
+Param Value  0
+03/06/2019 18:22:43
+sess.StudentId   2368
+03/06/2019 18:23:00
+Param Value  0
+03/06/2019 18:23:00
+sess.StudentId   2368
+03/06/2019 18:23:18
+Param Value  0
+03/06/2019 18:23:18
+sess.StudentId   2368
+03/06/2019 18:23:32
+Param Value  0
+03/06/2019 18:23:32
+sess.StudentId   2368
+03/06/2019 18:23:51
+Param Value  0
+03/06/2019 18:23:51
+sess.StudentId   2368
+03/06/2019 18:24:05
+Param Value  0
+03/06/2019 18:24:05
+sess.StudentId   2368
+03/06/2019 18:24:45
+Param Value  0
+03/06/2019 18:24:45
+sess.StudentId   2368
+03/06/2019 18:25:10
+Param Value  0
+03/06/2019 18:25:10
+sess.StudentId   2368
+03/06/2019 18:25:30
+Param Value  0
+03/06/2019 18:25:30
+sess.StudentId   2368
+03/06/2019 19:00:04
+Param Value  0
+03/06/2019 19:01:12
+Param Value  2368
+03/06/2019 19:01:12
+sess.StudentId   2368
+03/07/2019 09:59:15
+Param Value  1324
+03/07/2019 09:59:15
+sess.StudentId   1324
+03/07/2019 10:00:44
+Param Value  2368
+03/07/2019 10:00:44
+sess.StudentId   2368
+03/07/2019 12:45:02
+Param Value  2368
+03/07/2019 12:45:02
+sess.StudentId   2368
+03/07/2019 13:01:03
+Param Value  2368
+03/07/2019 13:01:03
+sess.StudentId   2368
+03/07/2019 13:58:38
+Param Value  2368
+03/07/2019 13:59:09
+Param Value  2368
+03/07/2019 13:59:09
+sess.StudentId   2368
+03/07/2019 14:44:12
+Param Value  2368
+03/07/2019 14:44:12
+sess.StudentId   2368
+03/07/2019 14:45:22
+Param Value  2368
+03/07/2019 14:45:22
+sess.StudentId   2368
+03/07/2019 14:45:55
+Param Value  2368
+03/07/2019 14:45:55
+sess.StudentId   2368
+03/07/2019 14:57:48
+Param Value  1324
+03/07/2019 14:57:48
+sess.StudentId   1324
+03/07/2019 15:09:44
+Param Value  1324
+03/07/2019 15:09:44
+sess.StudentId   1324
+03/07/2019 15:58:14
+Param Value  1324
+03/07/2019 15:58:55
+Param Value  1324
+03/07/2019 15:58:55
+sess.StudentId   1324
+03/07/2019 16:00:01
+Param Value  1192
+03/07/2019 16:00:01
+sess.StudentId   1192
+03/07/2019 16:00:34
+Param Value  2368
+03/07/2019 16:00:35
+sess.StudentId   2368
+03/08/2019 09:53:24
+Param Value  2368
+03/08/2019 09:53:24
+sess.StudentId   2368
+03/08/2019 09:56:57
+Param Value  2368
+03/08/2019 09:56:57
+sess.StudentId   2368
+03/08/2019 10:02:02
+Param Value  1324
+03/08/2019 10:02:02
+sess.StudentId   1324
+03/08/2019 10:05:03
+Param Value  2368
+03/08/2019 10:05:03
+sess.StudentId   2368
+03/08/2019 10:05:56
+Param Value  2368
+03/08/2019 10:05:56
+sess.StudentId   2368
+03/08/2019 10:45:19
+Param Value  1324
+03/08/2019 10:45:19
+sess.StudentId   1324
+03/08/2019 10:46:44
+Param Value  1324
+03/08/2019 10:46:44
+sess.StudentId   1324
+03/08/2019 10:48:40
+Param Value  1324
+03/08/2019 10:48:40
+sess.StudentId   1324
+03/08/2019 10:52:24
+Param Value  1324
+03/08/2019 10:52:24
+sess.StudentId   1324
+03/08/2019 10:53:40
+Param Value  1324
+03/08/2019 10:53:40
+sess.StudentId   1324
+03/08/2019 10:53:50
+Param Value  1324
+03/08/2019 10:53:50
+sess.StudentId   1324
+03/08/2019 10:54:58
+Param Value  1324
+03/08/2019 10:54:59
+sess.StudentId   1324
+03/08/2019 11:42:35
+Param Value  1324
+03/08/2019 11:42:35
+sess.StudentId   1324
+03/08/2019 12:01:42
+Param Value  1324
+03/08/2019 12:01:42
+sess.StudentId   1324
+03/08/2019 13:51:19
+Param Value  1324
+03/08/2019 13:51:19
+sess.StudentId   1324
+03/08/2019 14:19:01
+Param Value  1324
+03/08/2019 14:19:01
+sess.StudentId   1324
+03/08/2019 14:29:33
+Param Value  1324
+03/08/2019 14:29:33
+sess.StudentId   1324
+03/08/2019 14:34:18
+Param Value  1324
+03/08/2019 14:34:18
+sess.StudentId   1324
+03/08/2019 14:36:05
+Param Value  1324
+03/08/2019 14:36:05
+sess.StudentId   1324
+03/08/2019 14:37:07
+Param Value  1324
+03/08/2019 14:37:08
+sess.StudentId   1324
+03/08/2019 14:38:25
+Param Value  1324
+03/08/2019 14:38:25
+sess.StudentId   1324
+03/08/2019 14:56:25
+Param Value  1324
+03/08/2019 14:56:25
+sess.StudentId   1324
+03/08/2019 14:59:36
+Param Value  1324
+03/08/2019 14:59:36
+sess.StudentId   1324
+03/08/2019 15:13:27
+Param Value  2368
+03/08/2019 15:13:27
+sess.StudentId   2368
+03/08/2019 15:14:24
+Param Value  2368
+03/08/2019 15:19:18
+Param Value  2368
+03/08/2019 15:19:18
+sess.StudentId   2368
+03/08/2019 15:19:54
+Param Value  2368
+03/08/2019 15:19:54
+sess.StudentId   2368
+03/08/2019 15:20:24
+Param Value  2368
+03/08/2019 15:20:24
+sess.StudentId   2368
+03/08/2019 15:22:15
+Param Value  2368
+03/08/2019 15:22:15
+sess.StudentId   2368
+03/08/2019 15:23:22
+Param Value  2368
+03/08/2019 15:23:22
+sess.StudentId   2368
+03/08/2019 15:24:59
+Param Value  2368
+03/08/2019 15:24:59
+sess.StudentId   2368
+03/08/2019 15:25:34
+Param Value  2368
+03/08/2019 15:25:34
+sess.StudentId   2368
+03/08/2019 15:30:42
+Param Value  2368
+03/08/2019 15:30:42
+sess.StudentId   2368
+03/08/2019 15:31:09
+Param Value  2368
+03/08/2019 15:31:09
+sess.StudentId   2368
+03/08/2019 15:36:23
+Param Value  1324
+03/08/2019 15:36:23
+sess.StudentId   1324
+03/08/2019 15:37:05
+Param Value  2368
+03/08/2019 15:37:05
+sess.StudentId   2368
+03/08/2019 16:03:38
+Param Value  2368
+03/08/2019 16:03:38
+sess.StudentId   2368
+03/08/2019 16:05:47
+Param Value  2368
+03/08/2019 16:05:47
+sess.StudentId   2368
+03/08/2019 16:07:04
+Param Value  2368
+03/08/2019 16:07:04
+sess.StudentId   2368
+03/08/2019 16:09:59
+Param Value  2368
+03/08/2019 16:09:59
+sess.StudentId   2368
+03/08/2019 16:11:46
+Param Value  2368
+03/08/2019 16:11:46
+sess.StudentId   2368
+03/08/2019 16:13:11
+Param Value  2368
+03/08/2019 16:13:11
+sess.StudentId   2368
+03/08/2019 16:15:07
+Param Value  2368
+03/08/2019 16:15:07
+sess.StudentId   2368
+03/08/2019 16:17:08
+Param Value  2368
+03/08/2019 16:17:08
+sess.StudentId   2368
+03/08/2019 16:19:32
+Param Value  2368
+03/08/2019 16:19:32
+sess.StudentId   2368
+03/08/2019 16:20:12
+Param Value  2368
+03/08/2019 16:20:12
+sess.StudentId   2368
+03/08/2019 16:25:36
+Param Value  2368
+03/08/2019 16:25:36
+sess.StudentId   2368
+03/08/2019 16:26:25
+Param Value  2368
+03/08/2019 16:26:25
+sess.StudentId   2368
+03/08/2019 17:36:50
+Param Value  2368
+03/08/2019 17:36:50
+sess.StudentId   2368
+03/08/2019 17:40:21
+Param Value  2368
+03/08/2019 17:40:21
+sess.StudentId   2368
+02/24/2021 08:41:08
+Param Value  1411
+02/24/2021 08:41:09
+sess.StudentId   1411
+02/24/2021 10:33:46
+Param Value  1376
+02/24/2021 10:33:46
+sess.StudentId   1376
+02/24/2021 10:34:28
+Param Value  1376
+02/24/2021 10:34:28
+sess.StudentId   1376
+02/24/2021 16:25:59
+Param Value  1324
+02/24/2021 16:25:59
+sess.StudentId   1324
+02/24/2021 16:29:47
+Param Value  1324
+02/24/2021 16:29:47
+sess.StudentId   1324
+03/11/2021 13:14:36
+Param Value  1411
+03/11/2021 13:14:36
+sess.StudentId   1411
+03/11/2021 13:18:41
+Param Value  1411
+03/11/2021 13:18:41
+sess.StudentId   1411
+03/11/2021 13:20:28
+Param Value  1411
+03/11/2021 13:20:28
+sess.StudentId   1411
+03/11/2021 13:20:57
+Param Value  1411
+03/11/2021 13:20:57
+sess.StudentId   1411
+03/11/2021 13:24:05
+Param Value  1411
+03/11/2021 13:24:05
+sess.StudentId   1411
+03/11/2021 13:24:57
+Param Value  1411
+03/11/2021 13:24:57
+sess.StudentId   1411
+03/12/2021 08:13:58
+Param Value  1411
+03/12/2021 08:13:58
+sess.StudentId   1411
+03/17/2021 08:00:05
+Param Value  1411
+03/17/2021 08:00:05
+sess.StudentId   1411
+03/17/2021 17:11:11
+Param Value  1411
+03/17/2021 17:11:11
+sess.StudentId   1411
+03/18/2021 09:46:59
+Param Value  1411
+03/18/2021 09:46:59
+sess.StudentId   1411
+03/18/2021 14:52:32
+Param Value  1321
+03/18/2021 14:52:32
+sess.StudentId   1321
+03/19/2021 08:31:32
+Param Value  1359
+03/19/2021 08:31:32
+sess.StudentId   1359
+04/02/2021 08:19:34
+Param Value  1411
+04/02/2021 08:19:34
+sess.StudentId   1411
+04/02/2021 08:26:45
+Param Value  1411
+04/02/2021 08:26:45
+sess.StudentId   1411
+04/02/2021 08:27:47
+Param Value  1411
+04/02/2021 08:27:47
+sess.StudentId   1411
+04/02/2021 11:52:23
+Param Value  1411
+04/02/2021 11:52:23
+sess.StudentId   1411
+04/06/2021 09:04:59
+Param Value  1240
+04/06/2021 09:05:00
+sess.StudentId   1240
+04/07/2021 08:00:20
+Param Value  1411
+04/07/2021 08:00:20
+sess.StudentId   1411
+04/07/2021 08:01:54
+Param Value  1411
+04/07/2021 08:01:54
+sess.StudentId   1411
+04/07/2021 08:17:02
+Param Value  1411
+04/07/2021 08:17:03
+sess.StudentId   1411
+04/07/2021 08:18:33
+Param Value  1411
+04/07/2021 08:18:33
+sess.StudentId   1411
+04/07/2021 08:23:28
+Param Value  1411
+04/07/2021 08:23:28
+sess.StudentId   1411
+04/07/2021 08:32:51
+Param Value  1411
+04/07/2021 08:32:51
+sess.StudentId   1411
+04/07/2021 08:36:15
+Param Value  1411
+04/07/2021 08:36:15
+sess.StudentId   1411
+04/07/2021 08:36:46
+Param Value  1411
+04/07/2021 08:36:46
+sess.StudentId   1411
+04/07/2021 09:18:05
+Param Value  1411
+04/07/2021 09:18:05
+sess.StudentId   1411
+05/31/2021 14:29:28
+Param Value  1411
+05/31/2021 14:29:29
+sess.StudentId   1411
+05/31/2021 14:29:41
+Param Value  1411
+05/31/2021 14:29:41
+sess.StudentId   1411
+06/01/2021 16:21:16
+Param Value  447
+06/01/2021 16:39:58
+Param Value  1321
+06/01/2021 16:39:59
+sess.StudentId   1321
+06/01/2021 16:50:07
+Param Value  1321
+06/01/2021 16:50:07
+sess.StudentId   1321
+03/04/2022 12:05:15
+Param Value  1324
+03/04/2022 12:05:15
+sess.StudentId   1324
+03/04/2022 12:13:06
+Param Value  1321
+03/04/2022 12:13:06
+sess.StudentId   1321
+03/04/2022 12:15:39
+Param Value  1321
+03/04/2022 12:15:39
+sess.StudentId   1321
+03/04/2022 14:48:12
+Param Value  1321
+03/04/2022 14:48:12
+sess.StudentId   1321
+03/04/2022 14:48:41
+Param Value  1321
+03/04/2022 14:48:41
+sess.StudentId   1321
+03/04/2022 14:59:06
+Param Value  1321
+03/04/2022 14:59:06
+sess.StudentId   1321
+03/04/2022 15:00:05
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/04/2022 15:00:06
+Param Value  0
+03/04/2022 15:00:06
+sess.StudentId   1321
+03/04/2022 15:11:20
+Param Value  1321
+03/04/2022 15:11:20
+sess.StudentId   1321
+03/04/2022 15:16:01
+Param Value  1321
+03/04/2022 15:16:01
+sess.StudentId   1321
+03/04/2022 15:19:12
+Param Value  1321
+03/04/2022 15:19:12
+sess.StudentId   1321
+03/04/2022 15:20:35
+Param Value  1321
+03/04/2022 15:20:35
+sess.StudentId   1321
+03/04/2022 17:05:38
+Param Value  1321
+03/04/2022 17:05:38
+sess.StudentId   1321
+03/04/2022 17:22:45
+Param Value  1321
+03/04/2022 17:22:45
+sess.StudentId   1321
+03/04/2022 17:24:38
+Param Value  1321
+03/04/2022 17:24:38
+sess.StudentId   1321
+03/04/2022 17:51:34
+Param Value  1321
+03/04/2022 17:51:34
+sess.StudentId   1321
+03/04/2022 17:52:33
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/04/2022 17:52:34
+Param Value  0
+03/04/2022 17:52:34
+sess.StudentId   1321
+03/04/2022 18:20:17
+sess is Null
+03/04/2022 18:42:50
+Param Value  1321
+03/04/2022 18:42:50
+sess.StudentId   1321
+03/04/2022 18:43:38
+Param Value  1321
+03/04/2022 18:43:38
+sess.StudentId   1321
+03/04/2022 19:18:14
+sess is Null
+03/04/2022 19:18:26
+sess is Null
+03/07/2022 08:36:17
+Param Value  1321
+03/07/2022 08:36:17
+sess.StudentId   1321
+03/07/2022 08:37:50
+Param Value  1321
+03/07/2022 08:37:50
+sess.StudentId   1321
+03/07/2022 08:51:15
+Param Value  1321
+03/07/2022 08:51:16
+sess.StudentId   1321
+03/07/2022 08:51:31
+Param Value  1321
+03/07/2022 08:51:31
+sess.StudentId   1321
+03/07/2022 08:52:19
+Param Value  1321
+03/07/2022 08:52:19
+sess.StudentId   1321
+03/07/2022 08:54:11
+Param Value  1321
+03/07/2022 08:54:11
+sess.StudentId   1321
+03/07/2022 08:58:36
+Param Value  1321
+03/07/2022 08:58:36
+sess.StudentId   1321
+03/07/2022 09:08:38
+Param Value  1321
+03/07/2022 09:08:38
+sess.StudentId   1321
+03/07/2022 09:09:36
+Param Value  1321
+03/07/2022 09:09:36
+sess.StudentId   1321
+03/07/2022 09:11:41
+Param Value  1321
+03/07/2022 09:11:41
+sess.StudentId   1321
+03/07/2022 09:12:43
+Param Value  1321
+03/07/2022 09:12:44
+sess.StudentId   1321
+03/07/2022 09:14:01
+Param Value  1321
+03/07/2022 09:14:01
+sess.StudentId   1321
+03/07/2022 09:15:02
+Param Value  1321
+03/07/2022 09:15:02
+sess.StudentId   1321
+03/07/2022 09:16:45
+Param Value  1321
+03/07/2022 09:16:45
+sess.StudentId   1321
+03/07/2022 09:17:20
+Param Value  1321
+03/07/2022 09:17:20
+sess.StudentId   1321
+03/07/2022 09:22:59
+Param Value  1321
+03/07/2022 09:22:59
+sess.StudentId   1321
+03/07/2022 09:24:00
+Param Value  1321
+03/07/2022 09:24:00
+sess.StudentId   1321
+03/07/2022 09:30:36
+Param Value  1321
+03/07/2022 09:30:36
+sess.StudentId   1321
+03/07/2022 09:31:17
+Param Value  1321
+03/07/2022 09:31:17
+sess.StudentId   1321
+03/07/2022 09:37:53
+Param Value  1321
+03/07/2022 09:37:53
+sess.StudentId   1321
+03/07/2022 09:39:30
+Param Value  1321
+03/07/2022 09:39:30
+sess.StudentId   1321
+03/07/2022 09:40:41
+Param Value  1321
+03/07/2022 09:40:41
+sess.StudentId   1321
+03/07/2022 09:41:28
+Param Value  1321
+03/07/2022 09:41:28
+sess.StudentId   1321
+03/07/2022 09:45:26
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 09:45:26
+Param Value  0
+03/07/2022 09:45:26
+sess.StudentId   1321
+03/07/2022 09:47:40
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 09:47:41
+Param Value  0
+03/07/2022 09:47:41
+sess.StudentId   1321
+03/07/2022 10:00:04
+Param Value  1321
+03/07/2022 10:00:04
+sess.StudentId   1321
+03/07/2022 10:01:50
+Param Value  1321
+03/07/2022 10:01:50
+sess.StudentId   1321
+03/07/2022 10:04:49
+Param Value  1321
+03/07/2022 10:04:49
+sess.StudentId   1321
+03/07/2022 10:05:51
+Param Value  1321
+03/07/2022 10:05:51
+sess.StudentId   1321
+03/07/2022 10:08:06
+Param Value  1321
+03/07/2022 10:08:06
+sess.StudentId   1321
+03/07/2022 10:09:35
+Param Value  1321
+03/07/2022 10:09:35
+sess.StudentId   1321
+03/07/2022 10:13:10
+Param Value  1321
+03/07/2022 10:13:10
+sess.StudentId   1321
+03/07/2022 10:14:04
+Param Value  1321
+03/07/2022 10:14:04
+sess.StudentId   1321
+03/07/2022 10:17:01
+Param Value  1321
+03/07/2022 10:17:01
+sess.StudentId   1321
+03/07/2022 10:18:20
+Param Value  1321
+03/07/2022 10:18:20
+sess.StudentId   1321
+03/07/2022 10:20:28
+Param Value  1321
+03/07/2022 10:20:28
+sess.StudentId   1321
+03/07/2022 10:27:15
+Param Value  1321
+03/07/2022 10:27:15
+sess.StudentId   1321
+03/07/2022 10:27:53
+Param Value  1321
+03/07/2022 10:27:53
+sess.StudentId   1321
+03/07/2022 10:31:03
+Param Value  1321
+03/07/2022 10:31:03
+sess.StudentId   1321
+03/07/2022 10:32:42
+Param Value  1321
+03/07/2022 10:32:42
+sess.StudentId   1321
+03/07/2022 10:33:38
+Param Value  1321
+03/07/2022 10:33:38
+sess.StudentId   1321
+03/07/2022 10:34:11
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 10:34:11
+Param Value  0
+03/07/2022 10:34:11
+sess.StudentId   1321
+03/07/2022 11:06:07
+Param Value  1321
+03/07/2022 11:06:20
+Param Value  0
+03/07/2022 11:07:24
+Param Value  1321
+03/07/2022 11:07:24
+sess.StudentId   1321
+03/07/2022 11:08:28
+Param Value  1321
+03/07/2022 11:08:28
+sess.StudentId   1321
+03/07/2022 14:56:27
+Param Value  1321
+03/07/2022 14:56:29
+sess.StudentId   1321
+03/07/2022 14:56:37
+Param Value  1321
+03/07/2022 14:56:37
+sess.StudentId   1321
+03/07/2022 14:57:28
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 14:57:29
+Param Value  0
+03/07/2022 14:57:29
+sess.StudentId   1321
+03/07/2022 15:40:09
+Param Value  1321
+03/07/2022 15:40:09
+sess.StudentId   1321
+03/07/2022 15:41:29
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 15:41:30
+Param Value  0
+03/07/2022 15:41:30
+sess.StudentId   1321
+03/07/2022 15:43:10
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 15:43:10
+Param Value  0
+03/07/2022 15:43:10
+sess.StudentId   1321
+03/07/2022 16:08:42
+Param Value  1321
+03/07/2022 16:08:42
+sess.StudentId   1321
+03/07/2022 16:10:01
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/07/2022 16:10:02
+Param Value  0
+03/07/2022 16:10:02
+sess.StudentId   1321
+03/08/2022 09:48:02
+Param Value  1321
+03/08/2022 09:48:02
+sess.StudentId   1321
+03/08/2022 10:18:47
+Param Value  1321
+03/08/2022 10:18:47
+sess.StudentId   1321
+03/08/2022 10:30:13
+Param Value  1279
+03/08/2022 10:30:13
+sess.StudentId   1279
+03/08/2022 13:04:54
+Param Value  1321
+03/08/2022 13:04:54
+sess.StudentId   1321
+03/08/2022 13:58:23
+Param Value  1321
+03/08/2022 13:58:23
+sess.StudentId   1321
+03/08/2022 17:18:05
+Param Value  1321
+03/08/2022 17:18:05
+sess.StudentId   1321
+03/08/2022 17:20:45
+Param Value  1321
+03/08/2022 17:20:58
+Param Value  1321
+03/08/2022 17:20:58
+sess.StudentId   1321
+03/08/2022 18:05:30
+Param Value  1321
+03/08/2022 18:05:30
+sess.StudentId   1321
+03/08/2022 18:08:00
+Param Value  1321
+03/08/2022 18:08:00
+sess.StudentId   1321
+03/08/2022 18:16:21
+Param Value  1321
+03/08/2022 18:16:21
+sess.StudentId   1321
+03/08/2022 18:17:28
+Param Value  1321
+03/08/2022 18:17:28
+sess.StudentId   1321
+03/08/2022 18:18:55
+Param Value  1321
+03/08/2022 18:18:55
+sess.StudentId   1321
+03/08/2022 18:20:11
+Param Value  1321
+03/08/2022 18:20:11
+sess.StudentId   1321
+03/08/2022 18:21:28
+Param Value  1321
+03/08/2022 18:21:28
+sess.StudentId   1321
+03/08/2022 18:40:12
+Param Value  1321
+03/08/2022 18:40:12
+sess.StudentId   1321
+03/09/2022 00:14:22
+Param Value  1321
+03/09/2022 00:14:22
+sess.StudentId   1321
+03/09/2022 00:15:21
+Param Value  1321
+03/09/2022 00:15:21
+sess.StudentId   1321
+03/09/2022 00:17:58
+Param Value  1321
+03/09/2022 00:17:58
+sess.StudentId   1321
+03/09/2022 00:18:04
+Param Value  1321
+03/09/2022 00:18:04
+sess.StudentId   1321
+03/09/2022 00:19:00
+Param Value  1321
+03/09/2022 00:19:00
+sess.StudentId   1321
+03/09/2022 00:21:13
+Param Value  1321
+03/09/2022 00:21:14
+sess.StudentId   1321
+03/09/2022 00:23:52
+Param Value  1321
+03/09/2022 00:23:52
+sess.StudentId   1321
+03/09/2022 00:25:39
+Param Value  1321
+03/09/2022 00:25:39
+sess.StudentId   1321
+03/09/2022 00:30:46
+Param Value  1321
+03/09/2022 00:30:47
+sess.StudentId   1321
+03/09/2022 00:32:16
+Param Value  1321
+03/09/2022 00:32:16
+sess.StudentId   1321
+03/09/2022 00:36:53
+Param Value  1321
+03/09/2022 00:36:53
+sess.StudentId   1321
+03/09/2022 00:43:02
+Param Value  1321
+03/09/2022 00:43:02
+sess.StudentId   1321
+03/09/2022 00:48:24
+Param Value  1321
+03/09/2022 00:48:24
+sess.StudentId   1321
+03/09/2022 01:02:51
+Param Value  1321
+03/09/2022 01:02:51
+sess.StudentId   1321
+03/09/2022 01:03:52
+Param Value  1321
+03/09/2022 01:03:52
+sess.StudentId   1321
+03/09/2022 01:27:50
+Param Value  1321
+03/09/2022 01:27:50
+sess.StudentId   1321
+03/09/2022 01:28:40
+Param Value  1321
+03/09/2022 01:28:40
+sess.StudentId   1321
+03/09/2022 01:29:17
+Param Value  1321
+03/09/2022 01:29:17
+sess.StudentId   1321
+03/09/2022 09:01:02
+Param Value  1321
+03/09/2022 09:01:02
+sess.StudentId   1321
+03/09/2022 09:04:44
+Param Value  1279
+03/09/2022 09:04:44
+sess.StudentId   1279
+03/09/2022 09:28:46
+Param Value  1279
+03/09/2022 09:28:46
+sess.StudentId   1279
+03/09/2022 09:32:18
+Param Value  1279
+03/09/2022 09:32:18
+sess.StudentId   1279
+03/09/2022 09:33:17
+Error:System.NullReferenceException: Object reference not set to an instance of an object.
+   at ClientDB.AppFunctions.Other_Functions.SaveNewEventData(String strNewEvent, Int32 placementId) in e:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\AppFunctions\Other_Functions.cs:line 6474
+03/09/2022 10:34:01
+Param Value  1321
+03/09/2022 10:34:01
+sess.StudentId   1321
+03/09/2022 10:35:29
+Param Value  1279
+03/09/2022 10:35:29
+sess.StudentId   1279
+03/09/2022 10:54:10
+Param Value  1279
+03/09/2022 10:54:10
+sess.StudentId   1279
+03/09/2022 11:28:55
+Param Value  1279
+03/09/2022 11:28:55
+sess.StudentId   1279
+03/09/2022 12:01:45
+sess is Null
+03/09/2022 12:01:47
+sess is Null
+03/09/2022 12:06:34
+Param Value  1279
+03/09/2022 12:06:34
+sess.StudentId   1279
+03/09/2022 12:28:17
+Param Value  1279
+03/09/2022 12:28:17
+sess.StudentId   1279
+03/09/2022 12:47:47
+Param Value  1279
+03/09/2022 12:47:47
+sess.StudentId   1279
+03/09/2022 12:56:22
+Param Value  1279
+03/09/2022 12:56:22
+sess.StudentId   1279
+03/09/2022 13:06:57
+Param Value  1279
+03/09/2022 13:06:57
+sess.StudentId   1279
+03/09/2022 13:07:59
+Param Value  1279
+03/09/2022 13:07:59
+sess.StudentId   1279
+03/09/2022 13:56:52
+Param Value  1279
+03/09/2022 13:56:52
+sess.StudentId   1279
+03/09/2022 14:14:36
+Param Value  1279
+03/09/2022 14:14:36
+sess.StudentId   1279
+03/09/2022 14:33:42
+Param Value  1321
+03/09/2022 14:33:44
+sess.StudentId   1321
+03/09/2022 15:08:22
+Param Value  1279
+03/09/2022 15:08:22
+sess.StudentId   1279
+03/09/2022 15:26:44
+Param Value  0
+03/09/2022 15:26:44
+sess.StudentId   1279
+03/09/2022 15:32:49
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 15:32:51
+Param Value  0
+03/09/2022 15:32:51
+sess.StudentId   1279
+03/09/2022 15:54:15
+Param Value  1279
+03/09/2022 15:54:15
+sess.StudentId   1279
+03/09/2022 15:55:16
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:00:41
+Param Value  1279
+03/09/2022 16:00:41
+sess.StudentId   1279
+03/09/2022 16:01:38
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:01:41
+Param Value  0
+03/09/2022 16:01:41
+sess.StudentId   1279
+03/09/2022 16:06:18
+Param Value  1321
+03/09/2022 16:06:18
+sess.StudentId   1321
+03/09/2022 16:07:36
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:12:44
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:13:41
+Param Value  1279
+03/09/2022 16:13:41
+sess.StudentId   1279
+03/09/2022 16:14:28
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:16:13
+Param Value  1279
+03/09/2022 16:16:13
+sess.StudentId   1279
+03/09/2022 16:16:55
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:19:36
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:19:38
+Param Value  0
+03/09/2022 16:19:38
+sess.StudentId   1279
+03/09/2022 16:31:13
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:31:16
+Param Value  0
+03/09/2022 16:31:16
+sess.StudentId   1279
+03/09/2022 16:42:00
+Param Value  1321
+03/09/2022 16:44:38
+Param Value  1279
+03/09/2022 16:44:38
+sess.StudentId   1279
+03/09/2022 16:46:13
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:46:15
+Param Value  0
+03/09/2022 16:46:15
+sess.StudentId   1279
+03/09/2022 16:48:35
+Param Value  1321
+03/09/2022 16:48:35
+sess.StudentId   1321
+03/09/2022 16:49:16
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:49:17
+Param Value  0
+03/09/2022 16:49:17
+sess.StudentId   1321
+03/09/2022 16:50:24
+Param Value  1279
+03/09/2022 16:50:24
+sess.StudentId   1279
+03/09/2022 16:51:14
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:51:16
+Param Value  0
+03/09/2022 16:51:16
+sess.StudentId   1279
+03/09/2022 16:52:09
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:52:11
+Param Value  0
+03/09/2022 16:52:11
+sess.StudentId   1279
+03/09/2022 16:54:15
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:54:16
+Param Value  0
+03/09/2022 16:54:16
+sess.StudentId   1279
+03/09/2022 16:55:49
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:55:50
+Param Value  0
+03/09/2022 16:55:50
+sess.StudentId   1279
+03/09/2022 16:56:02
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:56:04
+Param Value  0
+03/09/2022 16:56:04
+sess.StudentId   1279
+03/09/2022 16:56:50
+Param Value  1321
+03/09/2022 16:56:50
+sess.StudentId   1321
+03/09/2022 16:57:34
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Facesheet.ClsExportNew.getIEP1(String[]& C1, String[]& C2, Int32 StudentId, Int32 SchoolId, String[] args, Int32 pageno) in e:\Snishil\Melmark\Melmark Commit only Check\Client\facesheetapplication\ClsExport.cs:line 212
+03/09/2022 16:57:38
+Param Value  0
+03/09/2022 16:57:38
+sess.StudentId   1321
+03/09/2022 16:58:26
+Param Value  0
+03/09/2022 16:58:26
+sess.StudentId   0
+03/09/2022 17:00:04
+NO DATA Student ID  0
+03/09/2022 17:00:04
+Param Value  0
+03/09/2022 17:00:04
+sess.StudentId   1470
+03/09/2022 17:03:48
+Param Value  0
+03/09/2022 17:03:48
+sess.StudentId   1470
+03/09/2022 18:37:22
+Param Value  1321
+03/09/2022 18:37:22
+sess.StudentId   1321
+03/09/2022 18:45:39
+Param Value  1279
+03/09/2022 18:45:39
+sess.StudentId   1279
+03/17/2022 19:56:20
+Param Value  1279
+03/17/2022 19:56:21
+sess.StudentId   1279
+03/17/2022 19:57:15
+Param Value  0
+03/17/2022 19:57:15
+sess.StudentId   1279
+03/18/2022 14:15:55
+Param Value  1321
+03/18/2022 14:15:55
+sess.StudentId   1321
+03/18/2022 14:21:55
+Param Value  0
+03/18/2022 14:21:55
+sess.StudentId   1321
+06/29/2022 18:53:53
+sess is Null
+06/29/2022 18:56:48
+Param Value  1307
+06/29/2022 18:56:49
+sess.StudentId   1307
+06/29/2022 18:57:45
+Param Value  0
+06/29/2022 18:57:45
+sess.StudentId   1307
+06/29/2022 19:15:10
+Param Value  1307
+06/29/2022 19:15:10
+sess.StudentId   1307
+06/29/2022 19:15:32
+Param Value  0
+06/29/2022 19:15:32
+sess.StudentId   1307
+06/29/2022 19:19:42
+Param Value  1307
+06/29/2022 19:19:42
+sess.StudentId   1307
+06/29/2022 19:26:13
+Param Value  1307
+06/29/2022 19:26:13
+sess.StudentId   1307
+12/20/2022 15:49:46
+Param Value  1324
+12/20/2022 15:49:46
+sess.StudentId   1324
+12/20/2022 15:51:10
+Param Value  1324
+12/20/2022 15:51:10
+sess.StudentId   1324
+12/20/2022 16:04:41
+Param Value  1324
+12/20/2022 16:04:41
+sess.StudentId   1324
+12/20/2022 16:10:46
+Param Value  1324
+12/20/2022 16:10:46
+sess.StudentId   1324
+02/01/2023 16:18:19
+Param Value  1412
+02/01/2023 16:18:19
+sess.StudentId   1412
+02/01/2023 16:22:32
+Param Value  1412
+02/01/2023 16:22:32
+sess.StudentId   1412
+02/01/2023 16:24:22
+Param Value  1412
+02/01/2023 16:24:22
+sess.StudentId   1412
+02/01/2023 16:26:54
+Param Value  1412
+02/01/2023 16:26:54
+sess.StudentId   1412
+02/01/2023 16:28:30
+Param Value  1212
+02/01/2023 16:28:30
+sess.StudentId   1212
+02/01/2023 16:30:29
+Param Value  1417
+02/01/2023 16:30:29
+sess.StudentId   1417
+02/01/2023 16:31:17
+Param Value  1324
+02/01/2023 16:31:17
+sess.StudentId   1324
+02/01/2023 16:31:52
+Param Value  1417
+02/01/2023 16:31:52
+sess.StudentId   1417
+02/01/2023 16:32:00
+Param Value  1370
+02/01/2023 16:32:00
+sess.StudentId   1370
+02/01/2023 16:33:31
+Param Value  2237
+02/01/2023 16:33:31
+sess.StudentId   2237
+02/01/2023 16:35:37
+Param Value  1370
+02/01/2023 16:35:37
+sess.StudentId   1370
+02/01/2023 16:37:07
+Param Value  1179
+02/01/2023 16:37:07
+sess.StudentId   1179
+02/01/2023 16:41:14
+Param Value  1324
+02/01/2023 16:41:14
+sess.StudentId   1324
+02/01/2023 17:02:36
+Param Value  1412
+02/01/2023 17:02:36
+sess.StudentId   1412
+02/01/2023 17:16:19
+Param Value  1348
+02/01/2023 17:16:19
+sess.StudentId   1348
+02/01/2023 17:25:03
+Param Value  1324
+02/01/2023 17:25:03
+sess.StudentId   1324
+02/01/2023 17:28:16
+Param Value  1412
+02/01/2023 17:28:16
+sess.StudentId   1412
+02/01/2023 17:29:26
+Param Value  1412
+02/01/2023 17:29:26
+sess.StudentId   1412
+02/01/2023 17:34:04
+Param Value  1212
+02/01/2023 17:34:04
+sess.StudentId   1212
+02/01/2023 17:42:17
+Param Value  1393
+02/01/2023 17:42:17
+sess.StudentId   1393
+02/01/2023 18:26:06
+Param Value  1417
+02/01/2023 18:26:06
+sess.StudentId   1417
+02/07/2023 14:32:46
+Param Value  1335
+02/07/2023 14:32:47
+sess.StudentId   1335
+02/08/2023 18:42:14
+Param Value  1428
+02/08/2023 18:42:14
+sess.StudentId   1428

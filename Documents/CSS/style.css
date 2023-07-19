@@ -1,0 +1,722 @@
+﻿
+@charset "utf-8";
+
+body {
+    border: 0 none;
+    color: #6b6b6b;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.clear {
+    border: 0 none;
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+div.mainContainer {
+    height: auto !important;
+    min-height: 500px;
+    min-width: 1090px !important;
+    overflow:auto;
+    width: 100%;
+}
+
+    div.mainContainer div.topHead {
+        background: url("../Images/melmarkTop.jpg") repeat-y scroll left top #00539f;
+        height: 47px;
+        min-width: 800px;
+        width: 100%;
+    }
+
+        div.mainContainer div.topHead a.admin, div.mainContainer div.topHead a.admin:link, div.mainContainer div.topHead a.admin:visited {
+            background: url("../Images/admin1.png") no-repeat scroll left 5px transparent;
+            color: #ffffff;
+            display: block;
+            float: left;
+            font-size: 12px;
+            font-weight: bold;
+            height: 18px;
+            margin: 10px 0 0 15px;
+            padding: 6px 0 0 22px;
+            text-decoration: none;
+            width: 30%;
+        }
+
+            div.mainContainer div.topHead a.admin:hover {
+                background-position: 0 -16px;
+                color: #8ed99d;
+            }
+
+        div.mainContainer div.topHead a.logout, div.mainContainer div.topHead a.logout:link, div.mainContainer div.topHead a.logout:visited {
+            background: url("../Images/Logout.png") no-repeat scroll left 5px transparent;
+            color: #ffffff;
+            display: block;
+            float: right;
+            font-size: 12px;
+            font-weight: bold;
+            height: 18px;
+            margin: 10px 0 0 15px;
+            padding: 6px 0 0 22px;
+            text-decoration: none;
+            width: 5%;
+        }
+
+            div.mainContainer div.topHead a.logout:hover {
+                background-position: 0 -16px;
+                color: #81abce;
+            }
+
+        div.mainContainer div.topHead a.home, div.mainContainer div.topHead a.home:link, div.mainContainer div.topHead a.home:visited {
+            background: url("../Images/hm.png") no-repeat scroll left 5px transparent;
+            color: #ffffff;
+            display: block;
+            float: right;
+            font-size: 12px;
+            font-weight: bold;
+            height: 18px;
+            margin: 10px 0 0 15px;
+            padding: 6px 0 0 22px;
+            text-decoration: none;
+            width: 5%;
+        }
+
+            div.mainContainer div.topHead a.home:hover {
+                background-position: 0 -16px;
+                color: #81abce;
+            }
+
+        div.mainContainer div.topHead a.Report, div.mainContainer div.topHead a.Report:link, div.mainContainer div.topHead a.Report:visited {
+            background: url("../Images/Client_reports.png") no-repeat scroll left 5px transparent;
+            color: #ffffff;
+            display: block;
+            float: right;
+            font-size: 12px;
+            font-weight: bold;
+            height: 18px;
+            margin: 10px 0 0 15px;
+            padding: 6px 0 0 22px;
+            text-decoration: none;
+            width: 5%;
+        }
+
+            div.mainContainer div.topHead a.Report:hover {
+                background-position: 0 -16px;
+                color: #81abce;
+            }
+
+    div.mainContainer div.contentPart {
+        background: url("../Images/bginner.JPG") repeat scroll left top transparent;
+        border-bottom: 1px solid #dcdcdc;
+        height: auto !important;
+        min-height: 500px;
+        width: 100%;
+    }
+
+        div.mainContainer div.contentPart div.imgcorner {
+            background: url("../Images/curve.JPG") no-repeat scroll right top rgba(0, 0, 0, 0);
+            border-bottom: 1px solid #dcdcdc;
+            height: 85px;
+            margin: 0;
+            min-width: 800px;
+            padding: 0;
+            width: 100%;
+        }
+
+        div.mainContainer div.contentPart div.nobddr {
+            border-bottom: medium none;
+            height: 50px !important;
+        }
+
+        imgcorner div.mainContainer div.contentPart div.imgcorner a.logo, div.mainContainer div.contentPart div.imgcorner a.logo:link, div.mainContainer div.contentPart div.imgcorner a.logo:visited {
+            border: 0 none;
+            display: block;
+            float: left;
+            height: 40px;
+            margin: 22px 0 0 12px;
+            width: 250px;
+        }
+
+        div.mainContainer div.contentPart div.imgcorner a.logo img {
+            border: 0 none;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer {
+            background: none repeat scroll 0 0 #ffffff;
+            height: auto !important;
+            margin: 0 auto;
+            min-height: 500px;
+            min-width: 800px;
+            width: 100%;
+            z-index: 999;
+        }
+
+        div.mainContainer div.contentPart div.nobg {
+            background-color: #ffffff;
+            border: 2px solid #b6d1dd;
+            border-radius: 5px !important;
+            box-shadow: 0 1px 5px 3px #bfc0c1;
+            height: auto;
+            margin: 15px auto;
+            min-width: 900px !important;
+            padding: 5px;
+            width: 97%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer {
+            float: left;
+            height: auto !important;
+            margin: 0;
+            min-height: 500px;
+            min-width: 130px;
+            padding: 4px 7px 0;
+            width: 17%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer {
+            border-left: 3px solid #e5e5e5;
+            float: left;
+            height: auto !important;
+            min-height: 500px;
+            min-width: 384px;
+            width: 90%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer {
+            background: none repeat scroll 0 0 #ffffff;
+            float: left;
+            height: auto !important;
+            margin: 0 0 6px;
+            min-height: 500px;
+            min-width: 175px;
+            padding: 4px 0 0;
+            width: 18%;
+            
+        }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.imgcontainer {
+                border: 1px solid #bfbfbf;
+                border-radius: 2px;
+                float: left;
+                height: 240px;
+                width: 100%;
+            }
+
+                div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.imgcontainer h4 {
+                    background: none repeat scroll 0 0 #006552;
+                    color: #ffffff;
+                    font-family: Arial,Helvetica,sans-serif;
+                    font-size: 12px;
+                    font-weight: bold;
+                    margin: 0;
+                    padding: 5px;
+                }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer h2 {
+            border-bottom: 1px solid #b2ccca;
+            font-family: arial;
+            font-size: 21px;
+            font-weight: lighter;
+            margin: 0 auto 10px;
+            padding: 8px 0 7px;
+            text-align: left;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer table {
+        }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer table tr td {
+                color: #525252;
+                font-family: Arial,Helvetica,sans-serif;
+                font-size: 11px !important;
+                width: 1%;
+            }
+
+                div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer table tr td.nobdr {
+                    border-right: medium none;
+                }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer h3, div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer h3 {
+            background: none repeat scroll 0 0 #0053a1;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: normal;
+            margin: 0;
+            padding: 7px 0 7px 3%;
+            text-align: left;
+            width: 97%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn, div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn:link, div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn:visited {
+            background: url("../Images/btnbg.JPG") repeat-x scroll left top transparent;
+            border-radius: 3px;
+            color: #ffffff;
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            height: 38px;
+            margin: 10px auto 0;
+            text-decoration: none;
+            width: 80%;
+        }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn:hover {
+                color: #000000;
+            }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn img {
+                border: 0 none;
+            }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn img {
+                display: block;
+                float: left;
+                margin: 0 0 0 8px;
+            }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.rightbtn span {
+                display: block;
+                float: left;
+                margin: 12px 0 0 10px;
+            }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.lfAlainAtag, div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.lfAlainAtag:link, div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.lfAlainAtag:visited {
+            background: url("../Images/grarro.PNG") no-repeat scroll left 5px transparent;
+            color: #4f4f4f;
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin: 0 auto;
+            padding: 2px 0 2px 15px;
+            text-align: left;
+            text-decoration: none;
+            width: 74%;
+        }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer a.lfAlainAtag:hover {
+                color: #0c69bb;
+            }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.listmenu {
+            background: none repeat scroll 0 0 #d3d3d3;
+            cursor: pointer;
+            height: 29px;
+            margin: 3px 0 0 30px;
+            min-width: 102px;
+            overflow: hidden;
+            width: 80%;
+        }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.listmenu span.clsbtn {
+                background: url("../Images/clsbtn.png") no-repeat scroll 0 0 transparent;
+                display: block !important;
+                float: right;
+                height: 14px;
+                padding: 0;
+                width: 20px;
+            }
+
+                div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.listmenu span.clsbtn:hover {
+                    background-position: 0 -16px;
+                }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.listmenu:hover {
+                background: none repeat scroll 0 0 #bdd4ea;
+            }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.listmenu img {
+                border: 0 none;
+                display: block;
+                float: left;
+                padding: 0;
+            }
+
+            div.mainContainer div.contentPart div.ContentAreaContainer div.rightContainer div.listmenu span {
+                color: #504f4f;
+                display: block;
+                float: left;
+                font-size: 11px;
+                margin: 7px 5px 0;
+                overflow: hidden;
+                position: inherit;
+                width: 100%;
+            }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer h4 {
+            color: #6b6b6b;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 7px 0;
+            padding: 0 0 0 3%;
+            width: 97%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer input.tx {
+            border: 1px solid #b3b3b3;
+            border-radius: 3px;
+            color: #666666;
+            float: left;
+            font-size: 11px;
+            margin: 0 0 0 3%;
+            padding: 8px 2px;
+            width: 60%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer input.bt {
+            background: none repeat scroll 0 0 #03507d;
+            border: 0 none;
+            border-radius: 3px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: bold;
+            height: 31px;
+            margin: 0 0 0 2%;
+            min-width: 45px;
+            padding: 0 0 3px;
+            width: 20%;
+        }
+
+        div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer input {
+            border: 0 none;
+            color: #fff;
+            cursor: pointer;
+            display: block;
+            float: right;
+            font-family: Arial,Helvetica,sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            height: 36px;
+            letter-spacing: 1px;
+            margin: 1px 0 0;
+            padding: 9px 0 28px 15px;
+            text-align: left;
+            text-decoration: none;
+            width: 228px;
+        }
+
+.leftMenu {
+    background: #007ab1;
+    border-radius: 3px;
+    color: #ffffff !important;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    height: 22px;
+    margin: 0 0 2px !important;
+    padding-top: 2px;
+    width: 100%;
+}
+
+    .leftMenu:hover {
+        background: #3dc153;
+    }
+
+.leftMenuHeader {
+    background:#acadac;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: #ffffff !important;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    height: 22px;
+    margin: 0 0 2px !important;
+    padding-top: 2px;
+    width: 100%;
+}
+
+    .leftMenuHeader a {
+        background: url("../../Images/lbtndown.PNG") no-repeat scroll 6px 4px rgba(0, 0, 0, 0);
+        color: #fff;
+        float: left;
+        font-family: Arial,Helvetica,sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 3px 0 2px 28px;
+        text-decoration: none;
+        width: 54%;
+        z-index: 999;
+    }
+
+.leftMenu a {
+    background: url("../../Images/lbtn.PNG") no-repeat scroll 6px 4px rgba(0, 0, 0, 0);
+    color: #fff;
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 0 2px 28px;
+    text-decoration: none;
+    width: 71%;
+    z-index: 999;
+}
+
+h4 {
+    background: none repeat scroll 0 0 rgb(241, 241, 241);
+   
+    color: #000;
+    font-family:  Arial,Helvetica,sans-serif;
+    font-size: 17px;
+    font-weight: normal;
+    line-height: 35px;
+    margin: 0 0 15px;
+    text-align: left;
+    padding-left: 5px;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer2 input {
+    background: url("../Images/arrow2.jpg") no-repeat scroll 0 -49px transparent;
+    border: 0 none;
+    color: #4f4f4f;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    height: 49px;
+    letter-spacing: 1px;
+    margin: 0;
+    padding: 13px 0 28px 30px;
+    text-align: left;
+    text-decoration: none;
+    width: 322px;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer2 {
+    float: left;
+}
+
+    div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer2 input:hover {
+        background-position: 0 0;
+    }
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer input:hover, div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer input.current {
+    background-position: 0 0;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer input.bt:hover {
+    background: none repeat scroll 0 0 #0e71c1;
+    color: #ffffff;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainera, div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer a:link, div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer a:visited {
+    color: #4f4f4f;
+    display: block;
+    float: right;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    height: 48px;
+    margin: 0;
+    text-decoration: none;
+    width: 210px;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer a:hover {
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer a span {
+    background: url("../Images/arrow.png") no-repeat scroll 5px top transparent;
+    display: block;
+    float: left;
+    height: 20px;
+    margin: 13px 0 0;
+    padding: 0 0 0 28px;
+    width: 180px;
+}
+
+    div.mainContainer div.contentPart div.ContentAreaContainer div.leftContainer a span:hover {
+        background-position: 5px -22px;
+        color: #026857;
+    }
+
+div.mainContainer div.footer {
+    height: 45px;
+    padding-top: 10px;
+}
+
+    div.mainContainer div.footer img {
+        border: 0 none;
+        float: left;
+        margin: 10px 0 0 25px;
+    }
+
+    div.mainContainer div.footer div.copyright {
+        color: #666666;
+        float: right;
+        font-size: 11px;
+        height: 25px;
+        margin: 17px 0 25px;
+        text-align: left;
+        text-decoration: none;
+        width: 22%;
+    }
+
+.nomarg {
+    border: 0 none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer {
+    float: left;
+    height: auto !important;
+    min-height: 500px;
+    min-width: 384px;
+    width: 78%;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.edited {
+    float: none !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    width: 99% !important;
+}
+
+.selContainer {
+    float: left;
+    height: 25px;
+    width: 25%;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer table tr td.bdrstyle {
+    border: medium none !important;
+    color: #666;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px !important;
+    font-weight: normal;
+    min-width: 100px;
+    text-align: right;
+}
+
+.listCont {
+    float: right;
+    height: 25px;
+    margin: 10px 0 0;
+    width: 20%;
+}
+
+.topbarCo {
+    margin: 0 auto;
+    width: 85%;
+}
+
+div.mainContainer div.contentPart div.ContentAreaContainer div.middleContainer table tr td img {
+}
+
+.centerpartCon {
+    height: auto;
+    margin: 0 auto;
+    width: 96%;
+}
+
+.boxstyleCon {
+    border: medium none !important;
+    color: #666 !important;
+    font-family: Arial,Helvetica,sans-serif !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+}
+
+.MiddleContainerStyle {
+    height: 500px !important;
+    margin: 0 auto !important;
+    min-width: 900px !important;
+    width: 88% !important;
+}
+
+input[type="button"] {
+    background-color: #03507d;
+    background-position: 0 0;
+    border: medium none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    float: right;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    height: 26px;
+    margin: 0 0 0 5px;
+    text-decoration: none;
+    width: 91px;
+}
+
+input[type="text"]:focus {
+    background-color: #f2eeee;
+    border: 1px solid #d7cece;
+}
+
+input[type="text"] {
+    background-color: white;
+    border: 1px solid #d7cece;
+    border-radius: 3px;
+    color: #676767;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 13px;
+    height: 25px;
+    line-height: 26px;
+    padding: 0 5px 0 10px;
+    width: 219px;
+}
+
+    input[type="text"]:focus {
+        background-color: #f2eeee;
+        border: 1px solid #d7cece;
+    }
+
+select {
+    background-color: white;
+    border: 1px solid #d7cece;
+    border-radius: 3px;
+    color: #676767;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 13px;
+    height: 27px;
+    line-height: 26px;
+    padding: 0 5px 0 10px;
+    width: 242px;
+}
+
+    select:focus {
+        background-color: #f2eeee;
+        border-color: #000000;
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    .align-label{margin:6px 25px 0 15px;float:left;width:80px;}
+
+
+    .span-align{
+
+        color: red;font-size: 17px; margin: 1px 0px 0px 3px;position:absolute;
+    }
+    .nospan-align{
+
+        color: white;font-size: 17px; margin: 1px 0px 0px 3px;position:absolute;
+    }
+
+    .positionlabel_textbox{
+        pointer-events: none !important;
+        color: #525252 !important;
+        background-color: transparent !important;
+        font-weight: bold !important;
+        font-family: Arial,Helvetica,sans-serif !important;
+        font-style: italic !important;
+        font-size: 11px !important;
+        border: none !important;
+        margin-bottom: -1% !important;
+        margin-left: -2% !important;
+        outline: none !important;
+    }

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<States>
+  <State Name="NE">
+    <Mappings>
+    
+      <Mapping Column="Name" PlaceHolder="tplStudentName"/>
+      <Mapping Column="DOB" PlaceHolder="tplStudentDOB"/>
+      <Mapping Column="AgencyName" PlaceHolder="tplAgncyName"/>
+      <Mapping Column="Address" PlaceHolder="tplAgncyAddress"/>
+
+      <Mapping Column="ParentSignDate" PlaceHolder="tplParentSignDate"/>
+      <Mapping Column="ParentName" PlaceHolder="tplParentName"/>
+      <Mapping Column="StaffName" PlaceHolder="tplStaffName"/>
+      <Mapping Column="StaffSignedDate" PlaceHolder="tplStaffSignDate"/>
+     
+    </Mappings>
+  </State>
+</States>

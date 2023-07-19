@@ -1,0 +1,723 @@
+﻿@model ClientDB.Models.ClientRegistrationPAModel
+
+<fieldset>
+    <legend>ClientRegistrationPAModel</legend>
+
+    <div class="display-label">prmaod
+         @Html.DisplayNameFor(model => model.GeneralInformation1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Prefix)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FirstName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FirstName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MiddleName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MiddleName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NickName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NickName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LastNameSuffix)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastNameSuffix)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Ambulatory)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Ambulatory)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.EnglishProficiency)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EnglishProficiency)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SASID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SASID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Medicaid)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Medicaid)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Note)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Note)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Intensive)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Intensive)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsGuardian)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsGuardian)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DateOfBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DateOfBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DateUpdated)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DateUpdated)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AdmissinDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AdmissinDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Gender)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Gender)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Race)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Race)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StrRace)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StrRace)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CountryofBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CountryofBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CountryBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CountryBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PlaceOfBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PlaceOfBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StateOfBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StateOfBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StateBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StateBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Citizenship)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Citizenship)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CitizenshipBirth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CitizenshipBirth)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Height)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Height)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Weight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Weight)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.HairColor)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HairColor)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.EyeColor)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EyeColor)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PrimaryLanguage)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PrimaryLanguage)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LegalCompetencyStatus)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LegalCompetencyStatus)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GuardianshipStatus)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GuardianshipStatus)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OtherStateAgenciesInvolvedWithStudent)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OtherStateAgenciesInvolvedWithStudent)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DistigushingMarks)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DistigushingMarks)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MaritalStatusofBothParents)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MaritalStatusofBothParents)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CaseManagerResidential)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CaseManagerResidential)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CaseManagerEducational)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CaseManagerEducational)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AddressID)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AddressID)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AddressLine1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AddressLine1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AddressLine2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AddressLine2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AddressLine3)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AddressLine3)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Country)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Country)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StrCountry)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StrCountry)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.State)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.State)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StrState)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StrState)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.City)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.City)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Funding)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Funding)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Zip)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Zip)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ZipCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ZipCode)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PhoneNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PhoneNumber)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MostRecentGradeLevel)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MostRecentGradeLevel)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Bathroom)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Bathroom)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OnCampus)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OnCampus)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.WhenTranspoting)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WhenTranspoting)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OffCampus)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OffCampus)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PoolOrSwimming)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PoolOrSwimming)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.van)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.van)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CommonAreas)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CommonAreas)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BedroomAwake)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BedroomAwake)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BedroomAsleep)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BedroomAsleep)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TaskORBreak)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TaskORBreak)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TransitionInside)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TransitionInside)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.TransitionUnevenGround)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TransitionUnevenGround)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.RiskOfResistance)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RiskOfResistance)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Mobility)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Mobility)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ImageUrl)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ImageUrl)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PhotoReleasePermission)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PhotoReleasePermission)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NeedForExtraHelp)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NeedForExtraHelp)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ResponseToInstruction)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ResponseToInstruction)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Consciousness)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Consciousness)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.WalkingResponse)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WalkingResponse)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Allergie)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Allergie)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Seizures)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Seizures)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Diet)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Diet)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Other)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Other)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LiftingOrTransfers1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LiftingOrTransfers1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.LiftingOrTransfers2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LiftingOrTransfers2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Ambulation1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Ambulation1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Ambulation2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Ambulation2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Toileting1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Toileting1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Toileting2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Toileting2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Eating1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Eating1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Eating2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Eating2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Showering1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Showering1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Showering2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Showering2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToothBrushing1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToothBrushing1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ToothBrushing2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ToothBrushing2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Dressing1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Dressing1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Dressing2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Dressing2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SkinCare1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SkinCare1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SkinCare2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SkinCare2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Communication1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Communication1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Communication2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Communication2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.preferedActivities1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.preferedActivities1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.preferedActivities2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.preferedActivities2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GeneralInformation1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GeneralInformation1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GeneralInformation2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GeneralInformation2)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SuggestedProactiveEnvironmentalProcedures1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SuggestedProactiveEnvironmentalProcedures1)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SuggestedProactiveEnvironmentalProcedures2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SuggestedProactiveEnvironmentalProcedures2)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,353 @@
+﻿body {
+}
+
+.tblStyle {
+    width: 100%;
+    color: #3C3C3C;
+    font-family: Arial;
+    font-size: 13px;
+}
+
+input[type="text"]:focus {
+    background-color: #f2eeee;
+    border: 1px solid #d7cece;
+}
+
+input[type="text"] {
+    background-color: white;
+    border: 1px solid #d7cece;
+    border-radius: 3px;
+    color: #676767;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 13px;
+    height: 25px;
+    line-height: 26px;
+    padding: 0 5px 0 10px;
+    width: 210px;
+    margin-bottom:15px;
+}
+
+textarea {
+    border: 1px solid #CCC;
+    font-family: Arial;
+    font-size: 12px;
+    color: #333;
+}
+
+input[type="text"]:focus {
+    background-color: #f2eeee;
+    border: 1px solid #d7cece;
+}
+
+input[type="submit"]:focus {
+    background-color: #f2eeee;
+    border: 1px solid #d7cece;
+}
+
+input[type="submit"] {
+    background-color: #03507d !important;
+    background-position: 0 0;
+    border: medium none !important;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    float: right;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    height: 26px !important;
+    margin: 0 0 0 5px;
+    text-decoration: none;
+    width: 91px !important;
+}
+
+select {
+    width: 225px !important;
+    border: 1px solid #CCC;
+    height: 29px;
+    vertical-align: middle;
+    font-family: Arial;
+    font-size: 12px;
+    color: #333;
+    margin-bottom:15px;
+}
+
+/*#LastName {
+    width: 110px;
+}*/
+
+#LastNameSuffix {
+    width: 80px;
+    margin-bottom:12px;
+}
+
+#rightSidePanel {
+    border: 1px solid;
+    margin: 0 15px 0 90% !important;
+    padding: 0px;
+    position: absolute;
+    right: 0;
+    top: 27.5%;
+    border-radius: 2px;
+    z-index: 999;
+}
+
+#stdImage {
+    border: 1px solid #cccccc;
+    height: 160px;
+    margin-left: 5%;
+    width: 150px;
+    margin-top:20px;
+}
+
+#partialMainArea {
+    float: left;
+    margin-left: 0%;
+    margin-top: 2%;
+    width: 100%;
+}
+
+#contactHome {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border: 1px double #CCCCCC;
+    width: 100%;
+    
+}
+
+#contactWork {
+    display: none;
+    background: none repeat scroll 0 0 #F0F0F0;
+    border: 1px double #CCCCCC;
+    width: 100%;
+    
+}
+
+#contactOther {
+    display: none;
+    background: none repeat scroll 0 0 #F0F0F0;
+    border: 1px double #CCCCCC;
+    width: 100%;
+    
+}
+
+.HeaderStyle {
+    background: none repeat scroll 0 0 #7eabbe;
+    color: #ffffff !important;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    height: 30px;
+    letter-spacing: 0;
+    line-height: 12px;
+    padding: 0 8px !important;
+    text-align: left;
+    text-decoration: none;
+    vertical-align: middle;
+}
+table tr th {
+    text-align:left !Important;
+}
+
+.gridStyle {
+    border: 1px solid #7eabbe;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 10px 0;
+}
+
+#tblContacList {
+    border: 1px solid #7eabbe;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 10px 0;
+}
+
+    #tblContacList tr:nth-child(2n) {
+        background: none repeat scroll 0 0 #ccdae3 !important;
+        color: #4f5050 !important;
+        font-family: Arial !important;
+        font-size: 11px !important;
+        font-weight: normal !important;
+        height: 30px !important;
+        letter-spacing: 0 !important;
+        line-height: 12px !important;
+        padding: 0 8px !important;
+        text-align: left !important;
+        text-decoration: none !important;
+        vertical-align: middle !important;
+    }
+
+    #tblContacList tr:nth-child(2n+1) {
+         font-weight: normal !important;
+        font-family: Arial !important;
+        font-size: 11px !important;
+        height: 30px !important;
+        letter-spacing: 0 !important;
+        line-height: 12px !important;
+        padding: 0 8px !important;
+        text-align: left !important;
+        text-decoration: none !important;
+        vertical-align: middle !important;
+    }
+
+.FooterStyle {
+    height: 29px;
+    background-color: black;
+}
+
+.SelectedRowStyle {
+    background-color: #89CDF4;
+    font-weight: bold;
+}
+
+
+
+#AddNewVisitation {
+    font-family: Arial;
+    font-size: 12px;
+    width: 100%;
+    height: 150px;
+    margin-top: 0%;
+    background-color: white;
+}
+
+#AddNewPlacement {
+    font-family: Arial;
+    font-size: 12px;
+    width: 100%;
+    height: 150px;
+    margin-top: 0%;
+    background-color: white;
+}
+
+.pager {
+    background-color: #F2EEEE;
+    border: 1px dotted lightgrey;
+    float: left;
+    height: 20px;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.btnDoneStyle {
+    float: left;
+    padding-bottom: 1%;
+    padding-left: 40%;
+    padding-top: 3%;
+}
+
+
+.popUpStyle {
+    background: url("../Images/smlmelmark.JPG") no-repeat scroll 10px 5px #F8F7FC;
+    border: 5px solid #B2CCCA;
+    display: none;
+    font-family: Arial;
+    font-size: 12px;
+    height: 350px;
+    left: 32%;
+    padding: 5px;
+    position: absolute;
+    top: 35%;
+    width: 450px;
+    z-index: 200;
+}
+
+div.popUpStyle hr {
+    border: 1px solid #B2CCCA;
+    line-height: 1px;
+    margin: 5px 0 10px;
+    padding: 0;
+}
+
+div.popUpStyle span {
+    font-size: 18px;
+}
+
+
+
+.gridStyle {
+    border: 1px solid #7EABBE;
+    margin: 10px 0 10px 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+    .gridStyle tr:nth-child(even) {
+        background: #CCDAE3;
+        color: #4F5050;
+        font-family: Arial;
+        font-size: 11px;
+        height: 30px;
+        letter-spacing: 0;
+        line-height: 12px;
+        padding: 0 8px !important;
+        text-align: left;
+        text-decoration: none;
+        vertical-align: middle;
+    }
+
+
+    .gridStyle tr:nth-child(odd) {
+        font-family: Arial;
+        font-size: 11px;
+        height: 30px;
+        letter-spacing: 0;
+        line-height: 12px;
+        padding: 0 8px !important;
+        text-align: left;
+        text-decoration: none;
+        vertical-align: middle;
+        color: #4F5050;
+    }
+
+.popUpStyle input[type=button] {
+    background-color: #03507D;
+    width: 91px;
+    height: 26px;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    background-position: 0 0;
+    border: none;
+    cursor: pointer;
+    float: right;
+    margin: 0 0 0 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.popUpStyle input[type=submit] {
+    background-color: #03507D;
+    float: left;
+    margin-top: 10px;
+    width: 91px;
+    height: 26px;
+    margin: 0 0 0 5px;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    background-position: 0 0;
+    border: none;
+    cursor: pointer;
+    float: right;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.popUpStyle img {
+    background: url("../Images/button_red_close.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    display: block;
+    float: right;
+    height: 34px;
+    position: absolute;
+    right: -21px;
+    top: -18px;
+    width: 34px;
+}

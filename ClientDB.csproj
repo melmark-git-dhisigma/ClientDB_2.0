@@ -1,0 +1,1284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9CAE6EF7-C84D-41CA-8817-D43350D02B4C}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClientDB</RootNamespace>
+    <AssemblyName>ClientDB</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DropDownCheckBoxes, Version=1.1.0.27408, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ClientDB\bin\DropDownCheckBoxes.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Web Tools\Packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Facesheet">
+      <HintPath>..\facesheetapplication\bin\Debug\Facesheet.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlToOpenXml, Version=1.4.0.0, Culture=neutral, PublicKeyToken=6ad79d83e2b60e63, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\HtmlToOpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Mvc.FixedDisplayModes, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.FixedDisplayModes.1.0.0\lib\net40\Microsoft.Web.Mvc.FixedDisplayModes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20715.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppFunctions\ClientPermissions.cs" />
+    <Compile Include="AppFunctions\ClsErrorLog.cs" />
+    <Compile Include="AppFunctions\clsExport.cs" />
+    <Compile Include="AppFunctions\clsSessionCon.cs" />
+    <Compile Include="AppFunctions\Helper.cs" />
+    <Compile Include="AppFunctions\Helpers.cs" />
+    <Compile Include="AppFunctions\ImageCompresor.cs" />
+    <Compile Include="AppFunctions\MemoryPostedFile .cs" />
+    <Compile Include="AppFunctions\ProgressExprtApp.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controllers\CallLogController.cs" />
+    <Compile Include="Controllers\LetterController.cs" />
+    <Compile Include="Controllers\MultiButtonAttribute.cs" />
+    <Compile Include="Controllers\ProgressController.cs" />
+    <Compile Include="Controllers\ProgressReportController.cs" />
+    <Compile Include="Controllers\ProtocolSummaryController.cs" />
+    <Compile Include="DbModel\AcdSheetMtng.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ActiveReferalNdUser_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\AdaptiveEquipment.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Address.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\AddressList.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\AsmntGoalRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\AsmntLPRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\AsmntTempStg.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\AsmntYear.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Assessment.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BasicBehavioralInformation.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaveLookup.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Behavior.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaviorCategory.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaviorIOADetail.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaviorReminder.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Behaviour.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaviourCalc.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaviourDetail.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehaviourLPRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BehavioursPA.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\binaryFile.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BiweeklyStatu.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\BSPDoc.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ChainedSessionReport_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Class.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Client.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ClientReportProcedure_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Client_Dashboard_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\clvAsmtTool.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\clvRecChange.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\clvReinfoSur.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Color.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ContactPersonal.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\CrntRecomendation.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DataSheet.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DiaganosesPA.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DimDateHour.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\District.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Document.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempHdr.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempParentStep.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempPrompt.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempRule.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempSet.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempSetCol.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempSetColCalc.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempSetStatu.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\DSTempStep.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\EmergencyContactSchool.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\EmergencyContacyPersonal_E_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Event.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\EventLog.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\GetEvents_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Goal.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\GoalLevel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\GoalLPRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\GoalRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\GoalRelType.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\GoalType.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Goal_Lessons_Behavior_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Group.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEPPA1.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEPPA1Extension.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE10_Benchmark.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE11_SchoolPer.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE11_SDI.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE11_Service.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE12_DateOfRev.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE12_ESY.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE12_SupportService.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE2_Team.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE6_Edu.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE6_Goal.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE6_GoalsObj.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE6_Living.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\IEP_PE_Details.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Insurance.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LessonPlan.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LessonPlanGraphRelation.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LetterEngine.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LetterEngineItem.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_ContentLesson.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_Domain.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_Lesson.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_LessonDetails.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_Media.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_Options.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_ReinforcementAssgn.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LE_SetStep.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LookUp.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LPAttribute.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\LPDoc.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\MedicalAndInsurance.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ModelDb.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelDb.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ModelDb.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ModelDb.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelDb.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Object.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Parent.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Placement.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProcessChkLstRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt_Doc.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt_Doc1.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt_Doc2.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt_List.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt_RTF_M.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ProgressRpt_RTF_Q.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Progress_Report.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Protocol.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Protocol_1_Assistive.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Protocol_2_Community.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Protocol_3_Family.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Protocol_4_Basic.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Protocol_5_Signature.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\PrvsRecomendation.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ReferralFundingVsNonFunded_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ReferralReportProcedure_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Referral_Dashboard_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Referral_Notifications_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_CallLogs.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_Checklist.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_CheckListAssign.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ChecklistItemOther.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ChecklistOther.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_CheckListUsers.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ConsentMeeting.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ContractDetails.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_IntakeAssessment.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_LetterTrayAssign.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_LetterTrayValues.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_MatchOpening.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_Notes.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_Notification.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ParentScreening.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_PlacementMeeting.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_Queue.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_QueueStatus.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_Recipients.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ReviewComments.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_ReviewTeamDecision.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_TeamAssign.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_TeamReferrals.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ref_UserLogs.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\ReviewTeam.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Role.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\RoleGroup.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\RoleGroupPerm.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\School.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\SchoolCal.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\SchoolHoliday.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\SchoolsAttended.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\SelectStudentPersonalDetails_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\sp_copyLessonPlanonRename_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\sp_copyLessonPlan_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtAcdSheet.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtAggScore.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtAggScoreSet.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtAggScoreSet_Backup.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtAggScores_Backup.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtCheckedIn.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtClass.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtClinicalCoverSheet.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtDSStat.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtDSStepStat.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtGoal.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtGoalSvc.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtGrandRoundCvrsheet.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEP.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEPExt1.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEPExt2.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEPExt3.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEPExt4.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEPExt5.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\stdtIEPUpdateStatu.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEP_PE.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEP_PE10_GoalsObj.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIEP_PEUpdateStatus.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtIntAsmnt.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtLessonPlan.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtLoadDate.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtLPSched.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtLPStg.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtScoreVw.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessColScore.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessEvent.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessionDtl.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessionHdr.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessionScore.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessionStep.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtSessStimuliActivity.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StdtStatu.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Student.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentAddresRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentBasicDetailsNE_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentContactRelationship.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentMoreDetailsNE_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentMoreDetailsPA_Result.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentOld.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentParentRel.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentPersonal.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\StudentPersonalPA.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\TabDefinition.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\tblLetterEngine.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\TeamMember.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\User.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\UserClass.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\UserRoleGroup.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbModel\Visitation.cs">
+      <DependentUpon>ModelDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BiweeklyIntegrationModel.cs" />
+    <Compile Include="Models\CallLogModel.cs" />
+    <Compile Include="Models\ClientFunderModel.cs" />
+    <Compile Include="Models\EmergencyContactPersonalModel.cs" />
+    <Compile Include="Models\GoalModel.cs" />
+    <Compile Include="Models\HomeModel.cs" />
+    <Compile Include="Models\LetterGenerationViewModel.cs" />
+    <Compile Include="Models\LetterTrayViewModel.cs" />
+    <Compile Include="Models\Progress.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ProgressGrid.cs" />
+    <Compile Include="Models\ProgressList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Models\ProgressReport.cs" />
+    <Compile Include="Models\ProtocolSummary.cs" />
+    <Compile Include="Reports\ClientReports.aspx.cs">
+      <DependentUpon>ClientReports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Reports\ClientReports.aspx.designer.cs">
+      <DependentUpon>ClientReports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ParentServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CallLog\CallLogDetails.ascx.cs">
+      <DependentUpon>CallLogDetails.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\CallLog\CallLogDetails.ascx.designer.cs">
+      <DependentUpon>CallLogDetails.ascx</DependentUpon>
+    </Compile>
+    <Content Include="bin\Facesheet.dll" />
+    <Content Include="bin\Facesheet.pdb" />
+    <Content Include="Service References\Administration\FacesheetNE\FacesheetXML1.xml" />
+    <Content Include="Service References\Administration\FacesheetNE\FacesheetXML2.xml" />
+    <Content Include="Service References\Administration\FacesheetNE\FacesheetXML3.xml" />
+    <Content Include="Service References\Administration\FacesheetNE\FacesheetXML4.xml" />
+    <Content Include="Service References\Administration\FacesheetNE\FacesheetXML5.xml" />
+    <Content Include="Service References\Administration\FacesheetPA\FacesheetXML1.xml" />
+    <Content Include="Service References\Administration\FacesheetPA\FacesheetXML2.xml" />
+    <Content Include="Service References\Administration\FacesheetPA\FacesheetXML3.xml" />
+    <Content Include="Service References\Administration\FacesheetPA\FacesheetXML4.xml" />
+    <Content Include="Service References\Administration\FacesheetPA\FacesheetXML5.xml" />
+    <Content Include="Service References\Administration\XMLProgressReport\ProgressReport.xml" />
+    <Content Include="AppFunctions\DBConnectionClass.cs" />
+    <Compile Include="AppFunctions\ClientSearch.cs" />
+    <Compile Include="AppFunctions\clsData.cs" />
+    <Compile Include="AppFunctions\ClsSession.cs" />
+    <Compile Include="AppFunctions\Database.cs" />
+    <Compile Include="AppFunctions\ErrorLog.cs" />
+    <Compile Include="AppFunctions\GlobalData.cs" />
+    <Compile Include="AppFunctions\Other_Functions.cs" />
+    <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\ClientRegistrationController.cs" />
+    <Compile Include="Controllers\ClientRegistrationPAController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\EventController.cs" />
+    <Compile Include="Controllers\FormsController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MedicalController.cs" />
+    <Compile Include="Controllers\PlacementController.cs" />
+    <Compile Include="Controllers\VisitationController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AddDocumentModel.cs" />
+    <Compile Include="Models\AddEventModel.cs" />
+    <Compile Include="Models\AddPlacementModel.cs" />
+    <Compile Include="Models\AddVisitaionModel.cs" />
+    <Compile Include="Models\ClientModel.cs" />
+    <Compile Include="Models\ClientPAFillModel.cs" />
+    <Compile Include="Models\ClientRegistrationPAModel.cs" />
+    <Compile Include="Models\ContactModel.cs" />
+    <Compile Include="Models\EventsModel.cs" />
+    <Compile Include="Models\ImageModel.cs" />
+    <Compile Include="Models\ListContactModel.cs" />
+    <Compile Include="Models\MedicalModel.cs" />
+    <Compile Include="Models\PagingModel.cs" />
+    <Compile Include="Models\PlacementModel.cs" />
+    <Compile Include="Models\RegistrationModel.cs" />
+    <Compile Include="Models\SignatureModel.cs" />
+    <Compile Include="Models\VisitationModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="bin\DocumentFormat.OpenXml.dll" />
+    <Content Include="bin\DropDownCheckBoxes.dll" />
+    <Content Include="Documents\CSS\images\button_red_close.png" />
+    <Content Include="Documents\CSS\images\Client_reports.png" />
+    <Content Include="Documents\CSS\ReportStyle.css" />
+    <Content Include="Documents\images\arrow2.jpg" />
+    <Content Include="Documents\images\Client_reports.png" />
+    <Content Include="Documents\images\gif-load.gif" />
+    <Content Include="Documents\images\ick_03.png" />
+    <Content Include="Documents\images\loading.gif" />
+    <Content Include="Documents\images\logo01.png" />
+    <Content Include="Documents\images\NewReg.png" />
+    <Content Include="Documents\images\Next.png" />
+    <Content Include="Documents\images\Prev.png" />
+    <Content Include="Documents\images\Refresh.png" />
+    <Content Include="Documents\images\ViewAll.png" />
+    <Content Include="Documents\JS\jquery-ui-1.11.2.js" />
+    <Content Include="Documents\JS\jquery.mask.js" />
+    <Content Include="Documents\JS\jquery.timeentry.js" />
+    <Content Include="Images\arrow2.jpg" />
+    <Content Include="Images\Client.gif" />
+    <Content Include="Images\download.PNG" />
+    <Content Include="Images\ExportWord.png" />
+    <Content Include="Images\lbtn.PNG" />
+    <Content Include="Images\lbtndown.PNG" />
+    <Content Include="Images\smlmelmark.JPG" />
+    <Content Include="Images\view-icon.png" />
+    <Content Include="Images\warning.png" />
+    <Content Include="Properties\DataSources\System.Web.UI.WebControls.ListItem.datasource" />
+    <Content Include="Reports\ClientReports.aspx" />
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.Activities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.Behaviours.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.Concents.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.DocDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.Documents.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.IEPDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.ParentDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.ParentDetailsPA.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.ProgressDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ParentServiceReference\ClientDB.ParentServiceReference.ReportDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\Administration\Temp\IEP1.docx" />
+    <EntityDeploy Include="DbModel\ModelDb.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ModelDb.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="DbModel\ModelDb.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelDb.edmx</DependentUpon>
+      <LastGenOutput>ModelDb.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DbModel\ModelDb.edmx.diagram">
+      <DependentUpon>ModelDb.edmx</DependentUpon>
+    </Content>
+    <Content Include="DbModel\ModelDb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ModelDb.edmx</DependentUpon>
+      <LastGenOutput>ModelDb.cs</LastGenOutput>
+    </Content>
+    <Content Include="Service References\Administration\FacesheetNE\Facesheet NA.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate34fb9f49d56d4b5389ae1241be9e4dbc.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate3944a7429a6546ce990f5825799215c4.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate3e351b5446ee4b308efc86cf62c2a417.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate46dae13cd2194e3097cab5a76bc69de6.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate4a0998518b44433db523ceb423c552ec.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate5bbad4c4d02542c3bcc730266127f450.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate6c49d581cec84e6eb839d050a2eed9dc.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplate91a425b69c7a4f729467e658cc34117e.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplatea5dc9aa078a445118c9d69e58ddb366d.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplatea96825c2f8ae46c0a528a08c334e3e6b.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplatebad080e8edc548f4b6944d10c2f33bff.docx" />
+    <Content Include="Service References\Administration\FacesheetNE\Temp\IEPTemporyTemplated2b365da293d421e81586167ea1b909f.docx" />
+    <Content Include="Service References\Administration\FacesheetPA\Facesheet NA.docx" />
+    <None Include="Service References\ParentServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\ParentServiceReference\configuration.svcinfo" />
+    <Content Include="Service References\ParentServiceReference\ParentService1.wsdl" />
+    <None Include="Service References\ParentServiceReference\ParentService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ParentServiceReference\ParentService41.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ParentServiceReference\ParentService42.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ParentServiceReference\ParentService43.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ParentServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Service References\ParentServiceReference\ParentService1.disco" />
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.Activities.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.ActivitiesList.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.Behaviours.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.Concents.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.DocDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.Documents.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.IEPDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.ParentDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.ParentDetailsPA.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.ProgressDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\ClientDB.ServiceReference.ReportDetails.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\ServiceReference\configuration91.svcinfo" />
+    <Content Include="Service References\ServiceReference\configuration.svcinfo" />
+    <Content Include="Service References\ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Views\BiweeklyIntegration\BiweeklyIntegrationView.ascx" />
+    <Content Include="Views\CallLog\CallLog.ascx" />
+    <Content Include="Views\CallLog\CallLogDetails.ascx" />
+    <Content Include="Views\ClientRegistrationPA\ClientRegistrationPA.ascx" />
+    <Content Include="Views\ClientRegistrationPA\ClientRegistrationViewPa.ascx" />
+    <Content Include="Views\ClientRegistrationPA\Index.aspx" />
+    <Content Include="Views\ClientRegistrationPA\staticClientDetailsPA.ascx" />
+    <Content Include="Views\Client\Logout.ascx" />
+    <Content Include="Views\Forms\FilterDocuments.ascx" />
+    <Content Include="Views\Forms\ListDocuments.ascx" />
+    <Content Include="Views\Letter\Letter.ascx" />
+    <Content Include="Views\ProgressReport\GetProgRpt.aspx" />
+    <Content Include="Views\ProgressReport\Index.ascx" />
+    <Content Include="Views\ProgressReport\Page.ascx" />
+    <Content Include="Views\Progress\Progress.ascx" />
+    <Content Include="Views\Progress\ProgressRpt.ascx" />
+    <Content Include="Views\ProtocolSummary\GetProtocolSummary.aspx" />
+    <Content Include="Views\ProtocolSummary\Index.ascx" />
+    <Content Include="XMLS\Template.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Progress\ProgressView.cshtml" />
+    <Content Include="Views\Letter\LetterTrayView.cshtml" />
+    <Content Include="Views\CallLog\CallLog2.cshtml" />
+    <Content Include="Views\ProtocolSummary\Index.cshtml" />
+    <Content Include="Views\Client\LogoutView.cshtml" />
+    <Content Include="Views\ClientRegistration\staticClientDetails.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\ClientRegistrationPA\QuickViewApprove.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\ClientRegistrationPA\QuickViewEmerg.cshtml" />
+    <Content Include="Views\Contact\QuickView.cshtml" />
+    <Content Include="Service References\ServiceReference\ParentService.wsdl" />
+    <None Include="Service References\ServiceReference\ParentService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference\ParentService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference\ParentService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference\ParentService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="bin\ClientDB.dll" />
+    <Content Include="bin\ClientDB.pdb" />
+    <Content Include="bin\EntityFramework.dll" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
+    <Content Include="bin\Newtonsoft.Json.dll" />
+    <Content Include="bin\System.Net.Http.Formatting.dll" />
+    <Content Include="bin\System.Web.Helpers.dll" />
+    <Content Include="bin\System.Web.Http.dll" />
+    <Content Include="bin\System.Web.Http.WebHost.dll" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
+    <Content Include="Documents\CSS\General.css" />
+    <Content Include="Documents\CSS\images\calendar.gif" />
+    <Content Include="Documents\CSS\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Documents\CSS\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Documents\CSS\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Documents\CSS\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Documents\CSS\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Documents\CSS\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Documents\CSS\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Documents\CSS\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Documents\CSS\images\ui-icons_222222_256x240.png" />
+    <Content Include="Documents\CSS\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Documents\CSS\images\ui-icons_454545_256x240.png" />
+    <Content Include="Documents\CSS\images\ui-icons_888888_256x240.png" />
+    <Content Include="Documents\CSS\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Documents\CSS\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="Documents\CSS\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Documents\CSS\jquery-ui.css" />
+    <Content Include="Documents\CSS\style.css" />
+    <Content Include="Documents\CSS\validationEngine.jquery.css" />
+    <Content Include="Documents\images\admin.PNG" />
+    <Content Include="Documents\images\admin1.png" />
+    <Content Include="Documents\images\animated-overlay.gif" />
+    <Content Include="Documents\images\arro.png" />
+    <Content Include="Documents\images\arrow.jpg" />
+    <Content Include="Documents\images\arrow.png" />
+    <Content Include="Documents\images\bginner.JPG" />
+    <Content Include="Documents\images\boy.JPG" />
+    <Content Include="Documents\images\btnbg.JPG" />
+    <Content Include="Documents\images\btnrighticon.PNG" />
+    <Content Include="Documents\images\bttbg.JPG" />
+    <Content Include="Documents\images\bulkdata.png" />
+    <Content Include="Documents\images\clsbtn.png" />
+    <Content Include="Documents\images\curve.jpg" />
+    <Content Include="Documents\images\grarro.PNG" />
+    <Content Include="Documents\images\hm.PNG" />
+    <Content Include="Documents\images\home-icon.png" />
+    <Content Include="Documents\images\logo.JPG" />
+    <Content Include="Documents\images\logo01.jpg" />
+    <Content Include="Documents\images\Logout.png" />
+    <Content Include="Documents\images\melmarkTop.jpg" />
+    <Content Include="Documents\images\menogradientbg.png" />
+    <Content Include="Documents\images\singledata.png" />
+    <Content Include="Documents\images\smllogo.JPG" />
+    <Content Include="Documents\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
+    <Content Include="Documents\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
+    <Content Include="Documents\images\ui-bg_flat_10_000000_40x100.png" />
+    <Content Include="Documents\images\ui-bg_glass_100_f6f6f6_1x400.png" />
+    <Content Include="Documents\images\ui-bg_glass_100_fdf5ce_1x400.png" />
+    <Content Include="Documents\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Documents\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
+    <Content Include="Documents\images\ui-bg_highlight-soft_100_eeeeee_1x100.png" />
+    <Content Include="Documents\images\ui-bg_highlight-soft_75_ffe45c_1x100.png" />
+    <Content Include="Documents\images\ui-icons_222222_256x240.png" />
+    <Content Include="Documents\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="Documents\images\ui-icons_ef8c08_256x240.png" />
+    <Content Include="Documents\images\ui-icons_ffd27a_256x240.png" />
+    <Content Include="Documents\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Documents\CSS\jquery-ui-1.10.3.custom.css" />
+    <Content Include="Documents\JS\jquery-1.8.0.min.js" />
+    <None Include="Documents\JS\jquery-1.8.2.intellisense.js" />
+    <Content Include="Documents\JS\jquery-1.8.2.js" />
+    <Content Include="Documents\JS\jquery-1.8.2.min.js" />
+    <Content Include="Documents\JS\jquery-ui-1.10.3.custom.js" />
+    <Content Include="Documents\JS\jquery-ui-1.8.24.js" />
+    <Content Include="Documents\JS\jquery-ui-1.8.24.min.js" />
+    <Content Include="Documents\JS\jquery.form.js" />
+    <Content Include="Documents\JS\jquery.unobtrusive-ajax.js" />
+    <Content Include="Documents\JS\jquery.unobtrusive-ajax.min.js" />
+    <None Include="Documents\JS\jquery.validate-vsdoc.js" />
+    <Content Include="Documents\JS\jquery.validate.js" />
+    <Content Include="Documents\JS\jquery.validate.min.js" />
+    <Content Include="Documents\JS\jquery.validate.unobtrusive.js" />
+    <Content Include="Documents\JS\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Documents\JS\jquery.validationEngine-en.js" />
+    <Content Include="Documents\JS\jquery.validationEngine.js" />
+    <Content Include="Documents\JS\knockout-2.2.0.debug.js" />
+    <Content Include="Documents\JS\knockout-2.2.0.js" />
+    <Content Include="Documents\JS\modernizr-2.6.2.js" />
+    <Content Include="Documents\JS\slides.min.jquery.js" />
+    <Content Include="Documents\JS\_references.js" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\1376318118_student_b.png" />
+    <Content Include="Images\1376318130_elementary_school.png" />
+    <Content Include="Images\delete.PNG" />
+    <Content Include="Images\edit.PNG" />
+    <Content Include="Images\StudentImages\1-Chrysanthemum.jpg" />
+    <Content Include="log.html" />
+    <Content Include="Views\ClientRegistration\ClientRegistration.ascx" />
+    <Content Include="Views\ClientRegistration\ClientRegistrationView.ascx" />
+    <Content Include="Views\ClientRegistration\Index.aspx" />
+    <Content Include="Views\Client\ListClients.aspx" />
+    <Content Include="Views\Contact\Contact.ascx" />
+    <Content Include="Views\Contact\ImageUploadPanel.ascx" />
+    <Content Include="Views\Contact\ListContactVendor.ascx" />
+    <Content Include="Views\Event\AddEvents.ascx" />
+    <Content Include="Views\Event\EventsList.ascx" />
+    <Content Include="Views\Forms\UploadForms.ascx" />
+    <Content Include="Views\Medical\FillMedicalData.ascx" />
+    <Content Include="Views\Medical\MedicalForm.ascx" />
+    <Content Include="Views\Placement\AddPlacement.ascx" />
+    <Content Include="Views\Placement\Placement.ascx" />
+    <Content Include="Views\Shared\Pager.ascx" />
+    <Content Include="Views\Shared\PagerLink.ascx" />
+    <Content Include="Views\Visitation\AddVisitation.ascx" />
+    <Content Include="Views\Visitation\Visitation.ascx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="App_WebReferences\" />
+    <Folder Include="Forms\" />
+    <Folder Include="Service References\Administration\IEPTemp1\" />
+    <Folder Include="Templates\" />
+    <Folder Include="Temp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\ClientMVC.pubxml" />
+    <Content Include="Views\Share\Site.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ParentServiceReference\" />
+    <WCFMetadataStorage Include="Service References\ServiceReference\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>65192</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51982/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -1,0 +1,656 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MelmarkRCPModelStoreContainer" CdmEntityContainer="MelmarkRCPEntities">
+    <EntitySetMapping Name="Clients">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Client">
+        <MappingFragment StoreEntitySet="Client">
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Street" ColumnName="Street" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Age" ColumnName="Age" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+          <ScalarProperty Name="NickName" ColumnName="NickName" />
+          <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ContactPersonals">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.ContactPersonal">
+        <MappingFragment StoreEntitySet="ContactPersonal">
+          <ScalarProperty Name="GrossIncome" ColumnName="GrossIncome" />
+          <ScalarProperty Name="Education" ColumnName="Education" />
+          <ScalarProperty Name="Relation" ColumnName="Relation" />
+          <ScalarProperty Name="Occupation" ColumnName="Occupation" />
+          <ScalarProperty Name="Employer" ColumnName="Employer" />
+          <ScalarProperty Name="SocSecurityNo" ColumnName="SocSecurityNo" />
+          <ScalarProperty Name="Age" ColumnName="Age" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="EducationLevel" ColumnName="EducationLevel" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="EmployerType" ColumnName="EmployerType" />
+          <ScalarProperty Name="MaritalStatus" ColumnName="MaritalStatus" />
+          <ScalarProperty Name="DwellingArrangementCode" ColumnName="DwellingArrangementCode" />
+          <ScalarProperty Name="LanguageList" ColumnName="LanguageList" />
+          <ScalarProperty Name="EnglishProficiency" ColumnName="EnglishProficiency" />
+          <ScalarProperty Name="CitizenshipStatus" ColumnName="CitizenshipStatus" />
+          <ScalarProperty Name="CountryArrivalDate" ColumnName="CountryArrivalDate" />
+          <ScalarProperty Name="CountryOfResidency" ColumnName="CountryOfResidency" />
+          <ScalarProperty Name="CountryOfCitizenship" ColumnName="CountryOfCitizenship" />
+          <ScalarProperty Name="CountryOfBirth" ColumnName="CountryOfBirth" />
+          <ScalarProperty Name="StateOfBirth" ColumnName="StateOfBirth" />
+          <ScalarProperty Name="CountyOfBirth" ColumnName="CountyOfBirth" />
+          <ScalarProperty Name="PlaceOfBirth" ColumnName="PlaceOfBirth" />
+          <ScalarProperty Name="AdmissionDate" ColumnName="AdmissionDate" />
+          <ScalarProperty Name="BirthDateVerification" ColumnName="BirthDateVerification" />
+          <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="HispanicLatino" ColumnName="HispanicLatino" />
+          <ScalarProperty Name="RaceId" ColumnName="RaceId" />
+          <ScalarProperty Name="PrimaryLanguage" ColumnName="PrimaryLanguage" />
+          <ScalarProperty Name="Spouse" ColumnName="Spouse" />
+          <ScalarProperty Name="Role" ColumnName="Role" />
+          <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+          <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="Prefix" ColumnName="Prefix" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="ContactPersonalId" ColumnName="ContactPersonalId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmergencyContactSchools">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.EmergencyContactSchool">
+        <MappingFragment StoreEntitySet="EmergencyContactSchool">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="SequenceId" ColumnName="SequenceId" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="EmergencyContactSchoolId" ColumnName="EmergencyContactSchoolId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Insurances">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Insurance">
+        <MappingFragment StoreEntitySet="Insurance">
+          <ScalarProperty Name="PreferType" ColumnName="PreferType" />
+          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+          <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="PolicyHolder" ColumnName="PolicyHolder" />
+          <ScalarProperty Name="PolicyNumber" ColumnName="PolicyNumber" />
+          <ScalarProperty Name="InsuranceType" ColumnName="InsuranceType" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="InsuranceId" ColumnName="InsuranceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LookUps">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.LookUp">
+        <MappingFragment StoreEntitySet="LookUp">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+          <ScalarProperty Name="ParentLookupCode" ColumnName="ParentLookupCode" />
+          <ScalarProperty Name="ParentLookupId" ColumnName="ParentLookupId" />
+          <ScalarProperty Name="LookupDesc" ColumnName="LookupDesc" />
+          <ScalarProperty Name="LookupCode" ColumnName="LookupCode" />
+          <ScalarProperty Name="LookupName" ColumnName="LookupName" />
+          <ScalarProperty Name="LookupType" ColumnName="LookupType" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="LookupId" ColumnName="LookupId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MedicalAndInsurances">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.MedicalAndInsurance">
+        <MappingFragment StoreEntitySet="MedicalAndInsurance">
+          <ScalarProperty Name="Speciality" ColumnName="Speciality" />
+          <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="StateId" ColumnName="StateId" />
+          <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+          <ScalarProperty Name="Preferances" ColumnName="Preferances" />
+          <ScalarProperty Name="Limitations" ColumnName="Limitations" />
+          <ScalarProperty Name="Capabilities" ColumnName="Capabilities" />
+          <ScalarProperty Name="SignificantBehaviorCharacteristics" ColumnName="SignificantBehaviorCharacteristics" />
+          <ScalarProperty Name="SelfPreservationAbility" ColumnName="SelfPreservationAbility" />
+          <ScalarProperty Name="CurrentMedications" ColumnName="CurrentMedications" />
+          <ScalarProperty Name="Allergies" ColumnName="Allergies" />
+          <ScalarProperty Name="MedicalConditionsDiagnosis" ColumnName="MedicalConditionsDiagnosis" />
+          <ScalarProperty Name="DateOfLastPhysicalExam" ColumnName="DateOfLastPhysicalExam" />
+          <ScalarProperty Name="OfficePhone" ColumnName="OfficePhone" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="MedicalInsuranceId" ColumnName="MedicalInsuranceId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Parents">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Parent">
+        <MappingFragment StoreEntitySet="Parent">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Lname" ColumnName="Lname" />
+          <ScalarProperty Name="Fname" ColumnName="Fname" />
+          <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProcessChkLstRels">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.ProcessChkLstRel">
+        <MappingFragment StoreEntitySet="ProcessChkLstRel">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="ChkLstEngId" ColumnName="ChkLstEngId" />
+          <ScalarProperty Name="QueueProcessId" ColumnName="QueueProcessId" />
+          <ScalarProperty Name="ProcessChkLstRelId" ColumnName="ProcessChkLstRelId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StudentAddresRels">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.StudentAddresRel">
+        <MappingFragment StoreEntitySet="StudentAddresRel">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="ContactPersonalId" ColumnName="ContactPersonalId" />
+          <ScalarProperty Name="ContactSequence" ColumnName="ContactSequence" />
+          <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="studentAddressRelId" ColumnName="studentAddressRelId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StudentContactRelationships">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.StudentContactRelationship">
+        <MappingFragment StoreEntitySet="StudentContactRelationship">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Other" ColumnName="Other" />
+          <ScalarProperty Name="PrimaryCareProvider" ColumnName="PrimaryCareProvider" />
+          <ScalarProperty Name="DisciplinaryContact" ColumnName="DisciplinaryContact" />
+          <ScalarProperty Name="HasCustody" ColumnName="HasCustody" />
+          <ScalarProperty Name="EmergencyContact" ColumnName="EmergencyContact" />
+          <ScalarProperty Name="AccessToRecords" ColumnName="AccessToRecords" />
+          <ScalarProperty Name="LivesWith" ColumnName="LivesWith" />
+          <ScalarProperty Name="PickupRights" ColumnName="PickupRights" />
+          <ScalarProperty Name="ParentLegalGuardian" ColumnName="ParentLegalGuardian" />
+          <ScalarProperty Name="RelationshipId" ColumnName="RelationshipId" />
+          <ScalarProperty Name="ContactPersonalId" ColumnName="ContactPersonalId" />
+          <ScalarProperty Name="StudentContactRelId" ColumnName="StudentContactRelId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StudentParentRels">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.StudentParentRel">
+        <MappingFragment StoreEntitySet="StudentParentRel">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+          <ScalarProperty Name="StudentParentRelId" ColumnName="StudentParentRelId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.User">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Position" ColumnName="Position" />
+          <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+          <ScalarProperty Name="ActiveInd" ColumnName="ActiveInd" />
+          <ScalarProperty Name="EffEndDate" ColumnName="EffEndDate" />
+          <ScalarProperty Name="EffStartDate" ColumnName="EffStartDate" />
+          <ScalarProperty Name="ManagerId" ColumnName="ManagerId" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Login" ColumnName="Login" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="UserLName" ColumnName="UserLName" />
+          <ScalarProperty Name="UserFName" ColumnName="UserFName" />
+          <ScalarProperty Name="UserInitial" ColumnName="UserInitial" />
+          <ScalarProperty Name="UserNo" ColumnName="UserNo" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Visitations">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Visitation">
+        <MappingFragment StoreEntitySet="Visitation">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="VisitationStatus" ColumnName="VisitationStatus" />
+          <ScalarProperty Name="ExpiredOn" ColumnName="ExpiredOn" />
+          <ScalarProperty Name="VisitationDate" ColumnName="VisitationDate" />
+          <ScalarProperty Name="VisitationName" ColumnName="VisitationName" />
+          <ScalarProperty Name="VisittaionType" ColumnName="VisittaionType" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="VisitationId" ColumnName="VisitationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SchoolsAttendeds">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.SchoolsAttended">
+        <MappingFragment StoreEntitySet="SchoolsAttended">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="SequenceId" ColumnName="SequenceId" />
+          <ScalarProperty Name="State" ColumnName="State" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Address2" ColumnName="Address2" />
+          <ScalarProperty Name="Address1" ColumnName="Address1" />
+          <ScalarProperty Name="DateTo" ColumnName="DateTo" />
+          <ScalarProperty Name="DateFrom" ColumnName="DateFrom" />
+          <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="SchoolsAttendedId" ColumnName="SchoolsAttendedId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Documents">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Document">
+        <MappingFragment StoreEntitySet="Document">
+          <ScalarProperty Name="Varified" ColumnName="Varified" />
+          <ScalarProperty Name="SignedOn" ColumnName="SignedOn" />
+          <ScalarProperty Name="SignedBy" ColumnName="SignedBy" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="UserType" ColumnName="UserType" />
+          <ScalarProperty Name="DocumentPath" ColumnName="DocumentPath" />
+          <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+          <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AddressLists">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.AddressList">
+        <MappingFragment StoreEntitySet="AddressList">
+          <ScalarProperty Name="BusinessAddress" ColumnName="BusinessAddress" />
+          <ScalarProperty Name="Fax" ColumnName="Fax" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="GridLocation" ColumnName="GridLocation" />
+          <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+          <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+          <ScalarProperty Name="StateProvince" ColumnName="StateProvince" />
+          <ScalarProperty Name="County" ColumnName="County" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="ApartmentNumberSuffix" ColumnName="ApartmentNumberSuffix" />
+          <ScalarProperty Name="SecondryEmail" ColumnName="SecondryEmail" />
+          <ScalarProperty Name="PrimaryEmail" ColumnName="PrimaryEmail" />
+          <ScalarProperty Name="OtherPhone" ColumnName="OtherPhone" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="ApartmentNumber" ColumnName="ApartmentNumber" />
+          <ScalarProperty Name="ApartmentNumberPrefix" ColumnName="ApartmentNumberPrefix" />
+          <ScalarProperty Name="ApartmentType" ColumnName="ApartmentType" />
+          <ScalarProperty Name="StreetSuffix" ColumnName="StreetSuffix" />
+          <ScalarProperty Name="StreetType" ColumnName="StreetType" />
+          <ScalarProperty Name="StreetName" ColumnName="StreetName" />
+          <ScalarProperty Name="StreetPrefix" ColumnName="StreetPrefix" />
+          <ScalarProperty Name="StreetNumber" ColumnName="StreetNumber" />
+          <ScalarProperty Name="Complex" ColumnName="Complex" />
+          <ScalarProperty Name="AddressLine3" ColumnName="AddressLine3" />
+          <ScalarProperty Name="AddressLine2" ColumnName="AddressLine2" />
+          <ScalarProperty Name="AddressLine1" ColumnName="AddressLine1" />
+          <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+          <ScalarProperty Name="AddressId" ColumnName="AddressId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Events">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Event">
+        <MappingFragment StoreEntitySet="Events">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="EventStatus" ColumnName="EventStatus" />
+          <ScalarProperty Name="ExpiredOn" ColumnName="ExpiredOn" />
+          <ScalarProperty Name="EventDate" ColumnName="EventDate" />
+          <ScalarProperty Name="EventsName" ColumnName="EventsName" />
+          <ScalarProperty Name="EventType" ColumnName="EventType" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="EventId" ColumnName="EventId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdaptiveEquipments">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.AdaptiveEquipment">
+        <MappingFragment StoreEntitySet="AdaptiveEquipment">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CleaningInstruction" ColumnName="CleaningInstruction" />
+          <ScalarProperty Name="StorageLocation" ColumnName="StorageLocation" />
+          <ScalarProperty Name="ScheduleForUse" ColumnName="ScheduleForUse" />
+          <ScalarProperty Name="Item" ColumnName="Item" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="AdaptiveEquipmentId" ColumnName="AdaptiveEquipmentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BasicBehavioralInformations">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.BasicBehavioralInformation">
+        <MappingFragment StoreEntitySet="BasicBehavioralInformation">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Consequence" ColumnName="Consequence" />
+          <ScalarProperty Name="FCT" ColumnName="FCT" />
+          <ScalarProperty Name="Antecedent" ColumnName="Antecedent" />
+          <ScalarProperty Name="Definition" ColumnName="Definition" />
+          <ScalarProperty Name="TargetBehavior" ColumnName="TargetBehavior" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="BasicBehavioralInformationId" ColumnName="BasicBehavioralInformationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DiaganosesPAs">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.DiaganosesPA">
+        <MappingFragment StoreEntitySet="DiaganosesPA">
+          <ScalarProperty Name="SummaryHealthProblem" ColumnName="SummaryHealthProblem" />
+          <ScalarProperty Name="AllergiesAndReactions" ColumnName="AllergiesAndReactions" />
+          <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Diaganoses" ColumnName="Diaganoses" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="DiaganosePAId" ColumnName="DiaganosePAId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StudentPersonalPAs">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.StudentPersonalPA">
+        <MappingFragment StoreEntitySet="StudentPersonalPA">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="SuggestedProactiveEnviornmentalProcedure" ColumnName="SuggestedProactiveEnviornmentalProcedure" />
+          <ScalarProperty Name="GeneralInformation" ColumnName="GeneralInformation" />
+          <ScalarProperty Name="PreferedActivities" ColumnName="PreferedActivities" />
+          <ScalarProperty Name="Communication" ColumnName="Communication" />
+          <ScalarProperty Name="SkinCareOrSkinIntegrity" ColumnName="SkinCareOrSkinIntegrity" />
+          <ScalarProperty Name="Dressing" ColumnName="Dressing" />
+          <ScalarProperty Name="Toothbrushing" ColumnName="Toothbrushing" />
+          <ScalarProperty Name="Showering" ColumnName="Showering" />
+          <ScalarProperty Name="Eating" ColumnName="Eating" />
+          <ScalarProperty Name="Toileting" ColumnName="Toileting" />
+          <ScalarProperty Name="Ambulation" ColumnName="Ambulation" />
+          <ScalarProperty Name="LiftingOrTransfers" ColumnName="LiftingOrTransfers" />
+          <ScalarProperty Name="Other" ColumnName="Other" />
+          <ScalarProperty Name="Diet" ColumnName="Diet" />
+          <ScalarProperty Name="Seizures" ColumnName="Seizures" />
+          <ScalarProperty Name="Allergies" ColumnName="Allergies" />
+          <ScalarProperty Name="WalkingResponses" ColumnName="WalkingResponses" />
+          <ScalarProperty Name="Consciousness" ColumnName="Consciousness" />
+          <ScalarProperty Name="ResponseToInstruction" ColumnName="ResponseToInstruction" />
+          <ScalarProperty Name="NeedForExtraHelp" ColumnName="NeedForExtraHelp" />
+          <ScalarProperty Name="Mobility" ColumnName="Mobility" />
+          <ScalarProperty Name="RiskOfResistance" ColumnName="RiskOfResistance" />
+          <ScalarProperty Name="dy_TransitionUnevenGround" ColumnName="dy_TransitionUnevenGround" />
+          <ScalarProperty Name="dy_TransitionInside" ColumnName="dy_TransitionInside" />
+          <ScalarProperty Name="dy_TaskOrBreak" ColumnName="dy_TaskOrBreak" />
+          <ScalarProperty Name="ho_BedroomAsleep" ColumnName="ho_BedroomAsleep" />
+          <ScalarProperty Name="ho_BedroomAwake" ColumnName="ho_BedroomAwake" />
+          <ScalarProperty Name="ho_CommonAres" ColumnName="ho_CommonAres" />
+          <ScalarProperty Name="Van" ColumnName="Van" />
+          <ScalarProperty Name="PoolOrSwimming" ColumnName="PoolOrSwimming" />
+          <ScalarProperty Name="CommonAreas" ColumnName="CommonAreas" />
+          <ScalarProperty Name="OffCampus" ColumnName="OffCampus" />
+          <ScalarProperty Name="WhenTranspoting" ColumnName="WhenTranspoting" />
+          <ScalarProperty Name="OnCampus" ColumnName="OnCampus" />
+          <ScalarProperty Name="Bathroom" ColumnName="Bathroom" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="StudentPersonalPAId" ColumnName="StudentPersonalPAId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StudentPersonals">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.StudentPersonal">
+        <MappingFragment StoreEntitySet="StudentPersonal">
+          <ScalarProperty Name="ReligiousAffiliation" ColumnName="ReligiousAffiliation" />
+          <ScalarProperty Name="Ethinicity" ColumnName="Ethinicity" />
+          <ScalarProperty Name="SSINo" ColumnName="SSINo" />
+          <ScalarProperty Name="SocialSecurityNo" ColumnName="SocialSecurityNo" />
+          <ScalarProperty Name="SecondaryDiag" ColumnName="SecondaryDiag" />
+          <ScalarProperty Name="PrimaryDiag" ColumnName="PrimaryDiag" />
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="StudentXMLData" ColumnName="StudentXMLData" />
+          <ScalarProperty Name="StudentType" ColumnName="StudentType" />
+          <ScalarProperty Name="FirstUSEnrollment" ColumnName="FirstUSEnrollment" />
+          <ScalarProperty Name="NeglectedDelinquent" ColumnName="NeglectedDelinquent" />
+          <ScalarProperty Name="Immigrant" ColumnName="Immigrant" />
+          <ScalarProperty Name="VocationalConcentrator" ColumnName="VocationalConcentrator" />
+          <ScalarProperty Name="Section504" ColumnName="Section504" />
+          <ScalarProperty Name="Homeless" ColumnName="Homeless" />
+          <ScalarProperty Name="ELL" ColumnName="ELL" />
+          <ScalarProperty Name="EconomicDisadvantage" ColumnName="EconomicDisadvantage" />
+          <ScalarProperty Name="GiftedTalented" ColumnName="GiftedTalented" />
+          <ScalarProperty Name="Title1" ColumnName="Title1" />
+          <ScalarProperty Name="Migrant" ColumnName="Migrant" />
+          <ScalarProperty Name="IDEA" ColumnName="IDEA" />
+          <ScalarProperty Name="AcceptableUsePolicy" ColumnName="AcceptableUsePolicy" />
+          <ScalarProperty Name="MostRecentGradeLevel" ColumnName="MostRecentGradeLevel" />
+          <ScalarProperty Name="MelmarkNewEnglandsFollowUpResponsibilities" ColumnName="MelmarkNewEnglandsFollowUpResponsibilities" />
+          <ScalarProperty Name="LocationAfterDischarge" ColumnName="LocationAfterDischarge" />
+          <ScalarProperty Name="DischargeDate" ColumnName="DischargeDate" />
+          <ScalarProperty Name="CurrentIEPExpirationDate" ColumnName="CurrentIEPExpirationDate" />
+          <ScalarProperty Name="CurrentIEPStartDate" ColumnName="CurrentIEPStartDate" />
+          <ScalarProperty Name="DateofNextScheduled3YearEvaluation" ColumnName="DateofNextScheduled3YearEvaluation" />
+          <ScalarProperty Name="DateofMostRecentSpecialEducationEvaluations" ColumnName="DateofMostRecentSpecialEducationEvaluations" />
+          <ScalarProperty Name="DateInitiallyEligibleforSpecialEducation" ColumnName="DateInitiallyEligibleforSpecialEducation" />
+          <ScalarProperty Name="MostRecentHomeroomLocalId" ColumnName="MostRecentHomeroomLocalId" />
+          <ScalarProperty Name="MostRecentSchoolLocalId" ColumnName="MostRecentSchoolLocalId" />
+          <ScalarProperty Name="GraduationDate" ColumnName="GraduationDate" />
+          <ScalarProperty Name="CaseManagerResidential" ColumnName="CaseManagerResidential" />
+          <ScalarProperty Name="CaseManagerEducational" ColumnName="CaseManagerEducational" />
+          <ScalarProperty Name="GuardianShip" ColumnName="GuardianShip" />
+          <ScalarProperty Name="MaritalStatusofBothParents" ColumnName="MaritalStatusofBothParents" />
+          <ScalarProperty Name="OtherStateAgenciesInvolvedWithStudent" ColumnName="OtherStateAgenciesInvolvedWithStudent" />
+          <ScalarProperty Name="LegalCompetencyStatus" ColumnName="LegalCompetencyStatus" />
+          <ScalarProperty Name="DistingushingMarks" ColumnName="DistingushingMarks" />
+          <ScalarProperty Name="PrimaryLanguage" ColumnName="PrimaryLanguage" />
+          <ScalarProperty Name="Weight" ColumnName="Weight" />
+          <ScalarProperty Name="Height" ColumnName="Height" />
+          <ScalarProperty Name="EyeColor" ColumnName="EyeColor" />
+          <ScalarProperty Name="HairColor" ColumnName="HairColor" />
+          <ScalarProperty Name="OnTimeGraduationYear" ColumnName="OnTimeGraduationYear" />
+          <ScalarProperty Name="ProjectedGraduationYear" ColumnName="ProjectedGraduationYear" />
+          <ScalarProperty Name="MaritalStatus" ColumnName="MaritalStatus" />
+          <ScalarProperty Name="DwellingArrangementCode" ColumnName="DwellingArrangementCode" />
+          <ScalarProperty Name="LanguageList" ColumnName="LanguageList" />
+          <ScalarProperty Name="EnglishProficiency" ColumnName="EnglishProficiency" />
+          <ScalarProperty Name="CitizenshipStatus" ColumnName="CitizenshipStatus" />
+          <ScalarProperty Name="CountryArrivalDate" ColumnName="CountryArrivalDate" />
+          <ScalarProperty Name="CountryOfResidency" ColumnName="CountryOfResidency" />
+          <ScalarProperty Name="CountryOfCitizenship" ColumnName="CountryOfCitizenship" />
+          <ScalarProperty Name="CountryOfBirth" ColumnName="CountryOfBirth" />
+          <ScalarProperty Name="StateOfBirth" ColumnName="StateOfBirth" />
+          <ScalarProperty Name="CountyOfBirth" ColumnName="CountyOfBirth" />
+          <ScalarProperty Name="PlaceOfBirth" ColumnName="PlaceOfBirth" />
+          <ScalarProperty Name="AdmissionDate" ColumnName="AdmissionDate" />
+          <ScalarProperty Name="BirthDateVerification" ColumnName="BirthDateVerification" />
+          <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="HispanicLatino" ColumnName="HispanicLatino" />
+          <ScalarProperty Name="RaceId" ColumnName="RaceId" />
+          <ScalarProperty Name="ImagePermission" ColumnName="ImagePermission" />
+          <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="NickName" ColumnName="NickName" />
+          <ScalarProperty Name="SortName" ColumnName="SortName" />
+          <ScalarProperty Name="PreferredName" ColumnName="PreferredName" />
+          <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+          <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="Prefix" ColumnName="Prefix" />
+          <ScalarProperty Name="StateProvinceId" ColumnName="StateProvinceId" />
+          <ScalarProperty Name="LocalId" ColumnName="LocalId" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Placements">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Placement">
+        <MappingFragment StoreEntitySet="Placement">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="VisitationStatus" ColumnName="VisitationStatus" />
+          <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="Class" ColumnName="Class" />
+          <ScalarProperty Name="UnitClerk" ColumnName="UnitClerk" />
+          <ScalarProperty Name="PrimaryNurse" ColumnName="PrimaryNurse" />
+          <ScalarProperty Name="BehaviorAnalyst" ColumnName="BehaviorAnalyst" />
+          <ScalarProperty Name="Department" ColumnName="Department" />
+          <ScalarProperty Name="PlacementType" ColumnName="PlacementType" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="PlacementId" ColumnName="PlacementId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.Role">
+        <MappingFragment StoreEntitySet="Role">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="DashBrdType" ColumnName="DashBrdType" />
+          <ScalarProperty Name="RoleDesc" ColumnName="RoleDesc" />
+          <ScalarProperty Name="RoleCode" ColumnName="RoleCode" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RoleGroups">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.RoleGroup">
+        <MappingFragment StoreEntitySet="RoleGroup">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CompDesc" ColumnName="CompDesc" />
+          <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="RoleGroupId" ColumnName="RoleGroupId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RoleGroupPerms">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.RoleGroupPerm">
+        <MappingFragment StoreEntitySet="RoleGroupPerm">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="ApproveInd" ColumnName="ApproveInd" />
+          <ScalarProperty Name="WriteInd" ColumnName="WriteInd" />
+          <ScalarProperty Name="ReadInd" ColumnName="ReadInd" />
+          <ScalarProperty Name="AccessInd" ColumnName="AccessInd" />
+          <ScalarProperty Name="ObjectId" ColumnName="ObjectId" />
+          <ScalarProperty Name="RoleGroupId" ColumnName="RoleGroupId" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BehavioursPAs">
+      <EntityTypeMapping TypeName="MelmarkRCPModel.BehavioursPA">
+        <MappingFragment StoreEntitySet="BehavioursPA">
+          <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="BehaviourName" ColumnName="BehaviourName" />
+          <ScalarProperty Name="BehaviorId" ColumnName="BehaviorId" />
+          <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
+          <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
+          <ScalarProperty Name="BehavioursPAId" ColumnName="BehavioursPAId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

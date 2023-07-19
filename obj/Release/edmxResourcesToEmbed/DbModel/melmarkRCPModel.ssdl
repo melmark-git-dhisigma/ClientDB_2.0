@@ -1,0 +1,592 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MelmarkRCPModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="MelmarkRCPModelStoreContainer">
+    <EntitySet Name="AdaptiveEquipment" EntityType="MelmarkRCPModel.Store.AdaptiveEquipment" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AddressList" EntityType="MelmarkRCPModel.Store.AddressList" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="BasicBehavioralInformation" EntityType="MelmarkRCPModel.Store.BasicBehavioralInformation" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="BehavioursPA" EntityType="MelmarkRCPModel.Store.BehavioursPA" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Client" EntityType="MelmarkRCPModel.Store.Client" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ContactPersonal" EntityType="MelmarkRCPModel.Store.ContactPersonal" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="DiaganosesPA" EntityType="MelmarkRCPModel.Store.DiaganosesPA" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Document" EntityType="MelmarkRCPModel.Store.Document" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EmergencyContactSchool" EntityType="MelmarkRCPModel.Store.EmergencyContactSchool" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Events" EntityType="MelmarkRCPModel.Store.Events" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Insurance" EntityType="MelmarkRCPModel.Store.Insurance" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="LookUp" EntityType="MelmarkRCPModel.Store.LookUp" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MedicalAndInsurance" EntityType="MelmarkRCPModel.Store.MedicalAndInsurance" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Parent" EntityType="MelmarkRCPModel.Store.Parent" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Placement" EntityType="MelmarkRCPModel.Store.Placement" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ProcessChkLstRel" EntityType="MelmarkRCPModel.Store.ProcessChkLstRel" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SchoolsAttended" EntityType="MelmarkRCPModel.Store.SchoolsAttended" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StudentAddresRel" EntityType="MelmarkRCPModel.Store.StudentAddresRel" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StudentContactRelationship" EntityType="MelmarkRCPModel.Store.StudentContactRelationship" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StudentParentRel" EntityType="MelmarkRCPModel.Store.StudentParentRel" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StudentPersonal" EntityType="MelmarkRCPModel.Store.StudentPersonal" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="StudentPersonalPA" EntityType="MelmarkRCPModel.Store.StudentPersonalPA" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="User" EntityType="MelmarkRCPModel.Store.User" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Visitation" EntityType="MelmarkRCPModel.Store.Visitation" store:Type="Tables" Schema="dbo" />
+  </EntityContainer>
+  <EntityType Name="AdaptiveEquipment">
+    <Key>
+      <PropertyRef Name="AdaptiveEquipmentId" />
+    </Key>
+    <Property Name="AdaptiveEquipmentId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="Item" Type="varchar" MaxLength="50" />
+    <Property Name="ScheduleForUse" Type="varchar" MaxLength="50" />
+    <Property Name="StorageLocation" Type="varchar" MaxLength="50" />
+    <Property Name="CleaningInstruction" Type="varchar" MaxLength="250" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="AddressList">
+    <Key>
+      <PropertyRef Name="AddressId" />
+    </Key>
+    <Property Name="AddressId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="AddressType" Type="int" Nullable="false" />
+    <Property Name="AddressLine1" Type="varchar" MaxLength="50" />
+    <Property Name="AddressLine2" Type="varchar" MaxLength="50" />
+    <Property Name="AddressLine3" Type="varchar" MaxLength="50" />
+    <Property Name="Complex" Type="varchar" MaxLength="50" />
+    <Property Name="StreetNumber" Type="varchar" MaxLength="50" />
+    <Property Name="StreetPrefix" Type="varchar" MaxLength="10" />
+    <Property Name="StreetName" Type="varchar" MaxLength="50" />
+    <Property Name="StreetType" Type="varchar" MaxLength="50" />
+    <Property Name="StreetSuffix" Type="varchar" MaxLength="10" />
+    <Property Name="ApartmentType" Type="varchar" MaxLength="50" />
+    <Property Name="ApartmentNumberPrefix" Type="varchar" MaxLength="10" />
+    <Property Name="ApartmentNumber" Type="int" />
+    <Property Name="Phone" Type="varchar" MaxLength="50" />
+    <Property Name="Mobile" Type="varchar" MaxLength="50" />
+    <Property Name="OtherPhone" Type="varchar" MaxLength="50" />
+    <Property Name="PrimaryEmail" Type="varchar" MaxLength="50" />
+    <Property Name="SecondryEmail" Type="varchar" MaxLength="50" />
+    <Property Name="ApartmentNumberSuffix" Type="varchar" MaxLength="10" />
+    <Property Name="City" Type="varchar" MaxLength="50" />
+    <Property Name="County" Type="varchar" MaxLength="50" />
+    <Property Name="StateProvince" Type="int" />
+    <Property Name="CountryId" Type="int" />
+    <Property Name="PostalCode" Type="varchar" MaxLength="50" />
+    <Property Name="GridLocation" Type="varchar" MaxLength="50" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="BasicBehavioralInformation">
+    <Key>
+      <PropertyRef Name="BasicBehavioralInformationId" />
+    </Key>
+    <Property Name="BasicBehavioralInformationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="TargetBehavior" Type="varchar" MaxLength="250" />
+    <Property Name="Definition" Type="varchar" MaxLength="250" />
+    <Property Name="Antecedent" Type="varchar" MaxLength="250" />
+    <Property Name="FCT" Type="varchar" MaxLength="250" />
+    <Property Name="Consequence" Type="varchar" MaxLength="250" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="BehavioursPA">
+    <Key>
+      <PropertyRef Name="BehavioursPAId" />
+    </Key>
+    <Property Name="BehavioursPAId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" />
+    <Property Name="BehaviourName" Type="varchar(max)" />
+    <Property Name="ParentId" Type="int" Nullable="false" />
+    <Property Name="Score" Type="varchar(max)" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Client">
+    <Key>
+      <PropertyRef Name="ClientID" />
+    </Key>
+    <Property Name="ClientID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="LastName" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="MiddleName" Type="varchar" MaxLength="50" />
+    <Property Name="NickName" Type="varchar" MaxLength="50" />
+    <Property Name="DateOfBirth" Type="date" />
+    <Property Name="Gender" Type="varchar" MaxLength="50" />
+    <Property Name="Age" Type="int" />
+    <Property Name="Address" Type="varchar" MaxLength="50" />
+    <Property Name="Street" Type="varchar" MaxLength="50" />
+    <Property Name="City" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="ContactPersonal">
+    <Key>
+      <PropertyRef Name="ContactPersonalId" />
+    </Key>
+    <Property Name="ContactPersonalId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="Prefix" Type="varchar" MaxLength="10" />
+    <Property Name="FirstName" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="LastName" Type="varchar" MaxLength="50" />
+    <Property Name="MiddleName" Type="varchar" MaxLength="50" />
+    <Property Name="Age" Type="int" />
+    <Property Name="SocSecurityNo" Type="int" />
+    <Property Name="Employer" Type="varchar" MaxLength="250" />
+    <Property Name="Occupation" Type="varchar" MaxLength="250" />
+    <Property Name="Suffix" Type="varchar" MaxLength="10" />
+    <Property Name="Role" Type="varchar" MaxLength="100" />
+    <Property Name="Spouse" Type="varchar" MaxLength="50" />
+    <Property Name="PrimaryLanguage" Type="varchar" MaxLength="50" />
+    <Property Name="RaceId" Type="int" />
+    <Property Name="HispanicLatino" Type="bit" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" />
+    <Property Name="BirthDate" Type="date" />
+    <Property Name="BirthDateVerification" Type="int" />
+    <Property Name="AdmissionDate" Type="date" />
+    <Property Name="PlaceOfBirth" Type="varchar" MaxLength="50" />
+    <Property Name="CountyOfBirth" Type="varchar" MaxLength="50" />
+    <Property Name="StateOfBirth" Type="int" />
+    <Property Name="CountryOfBirth" Type="int" />
+    <Property Name="CountryOfCitizenship" Type="varchar" MaxLength="50" />
+    <Property Name="CountryOfResidency" Type="varchar" MaxLength="50" />
+    <Property Name="CountryArrivalDate" Type="date" />
+    <Property Name="CitizenshipStatus" Type="int" />
+    <Property Name="EnglishProficiency" Type="int" />
+    <Property Name="LanguageList" Type="nchar" MaxLength="10" />
+    <Property Name="DwellingArrangementCode" Type="nchar" MaxLength="10" />
+    <Property Name="MaritalStatus" Type="int" />
+    <Property Name="EmployerType" Type="int" />
+    <Property Name="Status" Type="int" />
+    <Property Name="EducationLevel" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="DiaganosesPA">
+    <Key>
+      <PropertyRef Name="DiaganosePAId" />
+    </Key>
+    <Property Name="DiaganosePAId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" />
+    <Property Name="Diaganoses" Type="varchar(max)" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="Document">
+    <Key>
+      <PropertyRef Name="DocumentId" />
+    </Key>
+    <Property Name="DocumentId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="SchoolId" Type="int" />
+    <Property Name="StudentPersonalId" Type="int" />
+    <Property Name="DocumentType" Type="int" />
+    <Property Name="DocumentName" Type="varchar" MaxLength="100" />
+    <Property Name="DocumentPath" Type="varchar" MaxLength="100" />
+    <Property Name="UserType" Type="varchar" MaxLength="50" />
+    <Property Name="SignedBy" Type="int" />
+    <Property Name="SignedOn" Type="datetime" />
+    <Property Name="Varified" Type="bit" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="datetime" />
+  </EntityType>
+  <EntityType Name="EmergencyContactSchool">
+    <Key>
+      <PropertyRef Name="EmergencyContactSchoolId" />
+    </Key>
+    <Property Name="EmergencyContactSchoolId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="varchar" MaxLength="50" />
+    <Property Name="LastName" Type="varchar" MaxLength="50" />
+    <Property Name="Title" Type="varchar" MaxLength="100" />
+    <Property Name="Phone" Type="varchar" MaxLength="50" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="SequenceId" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="Events">
+    <Key>
+      <PropertyRef Name="EventId" />
+    </Key>
+    <Property Name="EventId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="EventType" Type="varchar" MaxLength="250" />
+    <Property Name="EventsName" Type="varchar(max)" />
+    <Property Name="EventDate" Type="date" Nullable="false" />
+    <Property Name="ExpiredOn" Type="date" Nullable="false" />
+    <Property Name="EventStatus" Type="int" />
+    <Property Name="Status" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="Insurance">
+    <Key>
+      <PropertyRef Name="InsuranceId" />
+    </Key>
+    <Property Name="InsuranceId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="AddressId" Type="int" />
+    <Property Name="CompanyName" Type="varchar" MaxLength="500" />
+    <Property Name="PreferType" Type="varchar" MaxLength="100" />
+    <Property Name="InsuranceType" Type="varchar" MaxLength="50" />
+    <Property Name="PolicyNumber" Type="varchar" MaxLength="50" />
+    <Property Name="PolicyHolder" Type="varchar" MaxLength="50" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="LookUp">
+    <Key>
+      <PropertyRef Name="LookupId" />
+    </Key>
+    <Property Name="LookupId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="LookupType" Type="varchar" Nullable="false" MaxLength="500" />
+    <Property Name="LookupName" Type="varchar" Nullable="false" MaxLength="500" />
+    <Property Name="LookupCode" Type="varchar" MaxLength="500" />
+    <Property Name="LookupDesc" Type="varchar" MaxLength="500" />
+    <Property Name="ParentLookupId" Type="int" />
+    <Property Name="ParentLookupCode" Type="varchar" MaxLength="50" />
+    <Property Name="SortOrder" Type="int" />
+    <Property Name="CreatedBy" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="CreateOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+    <Property Name="ModifiedOn" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MedicalAndInsurance">
+    <Key>
+      <PropertyRef Name="MedicalInsuranceId" />
+    </Key>
+    <Property Name="MedicalInsuranceId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="AddressId" Type="int" />
+    <Property Name="FirstName" Type="varchar" MaxLength="50" />
+    <Property Name="LastName" Type="varchar" MaxLength="50" />
+    <Property Name="City" Type="varchar" MaxLength="50" />
+    <Property Name="OfficePhone" Type="varchar" MaxLength="50" />
+    <Property Name="DateOfLastPhysicalExam" Type="date" />
+    <Property Name="MedicalConditionsDiagnosis" Type="varchar(max)" />
+    <Property Name="Allergies" Type="varchar(max)" />
+    <Property Name="CurrentMedications" Type="varchar(max)" />
+    <Property Name="SelfPreservationAbility" Type="varchar(max)" />
+    <Property Name="SignificantBehaviorCharacteristics" Type="varchar(max)" />
+    <Property Name="Capabilities" Type="varchar(max)" />
+    <Property Name="Limitations" Type="varchar(max)" />
+    <Property Name="Preferances" Type="varchar(max)" />
+    <Property Name="CountryId" Type="int" />
+    <Property Name="StateId" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="Parent">
+    <Key>
+      <PropertyRef Name="ParentID" />
+    </Key>
+    <Property Name="ParentID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Fname" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Lname" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Username" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="Password" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="Placement">
+    <Key>
+      <PropertyRef Name="PlacementId" />
+    </Key>
+    <Property Name="PlacementId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="PlacementType" Type="int" />
+    <Property Name="Department" Type="int" />
+    <Property Name="BehaviorAnalyst" Type="int" />
+    <Property Name="PrimaryNurse" Type="int" />
+    <Property Name="UnitClerk" Type="int" />
+    <Property Name="Class" Type="int" />
+    <Property Name="StartDate" Type="date" Nullable="false" />
+    <Property Name="EndDate" Type="date" Nullable="false" />
+    <Property Name="VisitationStatus" Type="int" />
+    <Property Name="Status" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="ProcessChkLstRel">
+    <Key>
+      <PropertyRef Name="ProcessChkLstRelId" />
+    </Key>
+    <Property Name="ProcessChkLstRelId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="QueueProcessId" Type="int" Nullable="false" />
+    <Property Name="ChkLstEngId" Type="int" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="SchoolsAttended">
+    <Key>
+      <PropertyRef Name="SchoolsAttendedId" />
+    </Key>
+    <Property Name="SchoolsAttendedId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="SchoolName" Type="varchar" MaxLength="150" />
+    <Property Name="DateFrom" Type="date" />
+    <Property Name="DateTo" Type="date" />
+    <Property Name="Address1" Type="varchar(max)" />
+    <Property Name="Address2" Type="varchar(max)" />
+    <Property Name="City" Type="varchar" MaxLength="50" />
+    <Property Name="State" Type="varchar" MaxLength="50" />
+    <Property Name="SequenceId" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="StudentAddresRel">
+    <Key>
+      <PropertyRef Name="studentAddressRelId" />
+    </Key>
+    <Property Name="studentAddressRelId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="AddressId" Type="int" Nullable="false" />
+    <Property Name="ContactSequence" Type="int" />
+    <Property Name="ContactPersonalId" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="StudentContactRelationship">
+    <Key>
+      <PropertyRef Name="StudentContactRelId" />
+    </Key>
+    <Property Name="StudentContactRelId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="ContactPersonalId" Type="int" Nullable="false" />
+    <Property Name="RelationshipId" Type="int" Nullable="false" />
+    <Property Name="ParentLegalGuardian" Type="bit" />
+    <Property Name="PickupRights" Type="bit" />
+    <Property Name="LivesWith" Type="bit" />
+    <Property Name="AccessToRecords" Type="bit" />
+    <Property Name="EmergencyContact" Type="bit" />
+    <Property Name="HasCustody" Type="bit" />
+    <Property Name="DisciplinaryContact" Type="bit" />
+    <Property Name="PrimaryCareProvider" Type="bit" />
+    <Property Name="Other" Type="bit" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="StudentParentRel">
+    <Key>
+      <PropertyRef Name="StudentParentRelId" />
+    </Key>
+    <Property Name="StudentParentRelId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="ParentID" Type="int" Nullable="false" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="StudentPersonal">
+    <Key>
+      <PropertyRef Name="StudentPersonalId" />
+    </Key>
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="SchoolId" Type="int" />
+    <Property Name="LocalId" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="StateProvinceId" Type="varchar" MaxLength="50" />
+    <Property Name="Prefix" Type="varchar" MaxLength="10" />
+    <Property Name="LastName" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="FirstName" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="MiddleName" Type="varchar" MaxLength="50" />
+    <Property Name="Suffix" Type="varchar" MaxLength="10" />
+    <Property Name="PreferredName" Type="varchar" MaxLength="50" />
+    <Property Name="SortName" Type="varchar" MaxLength="50" />
+    <Property Name="NickName" Type="varchar" MaxLength="50" />
+    <Property Name="FullName" Type="varchar" MaxLength="100" />
+    <Property Name="ImageUrl" Type="nvarchar(max)" />
+    <Property Name="ImagePermission" Type="bit" />
+    <Property Name="RaceId" Type="int" />
+    <Property Name="HispanicLatino" Type="bit" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" />
+    <Property Name="BirthDate" Type="date" />
+    <Property Name="BirthDateVerification" Type="int" />
+    <Property Name="AdmissionDate" Type="date" />
+    <Property Name="PlaceOfBirth" Type="varchar" MaxLength="50" />
+    <Property Name="CountyOfBirth" Type="varchar" MaxLength="50" />
+    <Property Name="StateOfBirth" Type="int" />
+    <Property Name="CountryOfBirth" Type="int" />
+    <Property Name="CountryOfCitizenship" Type="varchar" MaxLength="50" />
+    <Property Name="CountryOfResidency" Type="varchar" MaxLength="50" />
+    <Property Name="CountryArrivalDate" Type="date" />
+    <Property Name="CitizenshipStatus" Type="int" />
+    <Property Name="EnglishProficiency" Type="int" />
+    <Property Name="LanguageList" Type="nchar" MaxLength="10" />
+    <Property Name="DwellingArrangementCode" Type="nchar" MaxLength="10" />
+    <Property Name="MaritalStatus" Type="int" />
+    <Property Name="ProjectedGraduationYear" Type="date" />
+    <Property Name="OnTimeGraduationYear" Type="date" />
+    <Property Name="HairColor" Type="varchar" MaxLength="50" />
+    <Property Name="EyeColor" Type="varchar" MaxLength="50" />
+    <Property Name="Height" Type="decimal" Scale="3" />
+    <Property Name="Weight" Type="decimal" Scale="3" />
+    <Property Name="PrimaryLanguage" Type="varchar" MaxLength="50" />
+    <Property Name="DistingushingMarks" Type="varchar(max)" />
+    <Property Name="LegalCompetencyStatus" Type="varchar" MaxLength="50" />
+    <Property Name="OtherStateAgenciesInvolvedWithStudent" Type="varchar" MaxLength="250" />
+    <Property Name="MaritalStatusofBothParents" Type="varchar" MaxLength="50" />
+    <Property Name="GuardianShip" Type="varchar" MaxLength="50" />
+    <Property Name="CaseManagerEducational" Type="varchar" MaxLength="50" />
+    <Property Name="CaseManagerResidential" Type="varchar" MaxLength="50" />
+    <Property Name="GraduationDate" Type="date" />
+    <Property Name="MostRecentSchoolLocalId" Type="varchar" MaxLength="50" />
+    <Property Name="MostRecentHomeroomLocalId" Type="varchar" MaxLength="50" />
+    <Property Name="DateInitiallyEligibleforSpecialEducation" Type="date" />
+    <Property Name="DateofMostRecentSpecialEducationEvaluations" Type="date" />
+    <Property Name="DateofNextScheduled3YearEvaluation" Type="date" />
+    <Property Name="CurrentIEPStartDate" Type="date" />
+    <Property Name="CurrentIEPExpirationDate" Type="date" />
+    <Property Name="DischargeDate" Type="date" />
+    <Property Name="LocationAfterDischarge" Type="varchar" MaxLength="50" />
+    <Property Name="MelmarkNewEnglandsFollowUpResponsibilities" Type="varchar(max)" />
+    <Property Name="MostRecentGradeLevel" Type="varchar" MaxLength="10" />
+    <Property Name="AcceptableUsePolicy" Type="bit" />
+    <Property Name="IDEA" Type="bit" />
+    <Property Name="Migrant" Type="bit" />
+    <Property Name="Title1" Type="bit" />
+    <Property Name="GiftedTalented" Type="bit" />
+    <Property Name="EconomicDisadvantage" Type="bit" />
+    <Property Name="ELL" Type="bit" />
+    <Property Name="Homeless" Type="bit" />
+    <Property Name="Section504" Type="bit" />
+    <Property Name="VocationalConcentrator" Type="bit" />
+    <Property Name="Immigrant" Type="bit" />
+    <Property Name="NeglectedDelinquent" Type="bit" />
+    <Property Name="FirstUSEnrollment" Type="date" />
+    <Property Name="StudentType" Type="varchar" MaxLength="20" />
+    <Property Name="StudentXMLData" Type="varbinary(max)" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="StudentPersonalPA">
+    <Key>
+      <PropertyRef Name="StudentPersonalPAId" />
+    </Key>
+    <Property Name="StudentPersonalPAId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="Bathroom" Type="varchar(max)" />
+    <Property Name="OnCampus" Type="varchar(max)" />
+    <Property Name="WhenTranspoting" Type="varchar(max)" />
+    <Property Name="OffCampus" Type="varchar(max)" />
+    <Property Name="CommonAreas" Type="varchar(max)" />
+    <Property Name="PoolOrSwimming" Type="varchar(max)" />
+    <Property Name="Van" Type="varchar(max)" />
+    <Property Name="ho_CommonAres" Type="varchar" MaxLength="50" />
+    <Property Name="ho_BedroomAwake" Type="varchar" MaxLength="50" />
+    <Property Name="ho_BedroomAsleep" Type="varchar" MaxLength="50" />
+    <Property Name="dy_TaskOrBreak" Type="varchar" MaxLength="50" />
+    <Property Name="dy_TransitionInside" Type="varchar" MaxLength="50" />
+    <Property Name="dy_TransitionUnevenGround" Type="varchar" MaxLength="50" />
+    <Property Name="RiskOfResistance" Type="varchar" MaxLength="250" />
+    <Property Name="Mobility" Type="varchar" MaxLength="250" />
+    <Property Name="NeedForExtraHelp" Type="varchar" MaxLength="250" />
+    <Property Name="ResponseToInstruction" Type="varchar" MaxLength="250" />
+    <Property Name="Consciousness" Type="varchar" MaxLength="250" />
+    <Property Name="WalkingResponses" Type="varchar" MaxLength="250" />
+    <Property Name="Allergies" Type="varchar(max)" />
+    <Property Name="Seizures" Type="varchar(max)" />
+    <Property Name="Diet" Type="varchar(max)" />
+    <Property Name="Other" Type="varchar(max)" />
+    <Property Name="LiftingOrTransfers" Type="varchar(max)" />
+    <Property Name="Ambulation" Type="varchar(max)" />
+    <Property Name="Toileting" Type="varchar(max)" />
+    <Property Name="Eating" Type="varchar(max)" />
+    <Property Name="Showering" Type="varchar(max)" />
+    <Property Name="Toothbrushing" Type="varchar(max)" />
+    <Property Name="Dressing" Type="varchar(max)" />
+    <Property Name="SkinCareOrSkinIntegrity" Type="varchar(max)" />
+    <Property Name="Communication" Type="varchar(max)" />
+    <Property Name="PreferedActivities" Type="varchar(max)" />
+    <Property Name="GeneralInformation" Type="varchar(max)" />
+    <Property Name="SuggestedProactiveEnviornmentalProcedure" Type="varchar(max)" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="AddressId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="UserNo" Type="varchar" Nullable="false" MaxLength="50" />
+    <Property Name="UserInitial" Type="varchar" Nullable="false" MaxLength="10" />
+    <Property Name="UserFName" Type="varchar" MaxLength="50" />
+    <Property Name="UserLName" Type="varchar" MaxLength="50" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" />
+    <Property Name="Login" Type="varbinary" MaxLength="50" />
+    <Property Name="Password" Type="varbinary" MaxLength="50" />
+    <Property Name="ManagerId" Type="int" />
+    <Property Name="EffStartDate" Type="date" />
+    <Property Name="EffEndDate" Type="date" />
+    <Property Name="ActiveInd" Type="varchar" MaxLength="3" />
+    <Property Name="ImageURL" Type="varchar" MaxLength="100" />
+    <Property Name="Position" Type="varchar" MaxLength="100" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Visitation">
+    <Key>
+      <PropertyRef Name="VisitationId" />
+    </Key>
+    <Property Name="VisitationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="StudentPersonalId" Type="int" Nullable="false" />
+    <Property Name="SchoolId" Type="int" Nullable="false" />
+    <Property Name="VisittaionType" Type="int" />
+    <Property Name="VisitationName" Type="varchar(max)" />
+    <Property Name="VisitationDate" Type="date" Nullable="false" />
+    <Property Name="ExpiredOn" Type="date" Nullable="false" />
+    <Property Name="VisitationStatus" Type="int" />
+    <Property Name="Status" Type="int" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="date" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="date" />
+  </EntityType>
+</Schema>

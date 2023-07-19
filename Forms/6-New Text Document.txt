@@ -1,0 +1,7 @@
+truncate table [dbo].[StudentAddresRel]
+truncate table [dbo].[StudentContactRelationship]
+truncate table [dbo].[ContactPersonal]
+truncate table [dbo].[AddressList]
+truncate table [dbo].[StudentPersonal]
+
+

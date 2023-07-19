@@ -1,0 +1,508 @@
+﻿@model ClientDB.Models.ProtocolSummary
+<script src="../../Documents/JS/jquery-1.8.2.js"></script>
+<script src="../../Documents/JS/jquery-ui-1.8.24.js"></script>
+<script type="text/javascript">
+    var ATCounter = @Model.ATList.Count;
+    var CGCounter = @Model.CGList.Count;
+    var FICounter = @Model.FIList.Count;
+    var BBICounter = @Model.BBIList.Count;
+    @{
+        var ATRowId = 0;
+        var CGRowId = 0;
+        var FIRowId = 0;
+        var BBIRowId = 0;
+    }
+
+    $(document).ready(function () {
+        
+        function addRow() {
+            var html = '<tr style="text-align:center">' +
+                '<td><textarea name="ATList[' + ATCounter + '].type" style="width:100%"></textarea></td>' +
+                '<td><textarea name="ATList[' + ATCounter + '].schedule" style="width:100%"></textarea></td>' +
+                '<td><textarea name="ATList[' + ATCounter + '].storage" style="width:100%"></textarea></td>' +
+                '<td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>' +
+                '</tr>'
+            $(html).appendTo($("#table2 > tbody"));
+            ATCounter++;
+        };
+        $(".btnAdd1").click(addRow);
+    });
+
+    function DeleteRow(btnDel) {
+        if (typeof (btnDel) == "object") {
+            $(btnDel).closest("tr").remove();
+        } else {
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        function addRow() {
+            var html = '<tr>' +
+                '<td style="width:20%"><textarea name="CGList[' + CGCounter + '].TypeA" style="width:100%"></textarea></td>' +
+                '<td><textarea name="CGList[' + CGCounter + '].TypeB" style="width:100%"></textarea></td>' +
+                '<td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>' +
+            '</tr>'
+            $(html).appendTo($("#table7 > tbody"));
+            CGCounter++;
+        };
+        $(".btnAdd2").click(addRow);
+    });
+
+    $(document).ready(function () {
+        function addRow() {
+            var html = '<tr>' +
+                '<td style="width:20%"><textarea name="FIList[' + FICounter + '].FamilyOne" style="width:100%"></textarea></td>' +
+                '<td><textarea name="FIList[' + FICounter + '].FamilyTwo" style="width:100%"></textarea></td>' +
+                '<td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>' +
+            '</tr>'
+            $(html).appendTo($("#table8 > tbody"));
+            FICounter++;
+        };
+        $(".btnAdd3").click(addRow);
+    });
+
+    $(document).ready(function () {
+        function addRow() {
+            var html = '<tr>' +
+                '<td style="width:20%"><textarea name="BBIList[' + BBICounter + '].Acceleration" style="width:100%"></textarea></td>' +
+                '<td><textarea name="BBIList[' + BBICounter + '].Strategy" style="width:100%"></textarea></td>' +
+                '<td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>' +
+            '</tr>'
+            $(html).appendTo($("#table9 > tbody"));
+            BBICounter++;
+        };
+        $(".btnAdd4").click(addRow);
+    });
+</script>
+
+<!DOCTYPE html>
+
+<html>
+<head id="Head1" runat="server">
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+    <body>
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td style="text-align:center;"><b>Level of Supervision</b><br />Updated:</td>
+            </tr>
+        </table>
+        <table id="table1" style="width: 100%; border:1px double gray;">
+            <tr>
+                <td style="width:225px">Home (common areas)</td>
+                <td>@Html.TextArea("HomeCommon", new { style = "width:100%" })</td>
+                <td style="width:225px">School (common area)</td>
+                <td>@Html.TextArea("SchoolCommon", new { style = "width:100%" })</td>
+            </tr>
+            <tr>
+                <td>Home (bedroom)</td>
+                <td>@Html.TextArea("HomeBedroom", new { style = "width:100%" })</td>
+                <td>School (bathroom)</td>
+                <td>@Html.TextArea("SchoolBathroom", new { style = "width:100%" })</td>
+            </tr>
+            <tr>
+                <td>Home (bathroom)</td>
+                <td>@Html.TextArea("HomeBathroom", new { style = "width:100%" })</td>
+                <td>School (transitions outside CR)</td>
+                <td>@Html.TextArea("SchoolOutside", new { style = "width:100%" })</td>
+            </tr>
+            <tr>
+                <td>Campus</td>
+                <td>@Html.TextArea("Campus", new { style = "width:100%" })</td>
+                <td>Pool</td>
+                <td>@Html.TextArea("Pool", new { style = "width:100%" })</td>
+            </tr>
+            <tr>
+                <td>Community</td>
+                <td>@Html.TextArea("Community", new { style = "width:100%" })</td>
+                <td>Van</td>
+                <td>@Html.TextArea("Van", new { style = "width:100%" })</td>
+            </tr>
+        </table>
+        <br />
+        <table style="width: 100%; border:1px double gray;" id="t1">
+            <tr>
+                <td colspan="3" style="text-align:center"><b>Assistive Technology</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table2" style="width: 100%; border:1px double gray;">
+            <tbody>
+            <tr style="text-align:center">
+                <td><b>Type</b></td>
+                <td><b>Schedule for use</b></td>
+                <td><b>Storage Location</b></td>
+            </tr>
+                @foreach(var item in Model.ATList)
+                {
+            <tr style="text-align:center">
+                <td><textarea name="ATList[@ATRowId].Type" style="width:100%">@item.Type</textarea></td>
+                <td><textarea name="ATList[@ATRowId].ScheduleForUse" style="width:100%">@item.ScheduleForUse</textarea></td>
+                <td><textarea name="ATList[@ATRowId].StorageLocation" style="width:100%">@item.StorageLocation</textarea></td>
+                <td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>
+            </tr>
+                    ATRowId++;
+                }
+                </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3"">
+                    <input type="button" value="Add Row" class="btnAdd1" style="float:right" />
+                </td>
+            </tr>
+                </tfoot>
+        </table>
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Typical Prompting Hierarchy</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table3" style="width: 100%; border:1px double gray;">
+            <tr>
+                <td><b>Mastered Tasks:@Model.MasteredTask</b></td>
+                <td><b>New/Novel Tasks:@Model.NewTask</b></td>
+            </tr>
+        </table>
+        <br />
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Medical Information</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table4" style="width: 100%; border:1px double gray;">
+            <tbody>
+            <tr>
+                <td style="width:20%">Allergies</td>
+                <td><textarea style="width:100%">@Model.Allergies</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Seizure Information</td>
+                <td><textarea style="width:100%">@Model.SeizureInfo</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Med Times</td>
+                <td><textarea style="width:100%">@Model.BedTime</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">How student takes meds</td>
+                <td><textarea style="width:100%">@Model.TakeMed</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Other:</td>
+                <td><textarea style="width:100%">@Model.OtherMedical</textarea></td>
+            </tr>
+                </tbody>
+        </table>
+        <br />
+
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Behavior during Appointments Information</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table5" style="width: 100%; border:1px double gray;">
+            <tbody>
+            <tr>
+                <td style="width:20%">Doctor visits</td>
+                <td><textarea style="width:100%">@Model.DoctorVisit</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Dental</td>
+                <td><textarea style="width:100%">@Model.Dental</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Bloodwork</td>
+                <td><textarea style="width:100%">@Model.BloodWork</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Haircuts</td>
+                <td><textarea style="width:100%">@Model.HairCuts</textarea></td>
+            </tr>
+                <tr>
+                <td style="width:20%">Other:</td>
+                <td><textarea style="width:100%">@Model.OtherBehave</textarea></td>
+            </tr>
+                </tbody>
+        </table>
+        <br />
+
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="5" style="text-align:center"><b>Personal Care</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table6" style="width: 100%; border:1px double gray;">
+            <tbody>
+            <tr style="text-align:center">
+                <td>Activity</td>
+                <td>General Info</td>
+                <td>Able to:</td>
+                <td>Needs help with:</td>
+                <td>IEP related goals:</td>
+            </tr>
+            <tr>
+                <td>Eating</td>
+                <td><textarea style="width:100%">@Model.EatingGeneral</textarea></td>
+                <td><textarea style="width:100%">@Model.EatingAble</textarea></td>
+                <td><textarea style="width:100%">@Model.EatingNeed</textarea></td>
+                <td><textarea style="width:100%">@Model.EatingIep</textarea></td>
+            </tr>
+                <tr>
+                <td>Toileting</td>
+                <td><textarea style="width:100%">@Model.ToiletingGeneral</textarea></td>
+                <td><textarea style="width:100%">@Model.ToiletingAble</textarea></td>
+                <td><textarea style="width:100%">@Model.ToiletingNeed</textarea></td>
+                <td><textarea style="width:100%">@Model.ToiletingIep</textarea></td>
+            </tr>
+                <tr>
+                <td>Brushing Teeth</td>
+                <td><textarea style="width:100%">@Model.BrushingGeneral</textarea></td>
+                <td><textarea style="width:100%">@Model.BrushingAble</textarea></td>
+                <td><textarea style="width:100%">@Model.BrushingNeed</textarea></td>
+                <td><textarea style="width:100%">@Model.BrushingIep</textarea></td>
+            </tr>
+                <tr>
+                <td>Hand washing</td>
+                <td><textarea style="width:100%">@Model.HandGeneral</textarea></td>
+                <td><textarea style="width:100%">@Model.HandAble</textarea></td>
+                <td><textarea style="width:100%">@Model.HandNeed</textarea></td>
+                <td><textarea style="width:100%">@Model.HandIep</textarea></td>
+            </tr>
+                <tr>
+                <td>Dressing</td>
+                <td><textarea style="width:100%">@Model.DressGeneral</textarea></td>
+                <td><textarea style="width:100%">@Model.DressAble</textarea></td>
+                <td><textarea style="width:100%">@Model.DressNeed</textarea></td>
+                <td><textarea style="width:100%">@Model.DressIep</textarea></td>
+            </tr>
+                <tr>
+                <td>Showering</td>
+                <td><textarea style="width:100%">@Model.ShowerGeneral</textarea></td>
+                <td><textarea style="width:100%">@Model.ShowerAble</textarea></td>
+                <td><textarea style="width:100%">@Model.ShowerNeed</textarea></td>
+                <td><textarea style="width:100%">@Model.ShowerIep</textarea></td>
+            </tr>
+                <tr>
+                    <td>Bedtime Routine</td>
+                    <td colspan="4"><textarea style="width:100%">@Model.BedTime</textarea></td>
+            </tr>
+                </tbody>
+        </table>
+        <br />
+
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Community Guidelines</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table7" style="width: 100%; border:1px double gray;">
+            <tbody>
+                @foreach(var item in Model.CGList)
+                {
+            <tr>
+                <td style="width:20%"><textarea name="CGList[@CGRowId].TypeA" style="width:100%">@item.TypeA</textarea></td>
+                <td><textarea name="CGList[@CGRowId].TypeB" style="width:100%">@item.TypeB</textarea></td>
+                <td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>
+            </tr>
+                    CGRowId++;
+                }
+                </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3"">
+                    <input type="button" value="Add Row" class="btnAdd2" style="float:right" />
+                </td>
+            </tr>
+                </tfoot>
+        </table>
+        <br />
+
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Family Information</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table8" style="width: 100%; border:1px double gray;">
+            <tbody>
+                @foreach(var item in Model.FIList)
+                {
+            <tr>
+                <td style="width:20%"><textarea name="FIList[@FIRowId].FamilyOne" style="width:100%">@item.FamilyOne</textarea></td>
+                <td><textarea name="FIList[@FIRowId].FamilyTwo" style="width:100%">@item.FamilyTwo</textarea></td>
+                <td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>
+            </tr>
+                    FIRowId++;
+                }
+                </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3"">
+                    <input type="button" value="Add Row" class="btnAdd3" style="float:right" />
+                </td>
+            </tr>
+                </tfoot>
+        </table>
+        <br />
+
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Basic Behavioral Information</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table9" style="width: 100%; border:1px double gray;">
+            <tbody>
+            <tr style="text-align:center">
+                <td><b>Behavior (for acceleration & deceleration)</b></td>
+                <td><b>Strategy/Response</b></td>
+            </tr>
+                @foreach(var item in Model.BBIList)
+                {
+            <tr>
+                <td style="width:20%"><textarea name="BBIList[@BBIRowId].Acceleration" style="width:100%">@item.Acceleration</textarea></td>
+                <td><textarea name="BBIList[@BBIRowId].Strategy" style="width:100%">@item.Strategy</textarea></td>
+                <td style="width:50px"><input type="button" value="Delete" class="btnDel" style="float:right" onclick="DeleteRow(this);" /></td>
+            </tr>
+                    BBIRowId++;
+                }
+                </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3"">
+                    <input type="button" value="Add Row" class="btnAdd4" style="float:right" />
+                </td>
+            </tr>
+                </tfoot>
+        </table>
+        <br />
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td colspan="4" style="text-align:center"><b>Typical Routines</b><br />Updated:</td>
+            </tr>
+            </table>
+        <table id="table10" style="width: 100%; border:1px double gray;">
+            <tr style="text-align:center">
+                <td colspan="2"><b>Morning Routine</b></td>
+                <td colspan="2"><b>Afternoon/Evening Routine</b></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">7:00</td>
+                <td><input type="text" style="width:100%" value="@Model.Morning7" /></td>
+                <td style="text-align:center">3:30</td>
+                <td><input type="text" style="width:100%" value="@Model.Noon330" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">7:15</td>
+                <td><input type="text" style="width:100%" value="@Model.Morning715" /></td>
+                <td style="text-align:center">4:00</td>
+                <td><input type="text" style="width:100%" value="@Model.Noon400" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">7:45</td>
+                <td><input type="text" style="width:100%" value="@Model.m" /></td>
+                <td style="text-align:center">5:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8:00</td>
+                <td><input type="text" style="width:100%" /></td>
+                <td style="text-align:center">5:30</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8:15</td>
+                <td><input type="text" style="width:100%" /></td>
+                <td style="text-align:center">6:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8:30</td>
+                <td><input type="text" style="width:100%" /></td>
+                <td style="text-align:center">6:30</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">8:45</td>
+                <td><input type="text" style="width:100%" /></td>
+                <td style="text-align:center">7:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">9:00</td>
+                <td><input type="text" style="width:100%" /></td>
+                <td style="text-align:center">8:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+
+            <tr>
+                <td colspan="2" style="text-align:center"><b>Preferred Leisure Activities</b></td>
+                <td style="text-align:center">8:30</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" rowspan="3"><textarea style="width:100%"></textarea></td>
+                <td style="text-align:center">9:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">9:00-11:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td style="text-align:center">11:00-7:00</td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+
+        </table>
+        <br />
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align:center"><b>PROTOCOL SUMMARY RESPONSIBILITIES</b></td>
+            </tr>
+            </table>
+        <table style="width: 100%; border:1px double gray;">
+            <tr>
+                <td><p>Prior to working with a student, you must first be trained on the person’s protocol summary. This document is updated throughout the month on an “as needed” basis, and re-issued monthly with a new “updated” date at the top of the document.  The most recent changes are highlighted. When a change has occurred, or the document has been reissued, this will be reflected on the “updated date” section in the upper right corner of the document.</p>
+<p>Please REVIEW protocol changes before working with this student.  If you have any questions please find someone in a supervisory position (i.e., a BA, PMs. Teachers, BSS, RSS, or Case Manager).  Once you have reviewed this new protocol, you must sign this sheet below.</p>
+Please note:<br/>
+<ol type="1">
+<li>Each time the student’s protocol summary is updated or reissued, all staff working with a student need to be retrained on the protocol summary. Each time you are trained, you and the trainer will need to sign the training log below.</li>
+<li>Contact a supervisor for clarifications on any questions you have while working with a student.</li>
+<li>Never transfer LOS to another staff member without assuring the person’s explicit agreement to assume LOS.</li>
+</ol></td>
+            </tr>
+        </table>
+        <br />
+        <table id="table11" style="width: 100%; border:1px double gray; text-align:center">
+            <tr>
+                <td><b>PRINT NAME</b></td>
+                <td><b>SIGNATURE</b></td>
+                <td><b>DATE</b></td>
+            </tr>
+            <tr>
+                <td><input type="text" style="width:100%" /></td>
+                <td><input type="text" style="width:100%" /></td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" style="width:100%" /></td>
+                <td><input type="text" style="width:100%" /></td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+            <tr>
+                <td><input type="text" style="width:100%" /></td>
+                <td><input type="text" style="width:100%" /></td>
+                <td><input type="text" style="width:100%" /></td>
+            </tr>
+        </table>
+        <br />
+        <table>
+            <tr>
+                <td style="align-items:center">
+                    <input type="submit" value="Save and Continue" />
+                </td>
+            </tr>
+        </table>
+        
+    </body>
+</html>

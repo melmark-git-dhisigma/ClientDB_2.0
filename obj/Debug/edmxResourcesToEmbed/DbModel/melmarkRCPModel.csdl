@@ -1,0 +1,656 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MelmarkRCPModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+  <EntityContainer Name="MelmarkRCPEntities" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="Clients" EntityType="MelmarkRCPModel.Client" />
+    <EntitySet Name="ContactPersonals" EntityType="MelmarkRCPModel.ContactPersonal" />
+    <EntitySet Name="EmergencyContactSchools" EntityType="MelmarkRCPModel.EmergencyContactSchool" />
+    <EntitySet Name="Insurances" EntityType="MelmarkRCPModel.Insurance" />
+    <EntitySet Name="LookUps" EntityType="MelmarkRCPModel.LookUp" />
+    <EntitySet Name="MedicalAndInsurances" EntityType="MelmarkRCPModel.MedicalAndInsurance" />
+    <EntitySet Name="Parents" EntityType="MelmarkRCPModel.Parent" />
+    <EntitySet Name="ProcessChkLstRels" EntityType="MelmarkRCPModel.ProcessChkLstRel" />
+    <EntitySet Name="StudentAddresRels" EntityType="MelmarkRCPModel.StudentAddresRel" />
+    <EntitySet Name="StudentContactRelationships" EntityType="MelmarkRCPModel.StudentContactRelationship" />
+    <EntitySet Name="StudentParentRels" EntityType="MelmarkRCPModel.StudentParentRel" />
+    <EntitySet Name="Users" EntityType="MelmarkRCPModel.User" />
+    <EntitySet Name="Visitations" EntityType="MelmarkRCPModel.Visitation" />
+    <EntitySet Name="SchoolsAttendeds" EntityType="MelmarkRCPModel.SchoolsAttended" />
+    <EntitySet Name="Documents" EntityType="MelmarkRCPModel.Document" />
+    <EntitySet Name="AddressLists" EntityType="MelmarkRCPModel.AddressList" />
+    <EntitySet Name="Events" EntityType="MelmarkRCPModel.Event" />
+    <EntitySet Name="AdaptiveEquipments" EntityType="MelmarkRCPModel.AdaptiveEquipment" />
+    <EntitySet Name="BasicBehavioralInformations" EntityType="MelmarkRCPModel.BasicBehavioralInformation" />
+    <EntitySet Name="DiaganosesPAs" EntityType="MelmarkRCPModel.DiaganosesPA" />
+    <EntitySet Name="StudentPersonalPAs" EntityType="MelmarkRCPModel.StudentPersonalPA" />
+    <EntitySet Name="StudentPersonals" EntityType="MelmarkRCPModel.StudentPersonal" />
+    <EntitySet Name="Placements" EntityType="MelmarkRCPModel.Placement" />
+    <EntitySet Name="Roles" EntityType="MelmarkRCPModel.Role" />
+    <EntitySet Name="RoleGroups" EntityType="MelmarkRCPModel.RoleGroup" />
+    <EntitySet Name="RoleGroupPerms" EntityType="MelmarkRCPModel.RoleGroupPerm" />
+    <EntitySet Name="BehavioursPAs" EntityType="MelmarkRCPModel.BehavioursPA" />
+  </EntityContainer>
+  <EntityType Name="Client">
+    <Key>
+      <PropertyRef Name="ClientID" />
+    </Key>
+    <Property Type="Int32" Name="ClientID" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LastName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MiddleName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="NickName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="DateOfBirth" Precision="0" />
+    <Property Type="String" Name="Gender" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="Age" />
+    <Property Type="String" Name="Address" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Street" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="City" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="ContactPersonal">
+    <Key>
+      <PropertyRef Name="ContactPersonalId" />
+    </Key>
+    <Property Type="Int32" Name="ContactPersonalId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="String" Name="Prefix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LastName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MiddleName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Suffix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Role" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Spouse" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PrimaryLanguage" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="RaceId" />
+    <Property Type="Boolean" Name="HispanicLatino" />
+    <Property Type="String" Name="Gender" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="BirthDate" Precision="0" />
+    <Property Type="Int32" Name="BirthDateVerification" />
+    <Property Type="DateTime" Name="AdmissionDate" Precision="0" />
+    <Property Type="String" Name="PlaceOfBirth" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CountyOfBirth" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="StateOfBirth" />
+    <Property Type="Int32" Name="CountryOfBirth" />
+    <Property Type="String" Name="CountryOfCitizenship" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CountryOfResidency" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="CountryArrivalDate" Precision="0" />
+    <Property Type="Int32" Name="CitizenshipStatus" />
+    <Property Type="Int32" Name="EnglishProficiency" />
+    <Property Type="String" Name="LanguageList" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Type="String" Name="DwellingArrangementCode" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Type="Int32" Name="MaritalStatus" />
+    <Property Type="Int32" Name="EmployerType" />
+    <Property Type="Int32" Name="Status" />
+    <Property Type="Int32" Name="EducationLevel" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+    <Property Type="Int32" Name="Age" />
+    <Property Type="Int32" Name="SocSecurityNo" />
+    <Property Type="String" Name="Employer" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Occupation" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Relation" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Education" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="GrossIncome" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="EmergencyContactSchool">
+    <Key>
+      <PropertyRef Name="EmergencyContactSchoolId" />
+    </Key>
+    <Property Type="Int32" Name="EmergencyContactSchoolId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="FirstName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LastName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Title" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Phone" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="Int32" Name="SequenceId" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="Insurance">
+    <Key>
+      <PropertyRef Name="InsuranceId" />
+    </Key>
+    <Property Type="Int32" Name="InsuranceId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="InsuranceType" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PolicyNumber" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PolicyHolder" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+    <Property Type="Int32" Name="AddressId" />
+    <Property Type="String" Name="CompanyName" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PreferType" MaxLength="100" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="LookUp">
+    <Key>
+      <PropertyRef Name="LookupId" />
+    </Key>
+    <Property Type="Int32" Name="LookupId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="LookupType" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LookupName" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LookupCode" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LookupDesc" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="ParentLookupId" />
+    <Property Type="String" Name="ParentLookupCode" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="SortOrder" />
+    <Property Type="String" Name="CreatedBy" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="CreateOn" Nullable="false" Precision="3" />
+    <Property Type="String" Name="ModifiedBy" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+  </EntityType>
+  <EntityType Name="MedicalAndInsurance">
+    <Key>
+      <PropertyRef Name="MedicalInsuranceId" />
+    </Key>
+    <Property Type="Int32" Name="MedicalInsuranceId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="FirstName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LastName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="City" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="OfficePhone" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="DateOfLastPhysicalExam" Precision="0" />
+    <Property Type="String" Name="MedicalConditionsDiagnosis" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Allergies" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CurrentMedications" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SelfPreservationAbility" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SignificantBehaviorCharacteristics" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Capabilities" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Limitations" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Preferances" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CountryId" />
+    <Property Type="Int32" Name="StateId" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+    <Property Type="Int32" Name="AddressId" />
+    <Property Type="String" Name="Speciality" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Parent">
+    <Key>
+      <PropertyRef Name="ParentID" />
+    </Key>
+    <Property Type="Int32" Name="ParentID" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="Fname" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Lname" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Username" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Password" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="ProcessChkLstRel">
+    <Key>
+      <PropertyRef Name="ProcessChkLstRelId" />
+    </Key>
+    <Property Type="Int32" Name="ProcessChkLstRelId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="QueueProcessId" Nullable="false" />
+    <Property Type="Int32" Name="ChkLstEngId" Nullable="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="StudentAddresRel">
+    <Key>
+      <PropertyRef Name="studentAddressRelId" />
+    </Key>
+    <Property Type="Int32" Name="studentAddressRelId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="AddressId" Nullable="false" />
+    <Property Type="Int32" Name="ContactSequence" />
+    <Property Type="Int32" Name="ContactPersonalId" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="StudentContactRelationship">
+    <Key>
+      <PropertyRef Name="StudentContactRelId" />
+    </Key>
+    <Property Type="Int32" Name="StudentContactRelId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="ContactPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="RelationshipId" Nullable="false" />
+    <Property Type="Boolean" Name="ParentLegalGuardian" />
+    <Property Type="Boolean" Name="PickupRights" />
+    <Property Type="Boolean" Name="LivesWith" />
+    <Property Type="Boolean" Name="AccessToRecords" />
+    <Property Type="Boolean" Name="EmergencyContact" />
+    <Property Type="Boolean" Name="HasCustody" />
+    <Property Type="Boolean" Name="DisciplinaryContact" />
+    <Property Type="Boolean" Name="PrimaryCareProvider" />
+    <Property Type="Boolean" Name="Other" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="StudentParentRel">
+    <Key>
+      <PropertyRef Name="StudentParentRelId" />
+    </Key>
+    <Property Type="Int32" Name="StudentParentRelId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="ParentID" Nullable="false" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Type="Int32" Name="UserId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="AddressId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="UserNo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="UserInitial" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="UserFName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="UserLName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Gender" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="Binary" Name="Login" MaxLength="50" FixedLength="false" />
+    <Property Type="Binary" Name="Password" MaxLength="50" FixedLength="false" />
+    <Property Type="Int32" Name="ManagerId" />
+    <Property Type="DateTime" Name="EffStartDate" Precision="0" />
+    <Property Type="DateTime" Name="EffEndDate" Precision="0" />
+    <Property Type="String" Name="ActiveInd" MaxLength="3" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ImageURL" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Position" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="3" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+  </EntityType>
+  <EntityType Name="Visitation">
+    <Key>
+      <PropertyRef Name="VisitationId" />
+    </Key>
+    <Property Type="Int32" Name="VisitationId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="Int32" Name="VisittaionType" />
+    <Property Type="String" Name="VisitationName" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="VisitationDate" Nullable="false" Precision="0" />
+    <Property Type="DateTime" Name="ExpiredOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="VisitationStatus" />
+    <Property Type="Int32" Name="Status" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="SchoolsAttended">
+    <Key>
+      <PropertyRef Name="SchoolsAttendedId" />
+    </Key>
+    <Property Type="Int32" Name="SchoolsAttendedId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="SchoolName" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="DateFrom" Precision="0" />
+    <Property Type="DateTime" Name="DateTo" Precision="0" />
+    <Property Type="String" Name="Address1" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Address2" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="City" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="State" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="SequenceId" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="Document">
+    <Key>
+      <PropertyRef Name="DocumentId" />
+    </Key>
+    <Property Type="Int32" Name="DocumentId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="SchoolId" />
+    <Property Type="Int32" Name="StudentPersonalId" />
+    <Property Type="Int32" Name="DocumentType" />
+    <Property Type="String" Name="DocumentName" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="DocumentPath" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="UserType" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Boolean" Name="Status" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+    <Property Type="Int32" Name="SignedBy" />
+    <Property Type="DateTime" Name="SignedOn" Precision="3" />
+    <Property Type="Boolean" Name="Varified" />
+  </EntityType>
+  <EntityType Name="AddressList">
+    <Key>
+      <PropertyRef Name="AddressId" />
+    </Key>
+    <Property Type="Int32" Name="AddressId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="AddressType" Nullable="false" />
+    <Property Type="String" Name="AddressLine1" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="AddressLine2" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="AddressLine3" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Complex" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StreetNumber" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StreetPrefix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StreetName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StreetType" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StreetSuffix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ApartmentType" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ApartmentNumberPrefix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="ApartmentNumber" />
+    <Property Type="String" Name="Phone" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Mobile" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="OtherPhone" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PrimaryEmail" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SecondryEmail" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ApartmentNumberSuffix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="City" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="County" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="StateProvince" />
+    <Property Type="Int32" Name="CountryId" />
+    <Property Type="String" Name="PostalCode" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="GridLocation" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+    <Property Type="String" Name="Fax" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="BusinessAddress" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Event">
+    <Key>
+      <PropertyRef Name="EventId" />
+    </Key>
+    <Property Type="Int32" Name="EventId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="EventType" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="EventsName" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="EventDate" Nullable="false" Precision="0" />
+    <Property Type="DateTime" Name="ExpiredOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="EventStatus" />
+    <Property Type="Int32" Name="Status" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="AdaptiveEquipment">
+    <Key>
+      <PropertyRef Name="AdaptiveEquipmentId" />
+    </Key>
+    <Property Type="Int32" Name="AdaptiveEquipmentId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="Item" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ScheduleForUse" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StorageLocation" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CleaningInstruction" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="BasicBehavioralInformation">
+    <Key>
+      <PropertyRef Name="BasicBehavioralInformationId" />
+    </Key>
+    <Property Type="Int32" Name="BasicBehavioralInformationId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="TargetBehavior" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Definition" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Antecedent" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="FCT" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Consequence" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="DiaganosesPA">
+    <Key>
+      <PropertyRef Name="DiaganosePAId" />
+    </Key>
+    <Property Type="Int32" Name="DiaganosePAId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" />
+    <Property Type="String" Name="Diaganoses" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+    <Property Type="String" Name="BloodGroup" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="AllergiesAndReactions" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SummaryHealthProblem" MaxLength="Max" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="StudentPersonalPA">
+    <Key>
+      <PropertyRef Name="StudentPersonalPAId" />
+    </Key>
+    <Property Type="Int32" Name="StudentPersonalPAId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="Bathroom" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="OnCampus" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="WhenTranspoting" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="OffCampus" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CommonAreas" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PoolOrSwimming" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Van" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ho_CommonAres" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ho_BedroomAwake" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ho_BedroomAsleep" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="dy_TaskOrBreak" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="dy_TransitionInside" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="dy_TransitionUnevenGround" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="RiskOfResistance" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Mobility" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="NeedForExtraHelp" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ResponseToInstruction" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Consciousness" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="WalkingResponses" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Allergies" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Seizures" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Diet" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Other" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LiftingOrTransfers" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Ambulation" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Toileting" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Eating" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Showering" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Toothbrushing" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Dressing" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SkinCareOrSkinIntegrity" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Communication" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PreferedActivities" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="GeneralInformation" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SuggestedProactiveEnviornmentalProcedure" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="StudentPersonal">
+    <Key>
+      <PropertyRef Name="StudentPersonalId" />
+    </Key>
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="SchoolId" />
+    <Property Type="String" Name="LocalId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="StateProvinceId" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Prefix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LastName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MiddleName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Suffix" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="PreferredName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SortName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="NickName" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="FullName" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ImageUrl" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="Boolean" Name="ImagePermission" />
+    <Property Type="Int32" Name="RaceId" />
+    <Property Type="Boolean" Name="HispanicLatino" />
+    <Property Type="String" Name="Gender" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="BirthDate" Precision="0" />
+    <Property Type="Int32" Name="BirthDateVerification" />
+    <Property Type="DateTime" Name="AdmissionDate" Precision="0" />
+    <Property Type="String" Name="PlaceOfBirth" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CountyOfBirth" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="StateOfBirth" />
+    <Property Type="Int32" Name="CountryOfBirth" />
+    <Property Type="String" Name="CountryOfCitizenship" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CountryOfResidency" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="CountryArrivalDate" Precision="0" />
+    <Property Type="Int32" Name="CitizenshipStatus" />
+    <Property Type="Int32" Name="EnglishProficiency" />
+    <Property Type="String" Name="LanguageList" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Type="String" Name="DwellingArrangementCode" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Type="Int32" Name="MaritalStatus" />
+    <Property Type="DateTime" Name="ProjectedGraduationYear" Precision="0" />
+    <Property Type="DateTime" Name="OnTimeGraduationYear" Precision="0" />
+    <Property Type="String" Name="HairColor" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="EyeColor" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Decimal" Name="Height" Precision="18" Scale="3" />
+    <Property Type="Decimal" Name="Weight" Precision="18" Scale="3" />
+    <Property Type="String" Name="PrimaryLanguage" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="DistingushingMarks" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="LegalCompetencyStatus" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="OtherStateAgenciesInvolvedWithStudent" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MaritalStatusofBothParents" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="GuardianShip" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CaseManagerEducational" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="CaseManagerResidential" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="GraduationDate" Precision="0" />
+    <Property Type="String" Name="MostRecentSchoolLocalId" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MostRecentHomeroomLocalId" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="DateInitiallyEligibleforSpecialEducation" Precision="0" />
+    <Property Type="DateTime" Name="DateofMostRecentSpecialEducationEvaluations" Precision="0" />
+    <Property Type="DateTime" Name="DateofNextScheduled3YearEvaluation" Precision="0" />
+    <Property Type="DateTime" Name="CurrentIEPStartDate" Precision="0" />
+    <Property Type="DateTime" Name="CurrentIEPExpirationDate" Precision="0" />
+    <Property Type="DateTime" Name="DischargeDate" Precision="0" />
+    <Property Type="String" Name="LocationAfterDischarge" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MelmarkNewEnglandsFollowUpResponsibilities" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="MostRecentGradeLevel" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="Boolean" Name="AcceptableUsePolicy" />
+    <Property Type="Boolean" Name="IDEA" />
+    <Property Type="Boolean" Name="Migrant" />
+    <Property Type="Boolean" Name="Title1" />
+    <Property Type="Boolean" Name="GiftedTalented" />
+    <Property Type="Boolean" Name="EconomicDisadvantage" />
+    <Property Type="Boolean" Name="ELL" />
+    <Property Type="Boolean" Name="Homeless" />
+    <Property Type="Boolean" Name="Section504" />
+    <Property Type="Boolean" Name="VocationalConcentrator" />
+    <Property Type="Boolean" Name="Immigrant" />
+    <Property Type="Boolean" Name="NeglectedDelinquent" />
+    <Property Type="DateTime" Name="FirstUSEnrollment" Precision="0" />
+    <Property Type="String" Name="StudentType" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Type="Binary" Name="StudentXMLData" MaxLength="Max" FixedLength="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+    <Property Type="String" Name="PrimaryDiag" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SecondaryDiag" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SocialSecurityNo" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="SSINo" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="Ethinicity" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="ReligiousAffiliation" MaxLength="100" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Placement">
+    <Key>
+      <PropertyRef Name="PlacementId" />
+    </Key>
+    <Property Type="Int32" Name="PlacementId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="Int32" Name="PlacementType" />
+    <Property Type="Int32" Name="Department" />
+    <Property Type="Int32" Name="BehaviorAnalyst" />
+    <Property Type="Int32" Name="PrimaryNurse" />
+    <Property Type="Int32" Name="UnitClerk" />
+    <Property Type="Int32" Name="Class" />
+    <Property Type="DateTime" Name="StartDate" Nullable="false" Precision="0" />
+    <Property Type="DateTime" Name="EndDate" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="VisitationStatus" />
+    <Property Type="Int32" Name="Status" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="0" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="0" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Type="Int32" Name="RoleId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="String" Name="RoleCode" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="RoleDesc" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="DashBrdType" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="3" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+  </EntityType>
+  <EntityType Name="RoleGroup">
+    <Key>
+      <PropertyRef Name="RoleGroupId" />
+    </Key>
+    <Property Type="Int32" Name="RoleGroupId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="Int32" Name="RoleId" Nullable="false" />
+    <Property Type="Int32" Name="GroupId" Nullable="false" />
+    <Property Type="String" Name="CompDesc" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="3" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+  </EntityType>
+  <EntityType Name="RoleGroupPerm">
+    <Key>
+      <PropertyRef Name="PermissionId" />
+    </Key>
+    <Property Type="Int32" Name="PermissionId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="SchoolId" Nullable="false" />
+    <Property Type="Int32" Name="RoleGroupId" Nullable="false" />
+    <Property Type="Int32" Name="ObjectId" Nullable="false" />
+    <Property Type="Boolean" Name="AccessInd" />
+    <Property Type="Boolean" Name="ReadInd" />
+    <Property Type="Boolean" Name="WriteInd" />
+    <Property Type="Boolean" Name="ApproveInd" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="3" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+  </EntityType>
+  <EntityType Name="BehavioursPA">
+    <Key>
+      <PropertyRef Name="BehavioursPAId" />
+    </Key>
+    <Property Type="Int32" Name="BehavioursPAId" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="StudentPersonalId" Nullable="false" />
+    <Property Type="Int32" Name="SchoolId" />
+    <Property Type="Int32" Name="BehaviorId" />
+    <Property Type="String" Name="BehaviourName" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="ParentId" />
+    <Property Type="Int32" Name="Score" />
+    <Property Type="Int32" Name="CreatedBy" Nullable="false" />
+    <Property Type="DateTime" Name="CreatedOn" Nullable="false" Precision="3" />
+    <Property Type="Int32" Name="ModifiedBy" />
+    <Property Type="DateTime" Name="ModifiedOn" Precision="3" />
+  </EntityType>
+</Schema>

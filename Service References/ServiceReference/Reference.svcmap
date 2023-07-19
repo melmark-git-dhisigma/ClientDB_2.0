@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="53629e0d-4f11-44fe-a459-3fdb9a770e82" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:56834/parentservice/ParentService.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ParentService.xsd" MetadataType="Schema" ID="d2149e9e-33e4-483b-8cad-7911eef0fab4" SourceId="1" SourceUrl="http://localhost:56834/parentservice/ParentService.svc?xsd=xsd0" />
+    <MetadataFile FileName="ParentService1.xsd" MetadataType="Schema" ID="986c2393-bd9a-4ad4-81e8-84677ae02d3b" SourceId="1" SourceUrl="http://localhost:56834/parentservice/ParentService.svc?xsd=xsd3" />
+    <MetadataFile FileName="ParentService2.xsd" MetadataType="Schema" ID="f3956569-1b6a-4542-98d2-cd9872d42499" SourceId="1" SourceUrl="http://localhost:56834/parentservice/ParentService.svc?xsd=xsd2" />
+    <MetadataFile FileName="ParentService.wsdl" MetadataType="Wsdl" ID="27813a9c-55ec-4e19-ac0a-49106a739423" SourceId="1" SourceUrl="http://localhost:56834/parentservice/ParentService.svc?wsdl" />
+    <MetadataFile FileName="ParentService3.xsd" MetadataType="Schema" ID="8d613d43-2cf9-4d9e-a93f-8b5804cdb24d" SourceId="1" SourceUrl="http://localhost:56834/parentservice/ParentService.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

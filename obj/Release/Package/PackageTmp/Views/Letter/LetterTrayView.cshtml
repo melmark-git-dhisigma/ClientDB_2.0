@@ -1,0 +1,25 @@
+﻿@model ClientDB.Models.LetterTrayViewModel
+
+@using (Ajax.BeginForm("LetterTrayView","", FormMethod.Post, new AjaxOptions { UpdateTargetId = "" }))
+ {
+<div id="tray" style="height: 96%; padding: 5px; border: 1px solid rgb(174, 191, 220); border-radius: 5px;">
+    <table style="margin-top:8px;width:100%">
+       
+       @foreach(var letterlists in Model.LetterList)
+           {
+            <tr>
+                <td style="background: none repeat scroll 0px 0px rgb(126, 171, 190); font-weight: bold; color: white; padding: 6px;"><div>@letterlists.LetterName</div></td>
+
+            </tr>
+           <tr>
+                <td style="padding:6px;">
+                    <div>
+                         @Html.Raw(letterlists.LetterItem)
+                    </div>
+                </td>
+            </tr>
+            }
+    </table>
+</div>
+ 
+ }

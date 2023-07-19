@@ -1,0 +1,125 @@
+G:\Refferal Database\ClientDB\ClientDB\bin\ClientDB.dll
+G:\Refferal Database\ClientDB\ClientDB\bin\ClientDB.pdb
+G:\Refferal Database\ClientDB\ClientDB\bin\System.Net.Http.dll
+G:\Refferal Database\ClientDB\ClientDB\bin\System.Net.Http.WebRequest.dll
+G:\Refferal Database\ClientDB\ClientDB\bin\System.Net.Http.xml
+G:\Refferal Database\ClientDB\ClientDB\bin\System.Net.Http.WebRequest.xml
+G:\Refferal Database\ClientDB\ClientDB\obj\Release\ClientDB.dll
+G:\Refferal Database\ClientDB\ClientDB\obj\Release\ClientDB.pdb
+G:\Refferal Database\Client DB 28-10-2013\bin\ClientDB.dll
+G:\Refferal Database\Client DB 28-10-2013\bin\ClientDB.pdb
+G:\Refferal Database\Client DB 28-10-2013\bin\System.Net.Http.dll
+G:\Refferal Database\Client DB 28-10-2013\bin\System.Net.Http.WebRequest.dll
+G:\Refferal Database\Client DB 28-10-2013\bin\System.Net.Http.xml
+G:\Refferal Database\Client DB 28-10-2013\bin\System.Net.Http.WebRequest.xml
+G:\Refferal Database\Client DB 28-10-2013\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+G:\Refferal Database\Client DB 28-10-2013\obj\Release\ClientDB.dll
+G:\Refferal Database\Client DB 28-10-2013\obj\Release\ClientDB.pdb
+D:\Arun\Client DB 31-10-2013\bin\ClientDB.dll
+D:\Arun\Client DB 31-10-2013\bin\ClientDB.pdb
+D:\Arun\Client DB 31-10-2013\bin\System.Net.Http.dll
+D:\Arun\Client DB 31-10-2013\bin\System.Net.Http.WebRequest.dll
+D:\Arun\Client DB 31-10-2013\bin\System.Net.Http.xml
+D:\Arun\Client DB 31-10-2013\bin\System.Net.Http.WebRequest.xml
+D:\Arun\Client DB 31-10-2013\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+D:\Arun\Client DB 31-10-2013\obj\Release\ClientDB.dll
+D:\Arun\Client DB 31-10-2013\obj\Release\ClientDB.pdb
+G:\Backup Dont Delete\ClientDB 23-05-2014\bin\ClientDB.dll
+G:\Backup Dont Delete\ClientDB 23-05-2014\bin\ClientDB.pdb
+G:\Backup Dont Delete\ClientDB 23-05-2014\bin\System.Net.Http.dll
+G:\Backup Dont Delete\ClientDB 23-05-2014\bin\System.Net.Http.WebRequest.dll
+G:\Backup Dont Delete\ClientDB 23-05-2014\bin\System.Net.Http.xml
+G:\Backup Dont Delete\ClientDB 23-05-2014\bin\System.Net.Http.WebRequest.xml
+G:\Backup Dont Delete\ClientDB 23-05-2014\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+G:\Backup Dont Delete\ClientDB 23-05-2014\obj\Release\ClientDB.dll
+G:\Backup Dont Delete\ClientDB 23-05-2014\obj\Release\ClientDB.pdb
+E:\ClientDBIntegration\bin\ClientDB.dll
+E:\ClientDBIntegration\bin\ClientDB.pdb
+E:\ClientDBIntegration\bin\System.Net.Http.dll
+E:\ClientDBIntegration\bin\System.Net.Http.WebRequest.dll
+E:\ClientDBIntegration\bin\System.Net.Http.xml
+E:\ClientDBIntegration\bin\System.Net.Http.WebRequest.xml
+E:\ClientDBIntegration\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+E:\ClientDBIntegration\obj\Release\ClientDB.dll
+E:\ClientDBIntegration\obj\Release\ClientDB.pdb
+D:\CLIENT\bin\ClientDB.dll
+D:\CLIENT\bin\ClientDB.pdb
+D:\CLIENT\bin\System.Net.Http.dll
+D:\CLIENT\bin\System.Net.Http.WebRequest.dll
+D:\CLIENT\bin\System.Net.Http.xml
+D:\CLIENT\bin\System.Net.Http.WebRequest.xml
+D:\CLIENT\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+D:\CLIENT\obj\Release\ClientDB.dll
+D:\CLIENT\obj\Release\ClientDB.pdb
+D:\27-8-2014\client31-7\bin\ClientDB.dll
+D:\27-8-2014\client31-7\bin\ClientDB.pdb
+D:\27-8-2014\client31-7\bin\System.Net.Http.dll
+D:\27-8-2014\client31-7\bin\System.Net.Http.WebRequest.dll
+D:\27-8-2014\client31-7\bin\System.Net.Http.xml
+D:\27-8-2014\client31-7\bin\System.Net.Http.WebRequest.xml
+D:\27-8-2014\client31-7\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+D:\27-8-2014\client31-7\obj\Release\ClientDB.dll
+D:\27-8-2014\client31-7\obj\Release\ClientDB.pdb
+F:\Alphonsa\107Client1.3\bin\ClientDB.dll
+F:\Alphonsa\107Client1.3\bin\ClientDB.pdb
+F:\Alphonsa\107Client1.3\bin\System.Net.Http.dll
+F:\Alphonsa\107Client1.3\bin\System.Net.Http.WebRequest.dll
+F:\Alphonsa\107Client1.3\bin\HtmlToOpenXml.xml
+F:\Alphonsa\107Client1.3\bin\System.Net.Http.xml
+F:\Alphonsa\107Client1.3\bin\System.Net.Http.WebRequest.xml
+F:\Alphonsa\107Client1.3\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+F:\Alphonsa\107Client1.3\obj\Release\ClientDB.dll
+F:\Alphonsa\107Client1.3\obj\Release\ClientDB.pdb
+D:\Melmark\Client and Parent [19-Jun-2020]\Client11Feb2021\ClientDB_New\bin\ClientDB.dll
+D:\Melmark\Client and Parent [19-Jun-2020]\Client11Feb2021\ClientDB_New\bin\ClientDB.pdb
+D:\Melmark\Client and Parent [19-Jun-2020]\Client11Feb2021\ClientDB_New\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+D:\Melmark\Client and Parent [19-Jun-2020]\Client11Feb2021\ClientDB_New\obj\Release\ClientDB.dll
+D:\Melmark\Client and Parent [19-Jun-2020]\Client11Feb2021\ClientDB_New\obj\Release\ClientDB.pdb
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\bin\ClientDB.dll
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\bin\ClientDB.pdb
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\bin\System.Net.Http.dll
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\bin\System.Net.Http.WebRequest.dll
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\bin\System.Net.Http.xml
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\bin\System.Net.Http.WebRequest.xml
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\obj\Release\ClientDB.dll
+C:\Fresh_checkout[2021]\CLient Report New\ClientDB_New\obj\Release\ClientDB.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\ClientDB.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\ClientDB.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\Facesheet.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\System.Net.Http.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\System.Net.Http.WebRequest.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\Facesheet.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\System.Net.Http.xml
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\bin\System.Net.Http.WebRequest.xml
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\obj\Release\ClientDB.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\CommitOnlyCheckPREDEVmelmark_client-1.0\obj\Release\ClientDB.pdb
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\ClientDB.dll
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\ClientDB.pdb
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\System.Net.Http.dll
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\System.Net.Http.WebRequest.dll
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\Facesheet.pdb
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\System.Net.Http.xml
+E:\Snishil\Melmark\Publish\melmark_client-1.0\bin\System.Net.Http.WebRequest.xml
+E:\Snishil\Melmark\Publish\melmark_client-1.0\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+E:\Snishil\Melmark\Publish\melmark_client-1.0\obj\Release\ClientDB.dll
+E:\Snishil\Melmark\Publish\melmark_client-1.0\obj\Release\ClientDB.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\bin\ClientDB.dll
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\bin\ClientDB.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\bin\System.Net.Http.dll
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\bin\System.Net.Http.WebRequest.dll
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\bin\System.Net.Http.xml
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\bin\System.Net.Http.WebRequest.xml
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\obj\Release\ClientDB.dll
+E:\Snishil\Melmark\Melmark Commit only Check\biweekly\melmark_client-2.0-Discharge\obj\Release\ClientDB.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\bin\ClientDB.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\bin\ClientDB.pdb
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\bin\System.Net.Http.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\bin\System.Net.Http.WebRequest.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\bin\System.Net.Http.xml
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\bin\System.Net.Http.WebRequest.xml
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\obj\Release\ClientDB.csprojResolveAssemblyReference.cache
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\obj\Release\ClientDB.dll
+E:\Snishil\Melmark\Melmark Commit only Check\Client\melmark_client-2.0-Discharge\obj\Release\ClientDB.pdb
