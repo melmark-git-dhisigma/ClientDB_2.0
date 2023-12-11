@@ -116,7 +116,7 @@ namespace ClientDB.Models
 
                 }
                 result2 = (from studpersonal in RPCobj.StudentPersonals
-                           join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
+                          // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                            where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                            select studpersonal).Distinct().ToList();
                 result4 = (from studpersonal in RPCobj.StudentPersonals
@@ -292,7 +292,7 @@ namespace ClientDB.Models
 
                 }
                 result2 = (from studpersonal in RPCobj.StudentPersonals
-                           join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
+                          // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                            where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                            select studpersonal).Distinct().ToList();
                 result4 = (from studpersonal in RPCobj.StudentPersonals
@@ -447,7 +447,7 @@ namespace ClientDB.Models
                         }
 
                         result2 = (from studpersonal in RPCobj.StudentPersonals
-                                   join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
+                                   //join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                                    where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                                    select studpersonal).Distinct().ToList();
                         result4 = (from studpersonal in RPCobj.StudentPersonals
@@ -577,7 +577,7 @@ namespace ClientDB.Models
                         }
 
                         result2 = (from studpersonal in RPCobj.StudentPersonals
-                                   join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
+                                  // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                                    where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                                    select studpersonal).Distinct().ToList();
                         result4 = (from studpersonal in RPCobj.StudentPersonals
@@ -613,7 +613,6 @@ namespace ClientDB.Models
                                     result.Remove(result5[i]);
                                 }
                             }
-
                         }
                         else if (objClientSearch.activeClient == 2)
                         {
@@ -713,7 +712,7 @@ namespace ClientDB.Models
                         }
                     }
                     result2 = (from studpersonal in RPCobj.StudentPersonals
-                               join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
+                              // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                                where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                                select studpersonal).Distinct().ToList();
                     result4 = (from studpersonal in RPCobj.StudentPersonals

@@ -791,6 +791,11 @@
                                     <table style="width: 100%">
                                         <tr>
                                             <td>
+                                               <span style="text-align:right;font-weight:bolder;font-size:12px;color: #00549f;">Show Labels:</span><br />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 <asp:CheckBoxList ID="ChkStatisticalList2" runat="server" RepeatDirection="Horizontal">
                                                     <asp:ListItem Selected="True">Total number of client</asp:ListItem>
                                                     <asp:ListItem Selected="True">Student Name</asp:ListItem>
