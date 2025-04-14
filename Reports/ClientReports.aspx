@@ -10,6 +10,8 @@
 <head id="Head1" runat="server">
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+
     <%--    <link href="../Documents/CSS/General.css" rel="stylesheet" />--%>
     <script src="../Documents/JS/jquery-1.8.0.min.js"></script>
     <script src="../Documents/JS/jquery.form.js"></script>
@@ -24,6 +26,10 @@
     <link href="../Documents/CSS/ReportStyle.css" rel="stylesheet" />
     <script src="../../Documents/JS/jquery.timeentry.js" type="text/javascript"></script>
     <script src="~/Documents/JS/jquery-ui-1.8.24.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <style type="text/css">
         .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
             width: 50% !important;
@@ -287,6 +293,439 @@
         }
 
     </script>
+    <style>
+        #checkHighcharts {
+            margin-left:10px;
+            height:15px;
+            width:15px;
+        }
+    </style>
+    <style>
+
+        /*Table Styling*/
+
+        #table {
+        table-layout:fixed;
+        width: 100%;
+        border: 1px solid black;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+        #table tr {
+    width:auto;
+}
+    /* Table Header styling */
+    #tableHeader {
+        background-color: #4CAF50;
+        color: white;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    /* Table Header cells */
+    #tableHeader th {
+        text-align:center;
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        cursor: pointer;
+        height: 30px;
+    }
+
+    /* Table Body styling */
+    #tableBody {
+        background-color: #fff;
+    }
+
+    /* Table rows and cells */
+    #tableBody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+        #tableBody tr {
+            height: 40px;
+            width: auto;
+        }
+    #tableBody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    #tableBody td {
+        text-align:center;
+        border: 1px solid #ddd;
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* Filter Section */
+    #filterDiv {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Checkbox container in filter section */
+    #filterDiv input[type="checkbox"] {
+        margin-right: 10px;
+        margin-top: 5px;
+        user-select:none;
+    }
+
+    #filterDiv label {
+        margin-right: 15px;
+        font-size: 14px;
+        font-weight: normal;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+        #table {
+            font-size: 14px;
+        }
+
+        #tableBody td {
+            padding: 10px;
+        }
+
+        #tableHeader th {
+            padding: 10px;
+        }
+    }
+    </style>
+   
+    <script>
+
+        var currentPage = 1;
+        var rowsPerPage = 10;
+        var fullData = [];
+        function loadDataFromServer(data) {
+            fullData = data;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                document.getElementById("noOfClients").textContent = "Total No. of Clients : 0";
+                return;
+            }
+            else
+                tableHeader.style.removeProperty("display");
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear any existing headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+
+            // Create header cells
+            columns.forEach(function (col) {
+                var th = document.createElement('th');
+                th.textContent = col;
+                th.setAttribute('onclick', 'sortTable("' + col + '")');
+                headerRow.appendChild(th);
+            });
+
+            // Append the header row
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic: slice data for the current page
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table body with rows for the current page
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Create column visibility checkboxes
+            createColumnVisibilityCheckboxes(columns);
+
+            // Create pagination controls
+            createPaginationControls(data.length, data);
+
+            //Display count of clients
+            document.getElementById("noOfClients").textContent = "Total No. of Clients : " + data.length;
+        }
+
+        function createPaginationControls(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServer(data); // Re-load the table data for the new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + Math.ceil(totalRows / rowsPerPage);
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServer(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+        }
+
+
+
+        var sortDirection = {};
+
+        function sortTable(columnName) {
+            if (!fullData || fullData.length === 0) return;
+
+            var ascending = sortDirection[columnName] === "asc";
+            sortDirection[columnName] = ascending ? "desc" : "asc";
+
+            fullData.sort(function (a, b) {
+                var valueA = a[columnName] ? a[columnName].toString().trim() : "";
+                var valueB = b[columnName] ? b[columnName].toString().trim() : "";
+
+                return ascending ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+            });
+            currentPage = 1;
+            loadDataFromServer(fullData);
+        }
+
+        function createColumnVisibilityCheckboxes(columns) {
+            var filterDiv = document.getElementById("filterDiv");
+            filterDiv.innerHTML = '';
+
+            columns.forEach(function (col) {
+                var checkboxLabel = document.createElement('label');
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = true;
+                checkbox.setAttribute('onclick', 'toggleColumnVisibility("' + col + '", this)');
+
+                checkboxLabel.appendChild(checkbox);
+                checkboxLabel.appendChild(document.createTextNode(col));
+                filterDiv.appendChild(checkboxLabel);
+            });
+        }
+
+
+        function toggleColumnVisibility(columnName, checkbox) {
+            var table = document.getElementById("table");
+            var columnIndex = Array.from(table.rows[0].cells).findIndex(function (cell) {
+                return cell.textContent === columnName;
+            });
+
+            Array.from(table.rows).forEach(function (row) {
+                if (checkbox.checked) {
+                    row.cells[columnIndex].style.display = '';
+                } else {
+                    row.cells[columnIndex].style.display = 'none';
+                }
+            });
+        }
+
+        function filterTable(columnName, selectedValues) {
+            var table = document.getElementById("table");
+            var rows = Array.from(table.rows).slice(1);
+            var columnIndex = Array.from(table.rows[0].cells).findIndex(function (cell) {
+                return cell.textContent === columnName;
+            });
+
+            rows.forEach(function (row) {
+                var cellValue = row.cells[columnIndex].textContent;
+                if (selectedValues.includes('All') || selectedValues.includes(cellValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+
+    </script>
+    <style>
+        /*Column Dropdown Styling*/
+
+
+        .dropdown {
+            background-color: #4CAF50;
+            width:266px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background-color: #4CAF50;
+            user-select: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .dropdown-content {
+            display: none;
+            user-select: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            width: 356px;
+            height: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            padding: 10px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+    <style>
+        /*Button Styling*/
+       .button-style {
+    background-color: #03507D;  /* Bold Orange */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    margin-top:5px;
+    margin-bottom:5px;
+    margin-right:5px;
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-right:10px;
+    border-radius:5px;
+}
+
+.button-style:hover {
+    background-color: #C74C2C;  
+    transform: scale(1.05); 
+}
+
+.button-style:focus {
+    outline: none;
+}
+    </style>
+    <style>
+        /*Pagination Styling*/
+        .pagination-container {
+            display: inline-block;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            background-color: #f8f8f8;
+        }
+
+            .pagination-container button {
+                padding: 5px 10px;
+                font-size: 14px;
+                cursor: pointer;
+                background-color: #03507D;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                display: inline-block;
+                margin: 0 5px;
+            }
+
+                .pagination-container button:disabled {
+                    background-color: #ccc;
+                    cursor: not-allowed;
+                }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $('#<%= btnallClient.ClientID %>').click(function () {
+                $('#<%= dropdown_container.ClientID %>').toggle();
+            });
+        });
+
+
+
+        function getSelectedValuesAndSend() {
+            document.getElementById("btnShowReport").style.display = 'inline-block';
+            document.getElementById("btnResetAllClient").style.display = 'inline-block';
+            event.preventDefault();
+                var selectedValues = {};
+
+                var checkboxes = document.querySelectorAll(".filter-checkbox:checked");
+
+                for (var i = 0; i < checkboxes.length; i++) {
+                    var checkbox = checkboxes[i];
+                    var column = checkbox.getAttribute("data-column");
+
+                    var label = checkbox.closest("label");
+
+                    var text = label ? label.textContent.trim() : ""; 
+
+
+                    text = text.replace(/^\s+|\s+$/g, ""); 
+
+                    if (!selectedValues[column]) {
+                        selectedValues[column] = [];
+                    }
+
+                    selectedValues[column].push(text);
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "ClientReports.aspx/CreateDataTableFromSelectedValues", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var trimmedResponse = xhr.responseText.trim();
+
+                        if (trimmedResponse) {
+                            try {
+                                var jsonResponse = JSON.parse(trimmedResponse);
+                                var data = JSON.parse(jsonResponse.d);
+                                currentPage = 1;
+                                loadDataFromServer(data);
+                            } catch (e) {
+                                console.error("Error parsing JSON:", e);
+                            }
+                        } else {
+                            console.error("Empty response received.");
+                        }
+                    }
+                };
+
+                xhr.send(JSON.stringify({ selectedValues: selectedValues }));
+            }
+    </script>
 
     <style type="text/css">
         .leftMenu:active {
@@ -332,6 +771,7 @@
                 <div class="ContentAreaContainer">
                     <div class="leftContainer2" style="width: 23%">
 
+                        <asp:CheckBox ID="checkHighcharts" runat="server" />
                         <asp:Button ID="btnallClient" CssClass="leftMenu" runat="server" Text="All Clients Info" ToolTip="All Clients Info" OnClick="btnallClient_Click"></asp:Button>
 
                         <asp:Button ID="btnClienContact" CssClass="leftMenu" runat="server" Text="Emergency/Home Contact" ToolTip="Emergency/Home Contact" OnClick="btnClienContact_Click"></asp:Button>
@@ -854,9 +1294,27 @@
                                     <ServerReport ReportServerUrl="<%$ appSettings:ReportUrl %>" />
 
                                 </rsweb:ReportViewer>
+                                <div id="dropdown_container" runat="server">
+                                    </div>
+                                <div id="buttonContainer" style="text-align: left; width:270px; height:25px;">
+                                    <asp:Button ID="btnShowReport" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSend();" />
+                                    <asp:Button ID="btnResetAllClient" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClick="btnallClient_Click" />
+                                    <%--<asp:Button ID="btnOldReport" CssClass="button-style" runat="server" Visible="false" Text="Old Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnOldReport_Click" />--%>
 
+                                </div>
+                                <div id="filterDiv"></div>
+                                <asp:Label ID="noOfClients" runat="server" Text="" style="font-weight: bold; font-size:18px; color:black;"></asp:Label>
+                                <div id="paginationControls" class="pagination-container"></div>
+                                <table id="table">
+                                    <thead id="tableHeader">
+                                        <!-- Column headers will be dynamically added here -->
+                                    </thead>
+                                    <tbody id="tableBody">
+                                        <!-- Data rows will be dynamically added here -->
+                                    </tbody>
+                                </table>
+                                
                             </div>
-                        </div>
 
 
 
