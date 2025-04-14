@@ -13,24 +13,39 @@
     });
     $("#tblContacList tr:odd").css("background-color", "#F3F3F3");
 
-    function loadFunction(id, type) {
-
-        if (type == "Edit") {
-            //alert(id + " " + type)
-            document.getElementById('AddNewPlacement').style.display = "block";
-            $('#AddNewPlacement').load('../Placement/AddPlacement/' + id);
-           
-
-           
+    function checkStudentStatus() {
+        var discharged = $("#staticTab").find("span").html();
+        if (discharged.includes("Discharge")) {
+            //var status = document.getElementById("hfStudentStatus").value;
+            //if (status === "D") {
+            alert("Student is discharged. Please activate student for placement operations.");
+            return false;
         }
-        if (type == "Delete") {
-            //alert(id + " " + type)
-            if (confirm('Are you sure you want to delete this placement?')) {
-                $('#content').load('../Placement/DeletePlacementDetails/' + id);
-            } else {
-                return false;
-            }
+        return true;
+    }
 
+    function loadFunction(id, type) {
+        if (!checkStudentStatus()) {
+            // If checkStudentStatus returns false, stop further processing.
+            return false;
+        } else {
+            if (type == "Edit") {
+                //alert(id + " " + type)
+                document.getElementById('AddNewPlacement').style.display = "block";
+                $('#AddNewPlacement').load('../Placement/AddPlacement/' + id);
+
+
+
+            }
+            if (type == "Delete") {
+                //alert(id + " " + type)
+                if (confirm('Are you sure you want to delete this placement?')) {
+                    $('#content').load('../Placement/DeletePlacementDetails/' + id);
+                } else {
+                    return false;
+                }
+
+            }
         }
     }
 
@@ -141,11 +156,11 @@
                       {%>    
                     <%=item.datetime%><%} %></td>
                 <td style="text-align:left">
-                    <img src="../../Images/edit.PNG" onclick="loadFunction(<%= item.PlacementId %>,'Edit');" style="cursor:pointer;" /></td>
+                    <img src="../../Images/edit.PNG" onclick="return loadFunction(<%= item.PlacementId %>,'Edit');" style="cursor:pointer;" /></td>
                 <td style="text-align:left">
                     <%if (ViewBag.permission == "true")
                       { %>
-                    <img src="../../Images/delete.PNG" onclick="loadFunction(<%= item.PlacementId %>,'Delete');" style="cursor:pointer;" />
+                    <img src="../../Images/delete.PNG" onclick="return loadFunction(<%= item.PlacementId %>,'Delete');" style="cursor:pointer;" />
                      <%} %>
                 </td>
                

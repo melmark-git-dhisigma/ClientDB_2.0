@@ -36,6 +36,7 @@ namespace ClientDB.Models
             string dirpath = System.Web.Configuration.WebConfigurationManager.AppSettings["ImagessLocation"].ToString();
             Database objData = new Database();
             IList<StudentPersonal> result = new List<StudentPersonal>();
+            IList<StudentPersonal> result1 = new List<StudentPersonal>();
             IList<StudentPersonal> result2 = new List<StudentPersonal>();
             IList<StudentPersonal> result4 = new List<StudentPersonal>();     
             IList<StudentPersonal> result5 = new List<StudentPersonal>();
@@ -119,72 +120,77 @@ namespace ClientDB.Models
                           // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                            where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                            select studpersonal).Distinct().ToList();
-                result4 = (from studpersonal in RPCobj.StudentPersonals
-                           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
-                           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
-                           select studpersonal).Distinct().ToList();
+                //result4 = (from studpersonal in RPCobj.StudentPersonals
+                //           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                //           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
+                //           select studpersonal).Distinct().ToList();
                 result5 = (from studpersonal in RPCobj.StudentPersonals
                            join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
                            where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "D" && studpersonal.StudentType == "Client"
-                           select studpersonal).Distinct().ToList();
-                if (result4.Count > 0)
-                {
-                    for (int i = 0; i < result4.Count; i++)
-                    {
-                        result2.Remove(result4[i]);
-                    }
-                }
+                           select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                result1 = (from studpersonal in RPCobj.StudentPersonals
+                           //join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                           where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "A" && studpersonal.StudentType == "Client"
+                           select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                //if (result4.Count > 0)
+                //{
+                //    for (int i = 0; i < result4.Count; i++)
+                //    {
+                //        result2.Remove(result4[i]);
+                //    }
+                //}
                 if (objClientSearch.activeClient == 1)
                 {
-                    if (result2.Count > 0)
-                    {
-                        for (int i = 0; i < result2.Count; i++)
-                        {
-                            result.Remove(result2[i]);
-                        }
-                    }
-                    if (result5.Count > 0)
-                    {
-                        for (int i = 0; i < result5.Count; i++)
-                        {
-                            result.Remove(result5[i]);
-                        }
-                    }
-                }
-                else if (objClientSearch.activeClient == 2)
-                {
-                    result4.Clear();
-                    foreach (var item in result)
-                        result4.Add(item);
-                    if (result2.Count > 0)
-                    {
-                        for (int i = 0; i < result2.Count; i++)
-                        {
-                            result4.Remove(result2[i]);
-                        }
-                    }
-                    if (result4.Count > 0)
-                    {
-                        for (int i = 0; i < result4.Count; i++)
-                        {
-                            result.Remove(result4[i]);
-                        }
-                    }
+                    //if (result2.Count > 0)
+                    //{
+                    //    for (int i = 0; i < result2.Count; i++)
+                    //    {
+                    //        result.Remove(result2[i]);
+                    //    }
+                    //}
                     //if (result5.Count > 0)
                     //{
                     //    for (int i = 0; i < result5.Count; i++)
                     //    {
-                    //        result.Add(result5[i]);
+                    //        result.Remove(result5[i]);
                     //    }
                     //}
-                    if (result5.Count > 0)
-                    {
-                        for (int i = 0; i < result5.Count; i++)
-                        {
-                            result.Remove(result5[i]);
-                        }
-                    }
+                    result = result1;
                 }
+                //else if (objClientSearch.activeClient == 2)
+                //{
+                //    result4.Clear();
+                //    foreach (var item in result)
+                //        result4.Add(item);
+                //    if (result2.Count > 0)
+                //    {
+                //        for (int i = 0; i < result2.Count; i++)
+                //        {
+                //            result4.Remove(result2[i]);
+                //        }
+                //    }
+                //    if (result4.Count > 0)
+                //    {
+                //        for (int i = 0; i < result4.Count; i++)
+                //        {
+                //            result.Remove(result4[i]);
+                //        }
+                //    }
+                //    //if (result5.Count > 0)
+                //    //{
+                //    //    for (int i = 0; i < result5.Count; i++)
+                //    //    {
+                //    //        result.Add(result5[i]);
+                //    //    }
+                //    //}
+                //    if (result5.Count > 0)
+                //    {
+                //        for (int i = 0; i < result5.Count; i++)
+                //        {
+                //            result.Remove(result5[i]);
+                //        }
+                //    }
+                //}
                 else if (objClientSearch.activeClient == 4)
                 {
                     //result4.Clear();
@@ -204,16 +210,17 @@ namespace ClientDB.Models
                     //        result.Remove(result4[i]);
                     //    }
                     //}
-                    result4.Clear();
-                    if (result5.Count > 0)
-                    {
-                        for (int i = 0; i < result5.Count; i++)
-                        {
-                            if (result.Contains(result5[i]))
-                                result4.Add(result5[i]);
-                        }
-                        result = result4;
-                    }
+                    //result4.Clear();
+                    //if (result5.Count > 0)
+                    //{
+                    //    for (int i = 0; i < result5.Count; i++)
+                    //    {
+                    //        if (result.Contains(result5[i]))
+                    //            result4.Add(result5[i]);
+                    //    }
+                    //    result = result4;
+                    //}
+                    result = result5;
                 }
                 result = clientSearchList(objClientSearch, result);
 
@@ -295,72 +302,77 @@ namespace ClientDB.Models
                           // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                            where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                            select studpersonal).Distinct().ToList();
-                result4 = (from studpersonal in RPCobj.StudentPersonals
-                           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
-                           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
-                           select studpersonal).Distinct().ToList();
+                //result4 = (from studpersonal in RPCobj.StudentPersonals
+                //           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                //           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
+                //           select studpersonal).Distinct().ToList();
                 result5 = (from studpersonal in RPCobj.StudentPersonals
                            join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
                            where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "D" && studpersonal.StudentType == "Client"
-                           select studpersonal).Distinct().ToList();
-                if (result4.Count > 0)
-                {
-                    for (int i = 0; i < result4.Count; i++)
-                    {
-                        result2.Remove(result4[i]);
-                    }
-                }
+                           select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                result1 = (from studpersonal in RPCobj.StudentPersonals
+                           //join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                           where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "A" && studpersonal.StudentType == "Client"
+                           select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                //if (result4.Count > 0)
+                //{
+                //    for (int i = 0; i < result4.Count; i++)
+                //    {
+                //        result2.Remove(result4[i]);
+                //    }
+                //}
                 if (objClientSearch.activeClient == 1)
                 {
-                    if (result2.Count > 0)
-                    {
-                        for (int i = 0; i < result2.Count; i++)
-                        {
-                            result.Remove(result2[i]);
-                        }
-                    }
-                    if (result5.Count > 0)
-                    {
-                        for (int i = 0; i < result5.Count; i++)
-                        {
-                            result.Remove(result5[i]);
-                        }
-                    }
-                }
-                else if (objClientSearch.activeClient == 2)
-                {
-                    result4.Clear();
-                    foreach (var item in result)
-                        result4.Add(item);
-                    if (result2.Count > 0)
-                    {
-                        for (int i = 0; i < result2.Count; i++)
-                        {
-                            result4.Remove(result2[i]);
-                        }
-                    }
-                    if (result4.Count > 0)
-                    {
-                        for (int i = 0; i < result4.Count; i++)
-                        {
-                            result.Remove(result4[i]);
-                        }
-                    }
+                    //if (result2.Count > 0)
+                    //{
+                    //    for (int i = 0; i < result2.Count; i++)
+                    //    {
+                    //        result.Remove(result2[i]);
+                    //    }
+                    //}
                     //if (result5.Count > 0)
                     //{
                     //    for (int i = 0; i < result5.Count; i++)
                     //    {
-                    //        result.Add(result5[i]);
+                    //        result.Remove(result5[i]);
                     //    }
                     //}
-                    if (result5.Count > 0)
-                    {
-                        for (int i = 0; i < result5.Count; i++)
-                        {
-                            result.Remove(result5[i]);
-                        }
-                    }
+                    result = result1;
                 }
+                //else if (objClientSearch.activeClient == 2)
+                //{
+                //    result4.Clear();
+                //    foreach (var item in result)
+                //        result4.Add(item);
+                //    if (result2.Count > 0)
+                //    {
+                //        for (int i = 0; i < result2.Count; i++)
+                //        {
+                //            result4.Remove(result2[i]);
+                //        }
+                //    }
+                //    if (result4.Count > 0)
+                //    {
+                //        for (int i = 0; i < result4.Count; i++)
+                //        {
+                //            result.Remove(result4[i]);
+                //        }
+                //    }
+                //    //if (result5.Count > 0)
+                //    //{
+                //    //    for (int i = 0; i < result5.Count; i++)
+                //    //    {
+                //    //        result.Add(result5[i]);
+                //    //    }
+                //    //}
+                //    if (result5.Count > 0)
+                //    {
+                //        for (int i = 0; i < result5.Count; i++)
+                //        {
+                //            result.Remove(result5[i]);
+                //        }
+                //    }
+                //}
                 else if (objClientSearch.activeClient == 4)
                 {
                     //result4.Clear();
@@ -380,16 +392,17 @@ namespace ClientDB.Models
                     //        result.Remove(result4[i]);
                     //    }
                     //}
-                    result4.Clear();
-                    if (result5.Count > 0)
-                    {
-                        for (int i = 0; i < result5.Count; i++)
-                        {
-                            if(result.Contains(result5[i]))
-                            result4.Add(result5[i]);
-                        }
-                        result = result4;
-                    }
+                    //result4.Clear();
+                    //if (result5.Count > 0)
+                    //{
+                    //    for (int i = 0; i < result5.Count; i++)
+                    //    {
+                    //        if(result.Contains(result5[i]))
+                    //        result4.Add(result5[i]);
+                    //    }
+                    //    result = result4;
+                    //}
+                    result = result5;
                 }
                 result = clientSearchList(objClientSearch, result);
 
@@ -450,79 +463,83 @@ namespace ClientDB.Models
                                    //join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                                    where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                                    select studpersonal).Distinct().ToList();
-                        result4 = (from studpersonal in RPCobj.StudentPersonals
-                                   join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
-                                   where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
-                                   select studpersonal).Distinct().ToList();
+                        //result4 = (from studpersonal in RPCobj.StudentPersonals
+                        //           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                        //           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
+                        //           select studpersonal).Distinct().ToList();
                         result5 = (from studpersonal in RPCobj.StudentPersonals
                                    join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
                                    where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "D" && studpersonal.StudentType == "Client"
-                                   select studpersonal).Distinct().ToList();
-                        if (result4.Count > 0)
-                        {
-                            for (int i = 0; i < result4.Count; i++)
-                            {
-                                result2.Remove(result4[i]);
+                                   select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                        result1 = (from studpersonal in RPCobj.StudentPersonals
+                                   //join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                                   where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "A" && studpersonal.StudentType == "Client"
+                                   select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                        //if (result4.Count > 0)
+                        //{
+                        //    for (int i = 0; i < result4.Count; i++)
+                        //    {
+                        //        result2.Remove(result4[i]);
 
-                            }
-                        }
+                        //    }
+                        //}
                         if (objClientSearch.activeClient == 1)
                         {    
-                            if (result2.Count > 0)
-                            {
-                                for (int i = 0; i < result2.Count; i++)
-                                {
-                                    result.Remove(result2[i]);
+                            //if (result2.Count > 0)
+                            //{
+                            //    for (int i = 0; i < result2.Count; i++)
+                            //    {
+                            //        result.Remove(result2[i]);
 
-                                }
-                            }
-                            if (result5.Count > 0)
-                            {
-                                for (int i = 0; i < result5.Count; i++)
-                                {
-                                    result.Remove(result5[i]);
-                                }
-                            }
-
-                        }
-                        else if (objClientSearch.activeClient == 2)
-                        {   
-                            result4.Clear();
-                            foreach (var item in result)
-                                result4.Add(item);
-
-                            if (result2.Count > 0)
-                            {
-                                for (int i = 0; i < result2.Count; i++)
-                                {
-                                    result4.Remove(result2[i]);
-
-                                }
-                            }
-                            if (result4.Count > 0)
-                            {
-                                for (int i = 0; i < result4.Count; i++)
-                                {
-                                    result.Remove(result4[i]);
-
-                                }
-                            }
+                            //    }
+                            //}
                             //if (result5.Count > 0)
                             //{
                             //    for (int i = 0; i < result5.Count; i++)
                             //    {
-                            //        result.Add(result5[i]);
+                            //        result.Remove(result5[i]);
                             //    }
                             //}
-                            if (result5.Count > 0)
-                            {
-                                for (int i = 0; i < result5.Count; i++)
-                                {
-                                    result.Remove(result5[i]);
-                                }
-                            }
-
+                            result = result1;
                         }
+                        //else if (objClientSearch.activeClient == 2)
+                        //{   
+                        //    result4.Clear();
+                        //    foreach (var item in result)
+                        //        result4.Add(item);
+
+                        //    if (result2.Count > 0)
+                        //    {
+                        //        for (int i = 0; i < result2.Count; i++)
+                        //        {
+                        //            result4.Remove(result2[i]);
+
+                        //        }
+                        //    }
+                        //    if (result4.Count > 0)
+                        //    {
+                        //        for (int i = 0; i < result4.Count; i++)
+                        //        {
+                        //            result.Remove(result4[i]);
+
+                        //        }
+                        //    }
+                        //    //if (result5.Count > 0)
+                        //    //{
+                        //    //    for (int i = 0; i < result5.Count; i++)
+                        //    //    {
+                        //    //        result.Add(result5[i]);
+                        //    //    }
+                        //    //}
+                        //    if (result5.Count > 0)
+                        //    {
+                        //        for (int i = 0; i < result5.Count; i++)
+                        //        {
+                        //            result.Remove(result5[i]);
+                        //        }
+                        //    }
+
+                        //}
                         else if (objClientSearch.activeClient == 4)
                         {
                             //result4.Clear();
@@ -542,16 +559,17 @@ namespace ClientDB.Models
                             //        result.Remove(result4[i]);
                             //    }
                             //}
-                            result4.Clear();
-                            if (result5.Count > 0)
-                            {
-                                for (int i = 0; i < result5.Count; i++)
-                                {
-                                    if (result.Contains(result5[i]))
-                                        result4.Add(result5[i]);
-                                }
-                                result = result4;
-                            }
+                            //result4.Clear();
+                            //if (result5.Count > 0)
+                            //{
+                            //    for (int i = 0; i < result5.Count; i++)
+                            //    {
+                            //        if (result.Contains(result5[i]))
+                            //            result4.Add(result5[i]);
+                            //    }
+                            //    result = result4;
+                            //}
+                            result = result5;
 
                         }
                     }
@@ -580,78 +598,83 @@ namespace ClientDB.Models
                                   // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                                    where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                                    select studpersonal).Distinct().ToList();
-                        result4 = (from studpersonal in RPCobj.StudentPersonals
-                                   join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
-                                   where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
-                                   select studpersonal).Distinct().ToList();
+                        //result4 = (from studpersonal in RPCobj.StudentPersonals
+                        //           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                        //           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
+                        //           select studpersonal).Distinct().ToList();
                         result5 = (from studpersonal in RPCobj.StudentPersonals
                                    join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
                                    where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "D" && studpersonal.StudentType == "Client"
-                                   select studpersonal).Distinct().ToList();
-                        if (result4.Count > 0)
-                        {
-                            for (int i = 0; i < result4.Count; i++)
-                            {
-                                result2.Remove(result4[i]);
+                                   select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                        result1 = (from studpersonal in RPCobj.StudentPersonals
+                                   //join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                                   where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "A" && studpersonal.StudentType == "Client"
+                                   select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                        //if (result4.Count > 0)
+                        //{
+                        //    for (int i = 0; i < result4.Count; i++)
+                        //    {
+                        //        result2.Remove(result4[i]);
 
-                            }
-                        }
+                        //    }
+                        //}
                         if (objClientSearch.activeClient == 1)
                         {
-                            if (result2.Count > 0)
-                            {
-                                for (int i = 0; i < result2.Count; i++)
-                                {
-                                    result.Remove(result2[i]);
+                            //if (result2.Count > 0)
+                            //{
+                            //    for (int i = 0; i < result2.Count; i++)
+                            //    {
+                            //        result.Remove(result2[i]);
 
-                                }
-                            }
-                            if (result5.Count > 0)
-                            {
-                                for (int i = 0; i < result5.Count; i++)
-                                {
-                                    result.Remove(result5[i]);
-                                }
-                            }
-                        }
-                        else if (objClientSearch.activeClient == 2)
-                        {
-                            result4.Clear();
-                            foreach (var item in result)
-                                result4.Add(item);
-
-                            if (result2.Count > 0)
-                            {
-                                for (int i = 0; i < result2.Count; i++)
-                                {
-                                    result4.Remove(result2[i]);
-
-                                }
-                            }
-                            if (result4.Count > 0)
-                            {
-                                for (int i = 0; i < result4.Count; i++)
-                                {
-                                    result.Remove(result4[i]);
-
-                                }
-                            }
+                            //    }
+                            //}
                             //if (result5.Count > 0)
                             //{
                             //    for (int i = 0; i < result5.Count; i++)
                             //    {
-                            //        result.Add(result5[i]);
+                            //        result.Remove(result5[i]);
                             //    }
                             //}
-                            if (result5.Count > 0)
-                            {
-                                for (int i = 0; i < result5.Count; i++)
-                                {
-                                    result.Remove(result5[i]);
-                                }
-                            }
-
+                            result = result1;
                         }
+                        //else if (objClientSearch.activeClient == 2)
+                        //{
+                        //    result4.Clear();
+                        //    foreach (var item in result)
+                        //        result4.Add(item);
+
+                        //    if (result2.Count > 0)
+                        //    {
+                        //        for (int i = 0; i < result2.Count; i++)
+                        //        {
+                        //            result4.Remove(result2[i]);
+
+                        //        }
+                        //    }
+                        //    if (result4.Count > 0)
+                        //    {
+                        //        for (int i = 0; i < result4.Count; i++)
+                        //        {
+                        //            result.Remove(result4[i]);
+
+                        //        }
+                        //    }
+                        //    //if (result5.Count > 0)
+                        //    //{
+                        //    //    for (int i = 0; i < result5.Count; i++)
+                        //    //    {
+                        //    //        result.Add(result5[i]);
+                        //    //    }
+                        //    //}
+                        //    if (result5.Count > 0)
+                        //    {
+                        //        for (int i = 0; i < result5.Count; i++)
+                        //        {
+                        //            result.Remove(result5[i]);
+                        //        }
+                        //    }
+
+                        //}
                         else if (objClientSearch.activeClient == 4)
                         {
                             //result4.Clear();
@@ -671,17 +694,17 @@ namespace ClientDB.Models
                             //        result.Remove(result4[i]);
                             //    }
                             //}
-                            result4.Clear();
-                            if (result5.Count > 0)
-                            {
-                                for (int i = 0; i < result5.Count; i++)
-                                {
-                                    if (result.Contains(result5[i]))
-                                        result4.Add(result5[i]);
-                                }
-                                result = result4;
-                            }
-
+                            //result4.Clear();
+                            //if (result5.Count > 0)
+                            //{
+                            //    for (int i = 0; i < result5.Count; i++)
+                            //    {
+                            //        if (result.Contains(result5[i]))
+                            //            result4.Add(result5[i]);
+                            //    }
+                            //    result = result4;
+                            //}
+                            result = result5;
                         }
                     }
                 }
@@ -715,79 +738,83 @@ namespace ClientDB.Models
                               // join cp in RPCobj.ContactPersonals on studpersonal.StudentPersonalId equals cp.StudentPersonalId
                                where studpersonal.SchoolId == sess.SchoolId && studpersonal.StudentType == "Client" && studpersonal.ClientId > 0
                                select studpersonal).Distinct().ToList();
-                    result4 = (from studpersonal in RPCobj.StudentPersonals
-                               join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
-                               where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
-                               select studpersonal).Distinct().ToList();
+                    //result4 = (from studpersonal in RPCobj.StudentPersonals
+                    //           join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                    //           where studpersonal.SchoolId == sess.SchoolId && (plc.EndDate == null || plc.EndDate >= DateTime.Today) && plc.Status == 1 && studpersonal.StudentType == "Client"
+                    //           select studpersonal).Distinct().ToList();
                     result5 = (from studpersonal in RPCobj.StudentPersonals
                                join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
                                where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "D" && studpersonal.StudentType == "Client"
-                               select studpersonal).Distinct().ToList();
-                    if (result4.Count > 0)
-                    {
-                        for (int i = 0; i < result4.Count; i++)
-                        {
-                            result2.Remove(result4[i]);
+                               select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                    result1 = (from studpersonal in RPCobj.StudentPersonals
+                               //join plc in RPCobj.Placements on studpersonal.StudentPersonalId equals plc.StudentPersonalId
+                               where studpersonal.SchoolId == sess.SchoolId && studpersonal.PlacementStatus == "A" && studpersonal.StudentType == "Client"
+                               select studpersonal).Distinct().OrderBy(x => x.LastName).ToList();
+                    //if (result4.Count > 0)
+                    //{
+                    //    for (int i = 0; i < result4.Count; i++)
+                    //    {
+                    //        result2.Remove(result4[i]);
 
-                        }
-                    }
+                    //    }
+                    //}
                     if (objClientSearch.activeClient == 1)
                     {
-                        if (result2.Count > 0)
-                        {
-                            for (int i = 0; i < result2.Count; i++)
-                            {
-                                result.Remove(result2[i]);
+                        //if (result2.Count > 0)
+                        //{
+                        //    for (int i = 0; i < result2.Count; i++)
+                        //    {
+                        //        result.Remove(result2[i]);
 
-                            }
-                        }
-                        if (result5.Count > 0)
-                        {
-                            for (int i = 0; i < result5.Count; i++)
-                            {
-                                result.Remove(result5[i]);
-                            }
-                        }
-
-                    }
-                    else if (objClientSearch.activeClient == 2)
-                    {
-                        result4.Clear();
-                        foreach (var item in result)
-                            result4.Add(item);
-
-                        if (result2.Count > 0)
-                        {
-                            for (int i = 0; i < result2.Count; i++)
-                            {
-                                result4.Remove(result2[i]);
-
-                            }
-                        }
-                        if (result4.Count > 0)
-                        {
-                            for (int i = 0; i < result4.Count; i++)
-                            {
-                                result.Remove(result4[i]);
-
-                            }
-                        }
+                        //    }
+                        //}
                         //if (result5.Count > 0)
                         //{
                         //    for (int i = 0; i < result5.Count; i++)
                         //    {
-                        //        result.Add(result5[i]);
+                        //        result.Remove(result5[i]);
                         //    }
                         //}
-                        if (result5.Count > 0)
-                        {
-                            for (int i = 0; i < result5.Count; i++)
-                            {
-                                result.Remove(result5[i]);
-                            }
-                        }
-
+                        result = result1;
                     }
+                    //else if (objClientSearch.activeClient == 2)
+                    //{
+                    //    result4.Clear();
+                    //    foreach (var item in result)
+                    //        result4.Add(item);
+
+                    //    if (result2.Count > 0)
+                    //    {
+                    //        for (int i = 0; i < result2.Count; i++)
+                    //        {
+                    //            result4.Remove(result2[i]);
+
+                    //        }
+                    //    }
+                    //    if (result4.Count > 0)
+                    //    {
+                    //        for (int i = 0; i < result4.Count; i++)
+                    //        {
+                    //            result.Remove(result4[i]);
+
+                    //        }
+                    //    }
+                    //    //if (result5.Count > 0)
+                    //    //{
+                    //    //    for (int i = 0; i < result5.Count; i++)
+                    //    //    {
+                    //    //        result.Add(result5[i]);
+                    //    //    }
+                    //    //}
+                    //    if (result5.Count > 0)
+                    //    {
+                    //        for (int i = 0; i < result5.Count; i++)
+                    //        {
+                    //            result.Remove(result5[i]);
+                    //        }
+                    //    }
+
+                    //}
                     else if (objClientSearch.activeClient == 4)
                     {
                         //result4.Clear();
@@ -807,26 +834,26 @@ namespace ClientDB.Models
                         //        result.Remove(result4[i]);
                         //    }
                         //}
-                        result4.Clear();
-                        foreach (var item in result)
-                            result4.Add(item);
+                        //result4.Clear();
+                        //foreach (var item in result)
+                        //    result4.Add(item);
 
-                        if (result5.Count > 0)
-                        {
-                            for (int i = 0; i < result5.Count; i++)
-                            {
-                                result4.Remove(result5[i]);
+                        //if (result5.Count > 0)
+                        //{
+                        //    for (int i = 0; i < result5.Count; i++)
+                        //    {
+                        //        result4.Remove(result5[i]);
 
-                            }
-                        }
-                        if (result4.Count > 0)
-                        {
-                            for (int i = 0; i < result4.Count; i++)
-                            {
-                                result.Remove(result4[i]);
+                        //    }
+                        //}
+                        //if (result4.Count > 0)
+                        //{
+                        //    for (int i = 0; i < result4.Count; i++)
+                        //    {
+                        //        result.Remove(result4[i]);
 
-                            }
-                        }
+                        //    }
+                        //}
 
                         //if (result5.Count > 0)
                         //{
@@ -837,7 +864,7 @@ namespace ClientDB.Models
                         //    }
                         //    result = result4;
                         //}
-
+                        result = result5;
                     }
                     result = clientSearchList(objClientSearch, result);
 

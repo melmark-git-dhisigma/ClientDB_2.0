@@ -15,12 +15,12 @@
 
 
     function ValidateDate() {
-
-        var discharged = $("#staticTab").find("span").html();;
-        if (discharged == "(Discharge)") {
-            alert("Activate student");
-            return false;
-        }
+        checkStudentStatus();
+        //var discharged = $("#staticTab").find("span").html();
+        //if (discharged == "(Discharge)") {
+        //    alert("Activate student");
+        //    return false;
+        //}
         var fromDate = $('#StartDate').val();
         var toDate = $('#EndDate').val();
 
@@ -157,6 +157,12 @@
                 writeToTickerBox(Arr_Ticker);
             }
         }).attr('readonly', 'true');
+
+        $("#ddlPlcreason option").each(function () {
+            if ($(this).text().trim() === "Discharge") {
+                $(this).prop("disabled", true);
+            }
+        });
     });
     jQuery("#addPlacement").validationEngine();
 

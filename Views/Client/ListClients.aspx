@@ -549,24 +549,24 @@
                                             <%if (ViewBag.activeClientstatus == 1)
                                               { %>
                                             <input type="radio" name="activeClient1" value="1" onchange="sortClients()"  checked="checked" />Active
-                                             <input type="radio" name="activeClient1" value="2" onchange="sortClients()"  />Inactive
+                                             <%--<input type="radio" name="activeClient1" value="2" onchange="sortClients()"  />Inactive--%>
                                             <input type="radio" name="activeClient1" value="4" onchange="sortClients()"  />Discharge
                                               <input type="radio" name="activeClient1" value="3" onchange="sortClients()"/>All
                                             
-                                            <%}
+                                            <%--<%}
                                               else if (ViewBag.activeClientstatus == 2)
                                               {%>
                                             <input type="radio" name="activeClient1" value="1" onchange="sortClients()"  />Active
-                                             <input type="radio" name="activeClient1" value="2" onchange="sortClients()" checked="checked" />Inactive
-                                            <input type="radio" name="activeClient1" value="4" onchange="sortClients()"  />Discharge
-                                              <input type="radio" name="activeClient1" value="3" onchange="sortClients()"/>All
+                                             <%--<input type="radio" name="activeClient1" value="2" onchange="sortClients()" checked="checked" />Inactive--%>
+                                            <%--<input type="radio" name="activeClient1" value="4" onchange="sortClients()"  />Discharge
+                                              <input type="radio" name="activeClient1" value="3" onchange="sortClients()"/>All--%>
                                     
                                             
                                              <%}
                                                else if (ViewBag.activeClientstatus == 4)
                                               {%>
                                             <input type="radio" name="activeClient1" value="1" onchange="sortClients()"  />Active
-                                             <input type="radio" name="activeClient1" value="2" onchange="sortClients()"  />Inactive
+                                             <%--<input type="radio" name="activeClient1" value="2" onchange="sortClients()"  />Inactive--%>
                                             <input type="radio" name="activeClient1" value="4" onchange="sortClients()" checked="checked" />Discharge
                                               <input type="radio" name="activeClient1" value="3" onchange="sortClients()"/>All
                                     
@@ -575,7 +575,7 @@
                                               else
                                               {%>
                                              <input type="radio" name="activeClient1" value="1" onchange="sortClients()"/>Active
-                                             <input type="radio" name="activeClient1" value="2" onchange="sortClients()"  />Inactive
+                                             <%--<input type="radio" name="activeClient1" value="2" onchange="sortClients()"  />Inactive--%>
                                             <input type="radio" name="activeClient1" value="4" onchange="sortClients()" />Discharge
                                               <input type="radio" name="activeClient1" value="3" onchange="sortClients()"  checked="checked"/>All
                                                 <%} %>       

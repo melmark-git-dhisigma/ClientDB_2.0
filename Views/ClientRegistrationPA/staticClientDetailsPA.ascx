@@ -129,49 +129,53 @@ function ActivateClient() {
             </tr>
             <tr>
                 <td><span class="spnLabel">Age:</span> <%
-                                                           DateTime Cday = DateTime.Now;
-                                                           DateTime Bday = DateTime.ParseExact(Model.DateOfBirth, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                                                           int Years, Months, Days;
-
-
-                                                           if ((Cday.Year - Bday.Year) > 0 ||
-                                               (((Cday.Year - Bday.Year) == 0) && ((Bday.Month < Cday.Month) ||
-                                                 ((Bday.Month == Cday.Month) && (Bday.Day <= Cday.Day)))))
+                                                           int Years=0, Months=0, Days=0;
+                                                           if (!string.IsNullOrEmpty(Model.DateOfBirth))
                                                            {
-                                                               int DaysInBdayMonth = DateTime.DaysInMonth(Bday.Year, Bday.Month);
-                                                               int DaysRemain = Cday.Day + (DaysInBdayMonth - Bday.Day);
+                                                               DateTime Cday = DateTime.Now;
+                                                               DateTime Bday = DateTime.ParseExact(Model.DateOfBirth, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                                               //int Years, Months, Days;
 
-                                                               if (Cday.Month > Bday.Month)
+
+                                                               if ((Cday.Year - Bday.Year) > 0 ||
+                                                   (((Cday.Year - Bday.Year) == 0) && ((Bday.Month < Cday.Month) ||
+                                                     ((Bday.Month == Cday.Month) && (Bday.Day <= Cday.Day)))))
                                                                {
-                                                                   Years = Cday.Year - Bday.Year;
-                                                                   Months = Cday.Month - (Bday.Month + 1) + Math.Abs(DaysRemain / DaysInBdayMonth);
-                                                                   Days = (DaysRemain % DaysInBdayMonth + DaysInBdayMonth) % DaysInBdayMonth;
-                                                               }
-                                                               else if (Cday.Month == Bday.Month)
-                                                               {
-                                                                   if (Cday.Day >= Bday.Day)
+                                                                   int DaysInBdayMonth = DateTime.DaysInMonth(Bday.Year, Bday.Month);
+                                                                   int DaysRemain = Cday.Day + (DaysInBdayMonth - Bday.Day);
+
+                                                                   if (Cday.Month > Bday.Month)
                                                                    {
                                                                        Years = Cday.Year - Bday.Year;
-                                                                       Months = 0;
-                                                                       Days = Cday.Day - Bday.Day;
+                                                                       Months = Cday.Month - (Bday.Month + 1) + Math.Abs(DaysRemain / DaysInBdayMonth);
+                                                                       Days = (DaysRemain % DaysInBdayMonth + DaysInBdayMonth) % DaysInBdayMonth;
+                                                                   }
+                                                                   else if (Cday.Month == Bday.Month)
+                                                                   {
+                                                                       if (Cday.Day >= Bday.Day)
+                                                                       {
+                                                                           Years = Cday.Year - Bday.Year;
+                                                                           Months = 0;
+                                                                           Days = Cday.Day - Bday.Day;
+                                                                       }
+                                                                       else
+                                                                       {
+                                                                           Years = (Cday.Year - 1) - Bday.Year;
+                                                                           Months = 11;
+                                                                           Days = DateTime.DaysInMonth(Bday.Year, Bday.Month) - (Bday.Day - Cday.Day);
+                                                                       }
                                                                    }
                                                                    else
                                                                    {
                                                                        Years = (Cday.Year - 1) - Bday.Year;
-                                                                       Months = 11;
-                                                                       Days = DateTime.DaysInMonth(Bday.Year, Bday.Month) - (Bday.Day - Cday.Day);
+                                                                       Months = Cday.Month + (11 - Bday.Month) + Math.Abs(DaysRemain / DaysInBdayMonth);
+                                                                       Days = (DaysRemain % DaysInBdayMonth + DaysInBdayMonth) % DaysInBdayMonth;
                                                                    }
                                                                }
                                                                else
                                                                {
-                                                                   Years = (Cday.Year - 1) - Bday.Year;
-                                                                   Months = Cday.Month + (11 - Bday.Month) + Math.Abs(DaysRemain / DaysInBdayMonth);
-                                                                   Days = (DaysRemain % DaysInBdayMonth + DaysInBdayMonth) % DaysInBdayMonth;
+                                                                   throw new ArgumentException("Birthday date must be earlier than current date");
                                                                }
-                                                           }
-                                                           else
-                                                           {
-                                                               throw new ArgumentException("Birthday date must be earlier than current date");
                                                            }
                     
                 %>
@@ -249,14 +253,15 @@ function ActivateClient() {
                {
                    Color = "green";
                }
-               else if (Model.ClientStatus == "On-Hold")
-               {
-                   Color = "orange";
-               }
-               else if (Model.ClientStatus == "Inactive")
-               {
-                   Color = "red";
-               }
+               //else if (Model.ClientStatus == "On-Hold")
+               //{
+               //    Color = "orange";
+               //}
+               //else if (Model.ClientStatus == "Inactive")
+               //{
+               //    Color = "red";
+               //    DischBtnStatus = "none";
+               //}
                else if (Model.ClientStatus == "Discharge")
                {
                    Color = "red";
@@ -265,7 +270,10 @@ function ActivateClient() {
                }
             %>
             <tr style="display: none">
-                <td colspan="4" id="tdstudentName" class="nobdr" style="display: none;"><%=Model.LastName %> <%=Model.LastNameSuffix %>, <%=Model.FirstName %> <span style="color: <%=Color %>"><%= "("+Model.ClientStatus+")" %></span></td>
+                <td colspan="4" id="tdstudentName" class="nobdr" style="display: none;"><%= Model.LastName %> <%= Model.LastNameSuffix %>
+                <%= ((!string.IsNullOrWhiteSpace(Model.LastName) || !string.IsNullOrWhiteSpace(Model.LastNameSuffix)) && !string.IsNullOrWhiteSpace(Model.FirstName)) ? ", " : "" %> <%= Model.FirstName %> 
+                <span style="color: <%= Color %>">
+                <%= "(" + Model.ClientStatus + ")" %></span></td>
             </tr>
         </tbody>
     </table>

@@ -80,6 +80,14 @@ namespace ClientDB.Controllers
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.None)]
         public ActionResult SavePlacement(AddPlacementModel model)
         {
+            if (Session["PlacementStat"] != null && Session["PlacementStat"].ToString() == "D")
+            {
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new
+                {
+                    logicError = true,
+                    ErrorMsg = "Student is discharged. Activate student for placement operations."
+                }));
+            }
             BiWeeklyRCPNewEntities dbobj = new BiWeeklyRCPNewEntities();
             string result = "";
             Other_Functions objFuns = new Other_Functions();
@@ -152,6 +160,14 @@ namespace ClientDB.Controllers
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.None)]
         public ActionResult DeletePlacementDetails(int id)
         {
+            if (Session["PlacementStat"] != null && Session["PlacementStat"].ToString() == "D")
+            {
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new
+                {
+                    logicError = true,
+                    ErrorMsg = "Student is discharged. Activate student for placement operations."
+                }));
+            }
             BiWeeklyRCPNewEntities dbobj = new BiWeeklyRCPNewEntities();
             sess = (clsSession)Session["UserSessionClient"];
             Other_Functions objFuns = new Other_Functions();
