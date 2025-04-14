@@ -350,6 +350,10 @@
     #tableBody tr:hover {
         background-color: #f1f1f1;
     }
+    
+    .disable-hover tr:hover {
+    background-color: transparent !important;
+    }
 
     #tableBody td {
         text-align:center;
@@ -561,6 +565,156 @@
                     row.style.display = 'none';
                 }
             });
+        }
+
+        //Emergency/Home Contact Table
+        function loadDataFromServerEmergency(data) {
+            document.getElementById("filterDiv").style.display = "none";
+            document.getElementById("buttonContainer").style.display = "none";
+            fullData = data;
+            rowsPerPage = 30;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                return;
+            } else {
+                tableHeader.style.removeProperty("display");
+            }
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear any existing headers
+            tableHeader.innerHTML = '';
+
+            // Create first row for main headers
+            var mainHeaderRow = document.createElement('tr');
+            var subHeaderRow = document.createElement('tr');
+
+            for (var index = 0; index < columns.length; index++) {
+                var col = columns[index];
+                var th = document.createElement('th');
+
+                //Creating main and sub-columns
+                if (columns[index] === "Contact Name") {
+                    th.setAttribute("colspan", "2");
+                    th.textContent = "Emergency Contact";
+                    mainHeaderRow.appendChild(th);
+
+                    var subTh1 = document.createElement('th');
+                    subTh1.textContent = columns[index];
+                    var subTh2 = document.createElement('th');
+                    subTh2.textContent = columns[++index];
+                    subHeaderRow.appendChild(subTh1);
+                    subHeaderRow.appendChild(subTh2);
+                } else { 
+                    th.textContent = col;
+                    th.setAttribute("rowspan", "2");
+                    mainHeaderRow.appendChild(th);
+                }
+            }
+
+            // Append header rows
+            tableHeader.appendChild(mainHeaderRow);
+            tableHeader.appendChild(subHeaderRow);
+            tableBody.classList.add("disable-hover");
+
+            // Pagination logic: slice data for the current page
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Calculate row spans for each Client Name
+            var rowSpanMap = {};
+            for (var i = 0; i < pageData.length; i++) {
+                var key = pageData[i]["Client Name"]; // Grouping key
+                if (rowSpanMap[key]) {
+                    rowSpanMap[key] += 1;
+                } else {
+                    rowSpanMap[key] = 1;
+                }
+            }
+
+            // Populate table body with grouped rows
+            var seen = {}; // Track seen Client Name values to prevent duplicate cells
+            for (var i = 0; i < pageData.length; i++) {
+                var tr = document.createElement('tr');
+                var key = pageData[i]["Client Name"]; // Grouping key
+
+                for (var index = 0; index < columns.length; index++) {
+                    var columnName = columns[index];
+                    var td = document.createElement('td');
+
+                    // Merge "Client Name", "Birth Date", and "Age" together
+                    if (columnName === "Client Name") {
+                        if (!seen[key]) { // Only add merged cell if not already seen
+                            seen[key] = true; // Mark as seen
+                            td.textContent = pageData[i]["Client Name"];
+                            td.setAttribute("rowspan", rowSpanMap[key]); // Set rowspan for correct merging
+                            tr.appendChild(td);
+
+                            // Also merge Birth Date and Age into the same row
+                            var tdBirthDate = document.createElement("td");
+                            tdBirthDate.textContent = pageData[i]["Birth Date"];
+                            tdBirthDate.setAttribute("rowspan", rowSpanMap[key]);
+                            tr.appendChild(tdBirthDate);
+
+                            var tdAge = document.createElement("td");
+                            tdAge.textContent = pageData[i]["Age"];
+                            tdAge.setAttribute("rowspan", rowSpanMap[key]);
+                            tr.appendChild(tdAge);
+                        }
+                    }
+                    else if (columnName !== "Birth Date" && columnName !== "Age") {
+                        // Normal columns without merging
+                        td.textContent = pageData[i][columnName];
+                        tr.appendChild(td);
+                    }
+                }
+
+                // Append the row to the table
+                tableBody.appendChild(tr);
+            }
+
+            createPaginationControlsEmergency(data.length, data);
+        }
+
+        function createPaginationControlsEmergency(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServerEmergency(data); // Re-load the table data for the new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + Math.ceil(totalRows / rowsPerPage);
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServerEmergency(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
         }
 
 

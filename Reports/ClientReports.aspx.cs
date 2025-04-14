@@ -775,9 +775,7 @@ namespace ClientDB.Reports
             }
             return new List<string>(rooms); // Convert HashSet to List and return
         }
-
-
-        protected void btnClienContact_Click(object sender, EventArgs e)
+        protected void btnOldClienContact_Click(object sender, EventArgs e)
         {
             try
             {
@@ -821,6 +819,185 @@ namespace ClientDB.Reports
             }
         }
 
+        protected void btnClienContact_Click(object sender, EventArgs e)
+        {   
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldClienContact_Click(sender, e);
+                }
+                else
+                {
+                    
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    divStatisticalNew.Visible = false;
+                    divchanges.Visible = false;
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = false;
+                    divPlacement.Visible = false;
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+                    hdnMenu.Value = "btnClienContact";
+                    RVClientReport.Visible = false;
+                    HeadingDiv.Visible = true;
+                    HeadingDiv.InnerHtml = "Emergency/Home Contact";
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+
+
+                    string query = "SELECT SP.StudentPersonalId, PLC.EndDate, SP.SchoolId, SP.LastName+','+SP.FirstName AS studentPersonalName " +
+        " ,CONVERT(VARCHAR(10), SP.[BirthDate], 101) AS BirthDate	" +
+        " ,DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) >  GETDATE() THEN 1 ELSE 0 END) AS Age" +
+        " ,CASE WHEN DATEPART(MM,SP.BirthDate)>= 01 AND DATEPART(MM,SP.BirthDate)<= 03 THEN 1 ELSE " +
+        " CASE WHEN DATEPART(MM,SP.BirthDate)>= 04 AND DATEPART(MM,SP.BirthDate)<= 06 THEN 2 ELSE " +
+        " CASE WHEN DATEPART(MM,SP.BirthDate)>= 07 AND DATEPART(MM,SP.BirthDate)<= 09 THEN 3 ELSE 4 END END END AS mMonth " +
+        " ,CASE WHEN SP.Gender=1 THEN 'Male'	ELSE 'Female'	END Gender " +
+        " ,EMERGENCYCONT.LastName+','+EMERGENCYCONT.FirstName AS EmergencyContactName " +
+        " ,EMERGENCYCONT.Phone AS EmergencyContactPhone " +
+        " ,EMERGENCYCONT.Mobile AS EmergencyContactMobile " +
+        " FROM StudentPersonal SP " +
+        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " +
+        " LEFT JOIN " +
+        " (SELECT CP.ContactPersonalId,CP.LastName,CP.FirstName,CP.StudentPersonalId,AL.Phone,AL.Mobile,AL.OtherPhone  FROM " +
+        "   [dbo].[ContactPersonal] CP " +
+        " INNER JOIN [dbo].[StudentContactRelationship] SCR ON CP.ContactPersonalId=SCR.ContactPersonalId " +
+        " INNER JOIN LookUp LP ON LP.LookupId=SCR.RelationshipId " +
+        " INNER JOIN [dbo].[StudentAddresRel] SAR ON SAR.ContactPersonalId=CP.ContactPersonalId " +
+        " INNER JOIN [dbo].[AddressList] AL ON AL.AddressId=SAR.AddressId " +
+        " WHERE LP.LookupName='Emergency Contact' AND SAR.ContactSequence=1 AND CP.Status=1) EMERGENCYCONT ON SP.StudentPersonalId=EMERGENCYCONT.StudentPersonalId " +
+        "  WHERE SP.StudentType='Client' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+        " 							FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+        " 							WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+        " 							ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')" +
+        "   and ST.StudentPersonalId not in (SELECT Distinct " +
+        "   ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SP.ClientId)>0 " +
+        "  UNION " +
+        " (SELECT SP.StudentPersonalId,PLC.EndDate, SP.SchoolId,SP.LastName + ',' + SP.FirstName AS studentPersonalName,CONVERT(VARCHAR(10), SP.BirthDate, 101) AS BirthDate, " +
+        " DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) >  GETDATE() THEN 1 ELSE 0 END) AS Age, " +
+        " CASE WHEN DATEPART(MM,SP.BirthDate)>= 01 AND DATEPART(MM,SP.BirthDate)<= 03 THEN 1 ELSE  " +
+        " CASE WHEN DATEPART(MM,SP.BirthDate)>= 04 AND DATEPART(MM,SP.BirthDate)<= 06 THEN 2 ELSE " +
+        " CASE WHEN DATEPART(MM,SP.BirthDate)>= 07 AND DATEPART(MM,SP.BirthDate)<= 09 THEN 3 ELSE 4 END END END AS mMonth,CASE WHEN SP.Gender = '1' THEN 'Male' ELSE 'Female' END AS Gender, " +
+        " CP.LastName + ',' + CP.FirstName AS EmergencyContactName,AL.Phone AS EmergencyContactPhone,AL.Mobile EmergencyContactMobile  " +
+        " FROM StudentPersonal SP " +
+        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " +
+        " INNER JOIN  ContactPersonal AS CP ON SP.StudentPersonalId = CP.StudentPersonalId " +
+        " INNER JOIN [dbo].[StudentContactRelationship] SCR ON CP.ContactPersonalId=SCR.ContactPersonalId		" +
+        " INNER JOIN [dbo].[StudentAddresRel] SAR ON SAR.ContactPersonalId=CP.ContactPersonalId " +
+        " INNER JOIN [dbo].[AddressList] AL ON AL.AddressId=SAR.AddressId  " +
+        " WHERE (SP.StudentType = 'Client') and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 " +
+        " and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+        " 							FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+        " 							WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+        " 							ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+        "  and ST.StudentPersonalId not in (SELECT Distinct " +
+        "  ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+        "  AND CONVERT(INT,SP.ClientId)>0 AND CP.IsEmergency='true' AND CP.Status=1) ";
+
+
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsEmergency(dt);
+                    dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+
+                    
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerEmergency(" + jsonData + ");", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DataTable GetSelectedColumnsEmergency(DataTable originalTable)
+        {
+            //To return only required columns for the table.
+            DataTable newTable = new DataTable();
+
+            string[] selectedColumns = {"studentPersonalName", "BirthDate", "Age", "EmergencyContactName", "EmergencyContactPhone"};
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("studentPersonalName"))
+            {
+                newTable.Columns["studentPersonalName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("BirthDate"))
+            {
+                newTable.Columns["BirthDate"].ColumnName = "Birth Date";
+            }
+
+            if (newTable.Columns.Contains("EmergencyContactName"))
+            {
+                newTable.Columns["EmergencyContactName"].ColumnName = "Contact Name";
+            }
+
+            if (newTable.Columns.Contains("EmergencyContactPhone"))
+            {
+                newTable.Columns["EmergencyContactPhone"].ColumnName = "Contact Phone";
+            }
+
+            newTable.DefaultView.Sort = newTable.Columns["Client Name"].ColumnName + " ASC";
+            newTable = newTable.DefaultView.ToTable();
+
+            for (int i = 0; i < newTable.Rows.Count; i++)
+                    {
+                        if (newTable.Rows[i]["Contact Name"].ToString() == "" && newTable.Rows[i]["Contact Phone"].ToString() == "")
+                        {
+                           string clientName = newTable.Rows[i]["Client Name"].ToString();
+                           int count = newTable.Select("[Client Name] = '" + clientName.Replace("'", "''") + "'").Length;
+                            if (count > 1)
+                            {
+                                newTable.Rows.RemoveAt(i);
+                                --i;
+                            }
+                        }
+                        else if (newTable.Rows[i]["Contact Phone"].ToString() == "")
+                        {
+                            string contactName = newTable.Rows[i]["Contact Name"].ToString();
+                            int count = newTable.Select("[Contact Name] = '" + contactName.Replace("'", "''") + "'").Length;
+                            if (count > 1)
+                            {
+                                newTable.Rows.RemoveAt(i);
+                                --i;
+                            }
+                        }
+                    }
+
+            return newTable;
+        }
         protected void btnPgmRoster_Click(object sender, EventArgs e)
         {
             try
