@@ -60,7 +60,7 @@ namespace ClientDB.Controllers
             // Dynamic Session [End]
         }
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.None)]
-        public ActionResult ListClients(string Name, string argument = "*", bool bSort = false, string Data = "0*k", bool orderBy = true, bool searchBy = true, int activeClient=1)
+        public ActionResult ListClients(string Name, string argument = "*", bool bSort = false, string Data = "0*k", bool orderBy = true, bool searchBy = true, int activeClient=0)
         {
             ClsErrorLog error = new ClsErrorLog();
             //setSession();

@@ -167,15 +167,18 @@
             else if (radioValue2 == 2) {
                 radioValue2 = false;
             }
-            if (radioValue3 == 1) {
-                radioValue3 = 1;
-            }
-            else if (radioValue3 == 2) {
-                radioValue3 = 2;
-            }
-            else if (radioValue3 == 4) {
-                radioValue3 = 4;
-            }
+            //if (radioValue3 == 1) {
+            //    radioValue3 = 1;
+            //}
+            //else if (radioValue3 == 2) {
+            //    radioValue3 = 2;
+            //}
+            //else if (radioValue3 == 4) {
+            //    radioValue3 = 4;
+            //}
+
+            radioValue3 = 0;
+            $("input[name='activeClient1'][value='3']").prop("checked", true);
 
             var drpSort = document.getElementById('ddlSort');
             var sortArgmnt = drpSort.options[drpSort.selectedIndex].text;
