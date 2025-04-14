@@ -718,6 +718,129 @@
         }
 
 
+        //Program Roster Table
+        function loadDataFromServerProgramRoster(data) {
+            document.getElementById("filterDiv").style.display = "none";
+            document.getElementById("buttonContainer").style.display = "none";
+            fullData = data;
+            rowsPerPage = 30;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            tableBody.innerHTML = '';
+            var table = document.getElementById("table");
+            table.style.tableLayout = "auto";
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                return;
+            }
+            else
+                tableHeader.style.removeProperty("display");
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear any existing headers
+            tableHeader.innerHTML = '';
+
+            // Create first row for main headers
+            var mainHeaderRow = document.createElement('tr');
+            var subHeaderRow = document.createElement('tr');
+
+            for (var index = 0; index < columns.length; index++) {
+
+                var col = columns[index];
+                var th = document.createElement('th');
+                var parts = col.split("/");
+
+                //Creating main and sub-columns
+                if (parts.length>1) { 
+                    th.setAttribute("colspan", "4");
+                    th.textContent = parts[0];
+                    mainHeaderRow.appendChild(th);
+                    mainHeaderRow.style.whiteSpace = "nowrap";
+                    var subTh1 = document.createElement('th');
+                    subTh1.textContent = columns[index].replace(parts[0]+"/","");;
+
+                    var subTh2 = document.createElement('th');
+                    subTh2.textContent = columns[++index].replace(parts[0] + "/", "");
+
+                    var subTh3 = document.createElement('th');
+                    subTh3.textContent = columns[++index].replace(parts[0] + "/", "");
+
+                    var subTh4 = document.createElement('th');
+                    subTh4.textContent = columns[++index].replace(parts[0] + "/", "");
+
+                    subHeaderRow.appendChild(subTh1);
+                    subHeaderRow.appendChild(subTh2);
+                    subHeaderRow.appendChild(subTh3);
+                    subHeaderRow.appendChild(subTh4);
+                    subHeaderRow.style.whiteSpace = "nowrap";
+                } else {
+                    th.textContent = col;
+                    th.setAttribute("rowspan", "2");
+                    mainHeaderRow.appendChild(th);
+                }
+            }
+
+            // Append header rows
+            tableHeader.appendChild(mainHeaderRow);
+            tableHeader.appendChild(subHeaderRow);
+
+            // Pagination logic: slice data for the current page
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table body with rows for the current page
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Create pagination controls
+            createPaginationControlsProgramRoster(data.length, data);
+        }
+
+        function createPaginationControlsProgramRoster(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServerProgramRoster(data); // Re-load the table data for the new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + Math.ceil(totalRows / rowsPerPage);
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServerProgramRoster(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+        }
+
     </script>
     <style>
         /*Column Dropdown Styling*/
