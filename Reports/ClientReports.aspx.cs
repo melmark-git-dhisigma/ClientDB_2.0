@@ -998,7 +998,7 @@ namespace ClientDB.Reports
 
             return newTable;
         }
-        protected void btnPgmRoster_Click(object sender, EventArgs e)
+        protected void btnOldPgmRoster_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1040,6 +1040,179 @@ namespace ClientDB.Reports
             {
                 throw ex;
             }
+        }
+        protected void btnPgmRoster_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldPgmRoster_Click(sender, e);
+                }
+                else
+                {
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    divStatisticalNew.Visible = false;
+                    divchanges.Visible = false;
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = false;
+                    divPlacement.Visible = false;
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+                    hdnMenu.Value = "btnPgmRoster";
+                    RVClientReport.SizeToReportContent = false;
+                    tdMsg.InnerHtml = "";
+                    RVClientReport.Visible = false;
+                    HeadingDiv.Visible = true;
+                    HeadingDiv.InnerHtml = "Program Roster";
+                    int Schoolid = 0;
+                    divbirthdate.Visible = false;
+                    
+                    string query = "SELECT 		SP.StudentPersonalId ,SP.SchoolId,SP.LastName+','+SP.FirstName AS studentPersonalName " +
+                                   ",CONVERT(VARCHAR(10), SP.[BirthDate], 101) AS BirthDate	" +
+                                   ",DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) >  GETDATE() THEN 1 ELSE 0 END) AS Age " +
+                                   ",CASE WHEN DATEPART(MM,SP.BirthDate)>= 01 AND DATEPART(MM,SP.BirthDate)<= 03 THEN 1 ELSE " +
+                                   "CASE WHEN DATEPART(MM,SP.BirthDate)>= 04 AND DATEPART(MM,SP.BirthDate)<= 06 THEN 2 ELSE " +
+                                   "CASE WHEN DATEPART(MM,SP.BirthDate)>= 07 AND DATEPART(MM,SP.BirthDate)<= 09 THEN 3 ELSE 4 END END END AS mMonth " +
+                                   ",CASE WHEN SP.Gender=1 THEN 'Male'	ELSE 'Female'	END Gender " +
+                                   ",LP.LookupName AS PlacementType " +
+                                   ",CONVERT(VARCHAR(10),PL.StartDate,101) AS StartDate " +
+                                   ",CONVERT(VARCHAR(10),PL.EndDate,101) AS EndDate " +
+                                   ",(SELECT LookupName FROM LookUp WHERE LookupId=PL.Department) AS Department " +
+                                   ",(SELECT LookupName FROM LookUp WHERE LookupId=PL.BehaviorAnalyst) AS BehaviorAnalyst " +
+                                   "FROM StudentPersonal SP LEFT JOIN [dbo].[Placement] PL ON SP.StudentPersonalId=PL.StudentPersonalId  " +
+                                   "LEFT JOIN LookUp LP ON LP.LookupId=PL.PlacementType		 " +
+                                   " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                                   "FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                   "WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                                   "ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                                   "WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                                   "and ST.StudentPersonalId not in (SELECT Distinct " +
+                                   "ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND PL.Status=1 AND CONVERT(INT,SP.ClientId)>0";
+                    
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsProgramRoster(dt);
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerProgramRoster(" + jsonData + ");", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DataTable GetSelectedColumnsProgramRoster(DataTable originalTable)
+        {
+            DataTable dtTemp = new DataTable();
+            dtTemp.Columns.Add("Client Name", typeof(string));
+            dtTemp.Columns.Add("Birth Date", typeof(string));
+            dtTemp.Columns.Add("Age", typeof(string));
+            dtTemp.Columns.Add("Gender", typeof(string));
+            //Day Program
+            dtTemp.Columns.Add("Day Program/Start Date", typeof(string));
+            dtTemp.Columns.Add("Day Program/End Date", typeof(string));
+            dtTemp.Columns.Add("Day Program/Department", typeof(string));
+            dtTemp.Columns.Add("Day Program/Behavior Analyst", typeof(string));
+            //Residential Program
+            dtTemp.Columns.Add("Residential Program/Start Date", typeof(string));
+            dtTemp.Columns.Add("Residential Program/End Date", typeof(string));
+            dtTemp.Columns.Add("Residential Program/Department", typeof(string));
+            dtTemp.Columns.Add("Residential Program/Behavior Analyst", typeof(string));
+            //Day
+            dtTemp.Columns.Add("Day/Start Date", typeof(string));
+            dtTemp.Columns.Add("Day/End Date", typeof(string));
+            dtTemp.Columns.Add("Day/Department", typeof(string));
+            dtTemp.Columns.Add("Day/Behavior Analyst", typeof(string));
+            //Residential
+            dtTemp.Columns.Add("Residential/Start Date", typeof(string));
+            dtTemp.Columns.Add("Residential/End Date", typeof(string));
+            dtTemp.Columns.Add("Residential/Department", typeof(string));
+            dtTemp.Columns.Add("Residential/Behavior Analyst", typeof(string));
+
+
+            Dictionary<string, DataRow> clientData = new Dictionary<string, DataRow>();
+
+            foreach (DataRow dr in originalTable.Rows)
+            {
+                string clientName = dr["studentPersonalName"].ToString();
+
+                if (!clientData.ContainsKey(clientName))
+                {
+                    DataRow drTemp = dtTemp.NewRow();
+                    drTemp["Client Name"] = clientName;
+                    drTemp["Birth Date"] = dr["BirthDate"].ToString();
+                    drTemp["Age"] = dr["Age"].ToString();
+                    drTemp["Gender"] = dr["Gender"].ToString();
+                    clientData[clientName] = drTemp;
+                }
+
+                DataRow existingRow = clientData[clientName];
+
+                if (dr["PlacementType"] != null && dr["PlacementType"].ToString() != "")
+                {
+                    string placementType = dr["PlacementType"].ToString();
+                    string startDate = dr["StartDate"].ToString();
+                    string endDate = dr["EndDate"].ToString();
+                    string department = dr["Department"].ToString();
+                    string behaviorAnalyst = dr["BehaviorAnalyst"].ToString();
+
+                    if (placementType == "Day Program")
+                    {
+                        existingRow["Day Program/Start Date"] = MergeValues(existingRow["Day Program/Start Date"], startDate);
+                        existingRow["Day Program/End Date"] = MergeValues(existingRow["Day Program/End Date"], endDate);
+                        existingRow["Day Program/Department"] = MergeValues(existingRow["Day Program/Department"], department);
+                        existingRow["Day Program/Behavior Analyst"] = MergeValues(existingRow["Day Program/Behavior Analyst"], behaviorAnalyst);
+                    }
+                    else if (placementType == "Residential Program")
+                    {
+                        existingRow["Residential Program/Start Date"] = MergeValues(existingRow["Residential Program/Start Date"], startDate);
+                        existingRow["Residential Program/End Date"] = MergeValues(existingRow["Residential Program/End Date"], endDate);
+                        existingRow["Residential Program/Department"] = MergeValues(existingRow["Residential Program/Department"], department);
+                        existingRow["Residential Program/Behavior Analyst"] = MergeValues(existingRow["Residential Program/Behavior Analyst"], behaviorAnalyst);
+                    }
+                    else if (placementType == "Day")
+                    {
+                        existingRow["Day/Start Date"] = MergeValues(existingRow["Day/Start Date"], startDate);
+                        existingRow["Day/End Date"] = MergeValues(existingRow["Day/End Date"], endDate);
+                        existingRow["Day/Department"] = MergeValues(existingRow["Day/Department"], department);
+                        existingRow["Day/Behavior Analyst"] = MergeValues(existingRow["Day/Behavior Analyst"], behaviorAnalyst);
+                    }
+                    else if (placementType == "Residential")
+                    {
+                        existingRow["Residential/Start Date"] = MergeValues(existingRow["Residential/Start Date"], startDate);
+                        existingRow["Residential/End Date"] = MergeValues(existingRow["Residential/End Date"], endDate);
+                        existingRow["Residential/Department"] = MergeValues(existingRow["Residential/Department"], department);
+                        existingRow["Residential/Behavior Analyst"] = MergeValues(existingRow["Residential/Behavior Analyst"], behaviorAnalyst);
+                    }
+                }
+            }
+
+            foreach (var row in clientData.Values)
+            {
+                dtTemp.Rows.Add(row);
+            }
+
+            dtTemp.DefaultView.Sort = dtTemp.Columns["Client Name"].ColumnName + " ASC";
+            dtTemp = dtTemp.DefaultView.ToTable();
+
+            return dtTemp;
+        }
+
+        private string MergeValues(object existingValue, string newValue)
+        {
+            string existing = existingValue != DBNull.Value ? existingValue.ToString() : "";
+            return existing == "" ? newValue : existing + ", " + newValue;
         }
 
         protected void btnVendor_Click(object sender, EventArgs e)
