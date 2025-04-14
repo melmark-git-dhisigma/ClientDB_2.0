@@ -8,6 +8,7 @@ using ClientDB.DbModel;
 using ClientDB.AppFunctions;
 using ClientDB.ParentServiceReference;
 using System.IO;
+using System.Globalization;
 
 namespace ClientDB.Controllers
 {
@@ -622,6 +623,49 @@ namespace ClientDB.Controllers
         {
             sess = (clsSession)Session["UserSessionClient"];
             string result = "";
+
+            BiWeeklyRCPNewEntities dbobj = new BiWeeklyRCPNewEntities();
+
+            // Define a list of expected date formats
+            string[] dateFormats = new string[]
+            {
+                "yyyy-MM-dd",     // Example: 2023-03-11
+                "MM/dd/yyyy",     // Example: 03/11/2023
+                "yyyy/MM/dd",     // Example: 2023/03/11
+                "dd/MM/yyyy",     // Example: 11/03/2023
+                "MM-dd-yyyy"      // Example: 03-11-2023
+            };
+
+            // Attempt to parse the date using multiple formats
+            DateTime parsedDate;
+            bool isValidDate = DateTime.TryParseExact(model.DateOfBirth, dateFormats,
+                                                       CultureInfo.InvariantCulture, DateTimeStyles.None,
+                                                       out parsedDate);
+
+            if (sess.StudentId == 0 && sess.AddressId == 0)
+            if (isValidDate)
+            {
+                try
+                {
+                    // Proceed with comparing the date parts
+                    var existingStudent = dbobj.StudentPersonals
+                        .Where(x => x.FirstName == model.FirstName
+                                    && x.LastName == model.LastName
+                                    && x.BirthDate.HasValue
+                                    && x.BirthDate.Value.Year == parsedDate.Year
+                                    && x.BirthDate.Value.Month == parsedDate.Month
+                                    && x.BirthDate.Value.Day == parsedDate.Day)
+                        .First();
+
+                    if (existingStudent != null)
+                    {
+                        // If the student exists, return a validation error message
+                        return "Failed" + "|" + sess.StudentId + "|" + "Student already exists.";//"Student already exists.";
+                    }
+                }
+                catch(Exception e){
+                }
+            }
             //result = objFuns.SaveData(model, profilePicture); //Commented pn 23-Jun-2020
 
             //Image Crop and Upload - Dev 2 [23-jun-2020] - Start

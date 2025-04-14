@@ -441,8 +441,12 @@
             $('.EditProfile').css("display", "block");
             window.location.reload(true);
         }
-        else {
-
+        else if (item[0] == "Failed") {
+            if (item.length > 2 && item[2]) {
+                alert(item[2]);
+            } else {
+                alert("Save operation failed.");
+            }
         }
     }
 
