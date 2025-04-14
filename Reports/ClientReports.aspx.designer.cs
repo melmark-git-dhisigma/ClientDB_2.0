@@ -49,6 +49,15 @@ namespace ClientDB.Reports {
         protected global::System.Web.UI.WebControls.HiddenField hdnType;
         
         /// <summary>
+        /// checkHighcharts control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox checkHighcharts;
+        
+        /// <summary>
         /// btnallClient control.
         /// </summary>
         /// <remarks>
@@ -616,15 +625,6 @@ namespace ClientDB.Reports {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDischarge;
         
         /// <summary>
-        /// rbtnDischargeStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rbtnDischargeStatus;
-        
-        /// <summary>
         /// btnShowDischarge control.
         /// </summary>
         /// <remarks>
@@ -848,6 +848,42 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Microsoft.Reporting.WebForms.ReportViewer RVClientReport;
+        
+        /// <summary>
+        /// dropdown_container control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dropdown_container;
+        
+        /// <summary>
+        /// btnShowReport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnShowReport;
+        
+        /// <summary>
+        /// btnResetAllClient control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnResetAllClient;
+        
+        /// <summary>
+        /// noOfClients control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label noOfClients;
         
         /// <summary>
         /// hdnMenu control.

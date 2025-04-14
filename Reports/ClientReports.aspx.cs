@@ -10,10 +10,15 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
+using System.Text;
 using System.Collections;
 using System.Drawing.Printing;
 using System.IO;
 using ClientDB.DbModel;
+using Newtonsoft.Json;
+using System.Web.Services;
+using System.Web.Script.Serialization;
+using System.Text.RegularExpressions;
 
 
 namespace ClientDB.Reports
@@ -102,6 +107,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnBirthdate";
                 RVClientReport.Visible = false;
                 if (ddlQuarter.SelectedItem.Value != "0")
@@ -134,8 +141,7 @@ namespace ClientDB.Reports
                 throw ex;
             }
         }
-
-        protected void btnallClient_Click(object sender, EventArgs e)
+        protected void btnOldReport_Click(object sender, EventArgs e)
         {
             try
             {
@@ -161,6 +167,8 @@ namespace ClientDB.Reports
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "All Clients Info";
                 divbirthdate.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 for (int i = 0; i < ChkStatisticalList2.Items.Count; i++)
                 {
                     ChkStatisticalList2.Items[i].Selected = true;
@@ -237,6 +245,537 @@ namespace ClientDB.Reports
             //}
             //// --== All Client Click ==- END --
         }
+        protected void btnallClient_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldReport_Click(sender, e);
+                }
+                else
+                {
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    FillStudNameIDs();
+                    FillStudLocationIDs();
+                    FillStudRaceIDs();
+                    FillStudStatusIDs();
+                    hfstatus.Value = "A";
+                    DropDownCheckBoxesActive.SelectedValue = hfstatus.Value;
+                    divStatisticalNew.Visible = false;
+                    divchanges.Visible = false;
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = false;
+                    divPlacement.Visible = false;
+                    hdnMenu.Value = "btnallClient";
+                    tdMsg.InnerHtml = "";
+                    RVClientReport.Visible = false;
+                    HeadingDiv.Visible = true;
+                    HeadingDiv.InnerHtml = "All Clients Info";
+                    divbirthdate.Visible = false;
+                    btnResetAllClient.Visible = true;
+                    btnShowReport.Visible = true;
+                    btnReset.Visible = false;
+                    for (int i = 0; i < ChkStatisticalList2.Items.Count; i++)
+                    {
+                        ChkStatisticalList2.Items[i].Selected = true;
+                    }
+                    var selected = ChkStatisticalList2.Items.Cast<ListItem>().Where(li => li.Selected).Count();
+                    if (selected != 0)
+                    {
+                        List<ListItem> selectedItemList = ChkStatisticalList2.Items.Cast<ListItem>().Where(li => li.Selected).ToList();
+
+
+                        //RVClientReport.Visible = true;
+                        //RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                        //RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["StatisticalReportNew"];
+                        //RVClientReport.ShowParameterPrompts = false;
+                        //ReportParameter[] parm = new ReportParameter[13];
+                        //parm[0] = new ReportParameter("ParamStudRow", ContainsLoop("Total number of client", selectedItemList));
+                        //parm[1] = new ReportParameter("ParamStudName", ContainsLoop("Student Name", selectedItemList));
+                        //parm[2] = new ReportParameter("ParamLocation", ContainsLoop("Location", selectedItemList));
+                        //parm[3] = new ReportParameter("ParamCity", ContainsLoop("City", selectedItemList));
+                        //parm[4] = new ReportParameter("ParamState", ContainsLoop("State", selectedItemList));
+                        //parm[5] = new ReportParameter("ParamLanguage", ContainsLoop("Primary Language", selectedItemList));
+                        //parm[6] = new ReportParameter("ParamRace", ContainsLoop("Race", selectedItemList));
+                        //parm[7] = new ReportParameter("ParamPlacement", ContainsLoop("Placement Type", selectedItemList));
+                        //parm[8] = new ReportParameter("ParamDepartment", ContainsLoop("Department", selectedItemList));
+                        //parm[9] = new ReportParameter("ParamProgram", ContainsLoop("Program", selectedItemList));
+                        //parm[10] = new ReportParameter("ParamGender", ContainsLoop("Gender", selectedItemList));
+                        //parm[11] = new ReportParameter("ParamActive", ContainsLoop("Active", selectedItemList));
+                        //parm[12] = new ReportParameter("GetActiveID", hfstatus.Value);
+                        //this.RVClientReport.ServerReport.SetParameters(parm);
+                        //RVClientReport.ServerReport.Refresh();
+
+                        SqlDataAdapter da = new SqlDataAdapter();
+                        SqlCommand cmd = null;
+                        DataTable dt = new DataTable();
+                        DataTable dtFinal = new DataTable();
+                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                        con.Open();
+                        cmd = new SqlCommand("ClientStatisticalGraph", con);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@ParamStudName", ContainsLoop("Student Name", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamGender", ContainsLoop("Gender", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamLanguage", ContainsLoop("Primary Language", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamRace", ContainsLoop("Race", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamLocation", ContainsLoop("Location", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamProgram", ContainsLoop("Program", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamPlacement", ContainsLoop("Placement Type", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamDepartment", ContainsLoop("Department", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamActive", "true");
+                        cmd.Parameters.AddWithValue("@ParamCity", ContainsLoop("City", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamState", ContainsLoop("State", selectedItemList));
+                        cmd.Parameters.AddWithValue("@ParamStudRow", ContainsLoop("Total number of client", selectedItemList));
+                        cmd.Parameters.AddWithValue("@GetActiveID", "A");
+
+                        da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+
+                        dtFinal = GetSelectedColumns(dt);
+                        DataTable dtActive = new DataTable();
+                        dtActive.Columns.Add("Status");
+                        dtActive.Rows.Add("Active");
+                        dtFinal = filterDataTable(dtFinal, dtActive);
+                        PopulateDropdown(dtFinal);
+                        var jsonData = ConvertDataTableToJson(dtFinal);
+                        //noOfClients.Text = "Total No. of Clients : " + dtFinal.Rows.Count.ToString();
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServer(" + jsonData + ");", true);
+                    }
+                    else
+                    {
+                        tdMsg.InnerHtml = "<div class='warning_box'>Please select report items</div>";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            //// --== All Client Click ==- START --
+            //try
+            //{
+            //    divchanges.Visible = false;
+            //    divStatistical.Visible = false;
+            //    divDischarge.Visible = false;
+            //    divAdmission.Visible = false;
+            //    divbyBirthdate.Visible = false;
+            //    divFunder.Visible = false;
+            //    divPlacement.Visible = false;
+            //    hdnMenu.Value = "btnallClient";
+            //    int Schoolid = 0;
+            //    string schooltype = ConfigurationManager.AppSettings["Server"];
+            //    if (schooltype == "NE")
+            //        Schoolid = 1;
+            //    else
+            //        Schoolid = 2;
+            //    RVClientReport.SizeToReportContent = false;
+            //    tdMsg.InnerHtml = "";
+            //    HeadingDiv.Visible = true;
+            //    HeadingDiv.InnerHtml = "All Clients Info";
+            //    RVClientReport.Visible = true;
+            //    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+            //    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["ClientReport"];
+            //    RVClientReport.ShowParameterPrompts = false;
+            //    ReportParameter[] parm = new ReportParameter[1];
+            //    parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
+            //    this.RVClientReport.ServerReport.SetParameters(parm);
+            //    RVClientReport.ServerReport.Refresh();
+            //    divbirthdate.Visible = false;
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
+            //// --== All Client Click ==- END --
+        }
+        private DataTable cleanDataTable(DataTable dt)
+        {
+            foreach (DataColumn column in dt.Columns)
+            {
+                if (column.ColumnName == "Location")
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string value = row[column].ToString();
+
+                        string[] parts = value.Split(new char[] { ':' }, 2);
+                        value = parts.Length > 1 ? parts[1].Trim() : value;
+                        row[column] = value;
+                    }
+                }
+            }
+            return dt;
+
+        }
+        private DataTable getAllClientReport(DataTable dataTbl)
+        {
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = null;
+                DataTable dt = new DataTable();
+                DataTable dtFinal = new DataTable();
+                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                con.Open();
+                cmd = new SqlCommand("ClientStatisticalGraph", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                string para = "true";
+                cmd.Parameters.AddWithValue("@ParamStudName", para);
+                cmd.Parameters.AddWithValue("@ParamGender", para);
+                cmd.Parameters.AddWithValue("@ParamLanguage", para);
+                cmd.Parameters.AddWithValue("@ParamRace", para);
+                cmd.Parameters.AddWithValue("@ParamLocation", para);
+                cmd.Parameters.AddWithValue("@ParamProgram", para);
+                cmd.Parameters.AddWithValue("@ParamPlacement", para);
+                cmd.Parameters.AddWithValue("@ParamDepartment", para);
+                cmd.Parameters.AddWithValue("@ParamActive", para);
+                cmd.Parameters.AddWithValue("@ParamCity", para);
+                cmd.Parameters.AddWithValue("@ParamState", para);
+                cmd.Parameters.AddWithValue("@ParamStudRow", para);
+                cmd.Parameters.AddWithValue("@GetActiveID", "A,I,D");
+                da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                dtFinal = GetSelectedColumns(dt);
+                if (dataTbl.Rows.Count == 0) // No filter
+                {
+                    DataTable dtActive = new DataTable();
+                    dtActive.Columns.Add("Status");
+                    dtActive.Rows.Add("Active");
+                    dtFinal = filterDataTable(dtFinal, dtActive);
+                    return dtFinal;
+                }
+                else
+                    return filterDataTable(dtFinal, dataTbl); //Filter present
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public static DataTable filterDataTable(DataTable fullData, DataTable selectedData)
+        {
+            //Filter the table based on selected data
+            DataTable filteredData = fullData.Clone();
+
+            foreach (DataRow fullRow in fullData.Rows)
+            {
+                bool isMatch = true;
+
+                foreach (DataColumn selectedColumn in selectedData.Columns)
+                {
+                    if (fullData.Columns.Contains(selectedColumn.ColumnName))
+                    {
+                        List<string> selectedValues = selectedData.AsEnumerable()
+                            .Select(row => row[selectedColumn.ColumnName] != DBNull.Value
+                                ? row[selectedColumn.ColumnName].ToString().Trim()
+                                : string.Empty)
+                            .Where(val => !string.IsNullOrEmpty(val))
+                            .ToList();
+
+                        string fullRowValue = fullRow[selectedColumn.ColumnName] != DBNull.Value
+                            ? fullRow[selectedColumn.ColumnName].ToString().Trim()
+                            : string.Empty;
+
+                        if (selectedColumn.ColumnName == "Location") //Extract individual classes (Day and Residential)
+                        {
+
+                            DataTable newDataTable = new DataTable();
+                            newDataTable.Columns.Add(selectedColumn.ColumnName, typeof(string));
+                            DataRow newRow = newDataTable.NewRow();
+                            newRow[selectedColumn.ColumnName] = fullRowValue;
+                            newDataTable.Rows.Add(newRow);
+                            List<string> roomNamesInRow = ExtractLocation(newDataTable, selectedColumn.ColumnName);
+
+                            if (!selectedValues.Any(selectedRoom => roomNamesInRow.Contains(selectedRoom)))
+                            {
+                                isMatch = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (selectedValues.Count > 0 && !selectedValues.Contains(fullRowValue))
+                            {
+                                isMatch = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (isMatch)
+                {
+                    filteredData.ImportRow(fullRow);
+                }
+            }
+
+            
+            if (selectedData.Columns.Contains("Status"))
+                return filteredData; //Already filtered based on status
+            else
+            {
+                // Making Active, the default status
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Status");
+                dt.Rows.Add("Active");
+                return filterDataTable(filteredData, dt);
+            }
+        }
+
+
+        [WebMethod]
+        public static string CreateDataTableFromSelectedValues(Dictionary<string, List<string>> selectedValues)
+        {
+            //Create datatable of filters
+            try
+            {
+                DataTable dt = new DataTable();
+
+                foreach (KeyValuePair<string, List<string>> entry in selectedValues)
+                {
+                    dt.Columns.Add(entry.Key);
+                }
+
+                int maxSelections = 0;
+                foreach (KeyValuePair<string, List<string>> entry in selectedValues)
+                {
+                    if (entry.Value.Count > maxSelections)
+                    {
+                        maxSelections = entry.Value.Count;
+                    }
+                }
+
+                for (int i = 0; i < maxSelections; i++)
+                {
+                    DataRow row = dt.NewRow();
+
+                    foreach (KeyValuePair<string, List<string>> entry in selectedValues)
+                    {
+                        List<string> selectedTexts = entry.Value;
+
+                        if (i < selectedTexts.Count)
+                        {
+                            row[entry.Key] = selectedTexts[i];
+                        }
+                        else
+                        {
+                            row[entry.Key] = DBNull.Value;
+                        }
+                    }
+
+                    dt.Rows.Add(row);
+                }
+                ClientReports clientReportsInstance = new ClientReports();
+                DataTable dtFinal = clientReportsInstance.getAllClientReport(dt);
+                dtFinal.DefaultView.Sort = dtFinal.Columns[0].ColumnName + " ASC";
+                dtFinal = dtFinal.DefaultView.ToTable();
+                string jsonData = clientReportsInstance.ConvertDataTableToJson(dtFinal);
+                Console.WriteLine(jsonData);
+                return jsonData;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        private void registerScript(string script)
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "LoadDataScript", script, true);
+        }
+        private void PopulateDropdown(DataTable dtFinal)
+        {
+            //Populate dropdown menu for filtration
+            DataTable dt = dtFinal.Copy();
+            StringBuilder htmlBuilder = new StringBuilder();
+            Literal dropdown = new Literal();
+
+            foreach (DataColumn column in dt.Columns)
+            {
+                if (column.ColumnName == "Student Name" || column.ColumnName == "Status" || column.ColumnName == "Location" || column.ColumnName == "Race")
+                {
+                    htmlBuilder.Append("<div class='dropdown'>");
+                    htmlBuilder.Append("<button class='dropdown-btn'>" + column.ColumnName + " &#9660</button>");
+                    htmlBuilder.Append("<div class='dropdown-content'>");
+
+                    HashSet<string> uniqueValues = new HashSet<string>();
+                    List<string> sortedValues = new List<string>();
+                    if (column.ColumnName == "Location")
+                    {
+                        sortedValues = ExtractLocation(dt, column.ColumnName);
+                    }
+                    else
+                    {
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string value = row[column].ToString();
+                            if (!uniqueValues.Contains(value) && !string.IsNullOrWhiteSpace(value))
+                            {
+                                uniqueValues.Add(value);
+                            }
+                        }
+                        sortedValues = uniqueValues.ToList();
+                    }
+                    sortedValues.Sort(); 
+
+                    foreach (string value in sortedValues)
+                    {
+                        htmlBuilder.Append("<label><input type='checkbox' value='" + value + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + value + "</label><br>");
+                    }
+
+                    
+                    if (column.ColumnName == "Status")
+                    {
+                        htmlBuilder.Append("<label><input type='checkbox' value='" + "Inactive" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Inactive" + "</label><br>");
+                        htmlBuilder.Append("<label><input type='checkbox' value='" + "Discharged" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Discharged" + "</label><br>");
+                    }
+
+                    htmlBuilder.Append("</div>");
+                    htmlBuilder.Append("</div>");
+                }
+                dropdown.Text = htmlBuilder.ToString();
+                dropdown_container.Controls.Add(dropdown);
+            }
+        }
+
+        
+
+        public DataTable GetSelectedColumns(DataTable originalTable)
+        {
+            //To return only required columns for the table.
+            DataTable newTable = new DataTable();
+
+            string[] selectedColumns = { "StudName", "Gender", "StudLanguage", "RaceName", "City", "StudState", "ClassName", "Program", "Placement_Type", "DepartmentName", "StudStatus"};
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+            
+            if (newTable.Columns.Contains("StudName"))
+            {
+                newTable.Columns["StudName"].ColumnName = "Student Name";
+            }
+            
+            if (newTable.Columns.Contains("StudLanguage"))
+            {
+                newTable.Columns["StudLanguage"].ColumnName = "Primary Language";
+            } 
+            
+            if (newTable.Columns.Contains("RaceName"))
+            {
+                newTable.Columns["RaceName"].ColumnName = "Race";
+            }
+            
+            if (newTable.Columns.Contains("StudState"))
+            {
+                newTable.Columns["StudState"].ColumnName = "State";
+            }
+            
+            if (newTable.Columns.Contains("ClassName"))
+            {
+                newTable.Columns["ClassName"].ColumnName = "Location";
+            }
+
+            if (newTable.Columns.Contains("Placement_Type"))
+            {
+                newTable.Columns["Placement_Type"].ColumnName = "Placement Type";
+            }
+
+            if (newTable.Columns.Contains("DepartmentName"))
+            {
+                newTable.Columns["DepartmentName"].ColumnName = "Department";
+            }
+
+            if (newTable.Columns.Contains("StudStatus"))
+            {
+                newTable.Columns["StudStatus"].ColumnName = "Status";
+            }
+            foreach (DataRow dr in newTable.Rows)
+            {
+                if (dr["Status"] != DBNull.Value)
+                {
+                    string status = dr["Status"].ToString();
+
+                    if (status == "A")
+                        dr["Status"] = "Active";
+                    else if (status == "I")
+                        dr["Status"] = "Inactive";
+                    else if (status == "D")
+                        dr["Status"] = "Discharged";
+                }
+            }
+
+            return newTable;
+        }
+        public string ConvertDataTableToJson(DataTable dt)
+        {
+            System.Web.Script.Serialization.JavaScriptSerializer jsSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            var rowsList = new System.Collections.ArrayList();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                var rowDictionary = new System.Collections.Generic.Dictionary<string, object>();
+                foreach (DataColumn column in dt.Columns)
+                {
+                    rowDictionary[column.ColumnName] = row[column];
+                }
+                rowsList.Add(rowDictionary);
+            }
+
+            return jsSerializer.Serialize(rowsList);
+        }
+        static List<string> ExtractLocation(DataTable dt, string columnName)
+        {
+            HashSet<string> rooms = new HashSet<string>(); // HashSet to store unique room names
+            Regex regex = new Regex(@":\s*([^:,]+(?:,\s*[^:,]+)*)"); // Match everything after ': '
+
+            foreach (DataRow row in dt.Rows)
+            {
+                if (row[columnName] != DBNull.Value) // Check for null values
+                {
+                    string rowData = row[columnName].ToString();
+                    if (rowData.Length > 0) // Ensure the string is not empty
+                    {
+                        MatchCollection matches = regex.Matches(rowData);
+                        foreach (Match match in matches)
+                        {
+                            // Extract and split room names
+                            string[] roomNames = match.Groups[1].Value.Split(',');
+                            foreach (string room in roomNames)
+                            {
+                                rooms.Add(room.Trim()); // Trim spaces and add to HashSet (eliminates duplicates)
+                            }
+                        }
+                    }
+                }
+            }
+            return new List<string>(rooms); // Convert HashSet to List and return
+        }
+
 
         protected void btnClienContact_Click(object sender, EventArgs e)
         {
@@ -252,6 +791,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnClienContact";
                 int Schoolid = 0;
                 string schooltype = ConfigurationManager.AppSettings["Server"];
@@ -294,6 +835,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnPgmRoster";
                 RVClientReport.SizeToReportContent = true;
                 tdMsg.InnerHtml = "";
@@ -348,6 +891,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnVendor";
                 RVClientReport.SizeToReportContent = true;
                 tdMsg.InnerHtml = "";
@@ -487,6 +1032,9 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
+
                 hdnMenu.Value = "btnBirthdate";
                 RVClientReport.SizeToReportContent = false;
                 ddlQuarter.SelectedValue = "0";
@@ -516,6 +1064,8 @@ namespace ClientDB.Reports
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
                 divchanges.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnResRoster";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -563,6 +1113,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = true;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnAllPlacement";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -619,6 +1171,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = true;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnAllFunder";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -800,6 +1354,8 @@ namespace ClientDB.Reports
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
                 divDischarge.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 int Schoolid = 0;
                 string schooltype = ConfigurationManager.AppSettings["Server"];
                 if (schooltype == "NE")
@@ -836,6 +1392,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = true;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnAllBirthdate";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -878,6 +1436,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnAllAdmissionDate";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -918,6 +1478,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnAllDischargedate";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -954,6 +1516,8 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
                 hdnMenu.Value = "btnStatistical";
                 tdMsg.InnerHtml = "";
                 RVClientReport.Visible = false;
@@ -1164,6 +1728,8 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            btnShowReport.Visible = false;
+            btnResetAllClient.Visible = false;
             hdnMenu.Value = "btnContactChanges";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
@@ -1184,6 +1750,8 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            btnShowReport.Visible = false;
+            btnResetAllClient.Visible = false;
             hdnMenu.Value = "btnGuardianChanges";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
@@ -1204,6 +1772,8 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            btnShowReport.Visible = false;
+            btnResetAllClient.Visible = false;
             hdnMenu.Value = "btnPlcChange";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
@@ -1224,6 +1794,8 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            btnShowReport.Visible = false;
+            btnResetAllClient.Visible = false;
             hdnMenu.Value = "btnFundChange";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
