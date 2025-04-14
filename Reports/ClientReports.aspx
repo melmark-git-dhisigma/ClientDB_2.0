@@ -1115,7 +1115,7 @@
                                          <td>
                                             <asp:CheckBoxList ID="CheckBoxListcontact" runat="server" RepeatDirection="Horizontal">
                                             <asp:ListItem Selected="True">Active</asp:ListItem>
-                                            <asp:ListItem>Inactive</asp:ListItem>
+                                            <%--<asp:ListItem>Inactive</asp:ListItem>--%>
                                             <asp:ListItem>Discharged</asp:ListItem>
                                             </asp:CheckBoxList>
                                          </td>

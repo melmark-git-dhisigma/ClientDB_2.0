@@ -634,7 +634,7 @@ namespace ClientDB.Reports
                     
                     if (column.ColumnName == "Status")
                     {
-                        htmlBuilder.Append("<label><input type='checkbox' value='" + "Inactive" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Inactive" + "</label><br>");
+                        //htmlBuilder.Append("<label><input type='checkbox' value='" + "Inactive" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Inactive" + "</label><br>");
                         htmlBuilder.Append("<label><input type='checkbox' value='" + "Discharged" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Discharged" + "</label><br>");
                     }
 
@@ -722,8 +722,8 @@ namespace ClientDB.Reports
 
                     if (status == "A")
                         dr["Status"] = "Active";
-                    else if (status == "I")
-                        dr["Status"] = "Inactive";
+                    //else if (status == "I")
+                    //    dr["Status"] = "Inactive";
                     else if (status == "D")
                         dr["Status"] = "Discharged";
                 }
@@ -1291,30 +1291,30 @@ namespace ClientDB.Reports
                 {
                     HContactstatus.Value = "1";
                 }
-                if (chkcontact == "Inactive")
-                {
-                    HContactstatus.Value = "0";
-                }
+                //if (chkcontact == "Inactive")
+                //{
+                //    HContactstatus.Value = "0";
+                //}
                 if (chkcontact == "Discharged")
                 {
                     HContactstatus.Value = "2";
                 }
-                if (chkcontact == "ActiveInactive")
-                {
-                    HContactstatus.Value = "0,1";
-                }
+                //if (chkcontact == "ActiveInactive")
+                //{
+                //    HContactstatus.Value = "0,1";
+                //}
                 if (chkcontact == "ActiveDischarged")
                 {
                     HContactstatus.Value = "1,2";
                 }
-                if (chkcontact == "InactiveDischarged")
-                {
-                    HContactstatus.Value = "0,2";
-                }
-                if (chkcontact == "ActiveInactiveDischarged")
-                {
-                    HContactstatus.Value = "0,1,2";
-                }
+                //if (chkcontact == "InactiveDischarged")
+                //{
+                //    HContactstatus.Value = "0,2";
+                //}
+                //if (chkcontact == "ActiveInactiveDischarged")
+                //{
+                //    HContactstatus.Value = "0,1,2";
+                //}
 
                 if (DropDownCheckBoxesConStudname.SelectedIndex == -1 && HContactStudname.Value == "")
                 {
@@ -2468,10 +2468,10 @@ namespace ClientDB.Reports
                 Dtracname.Rows.Add(row);
                 hfstatus.Value += row[1] + ", ";
 
-                row[0] = "Inactive";
-                row[1] = "I";
-                Dtracname.Rows.Add(row);
-                hfstatus.Value += row[1] + ", ";
+                //row[0] = "Inactive";
+                //row[1] = "I";
+                //Dtracname.Rows.Add(row);
+                //hfstatus.Value += row[1] + ", ";
 
                 row[0] = "Discharged";
                 row[1] = "D";

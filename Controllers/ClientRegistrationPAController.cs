@@ -607,10 +607,10 @@ namespace ClientDB.Controllers
             string Color = "";
             if (Status == "Active")
                 Color = "<span style='color:green'> (" + Status + ")</span>";
-            else if (Status == "On-Hold")
-                Color = "<span style='color:orange'> (" + Status + ")</span>";
-            else if (Status == "Inactive")
-                Color = "<span style='color:red'> (" + Status + ")</span>";
+            //else if (Status == "On-Hold")
+            //    Color = "<span style='color:orange'> (" + Status + ")</span>";
+            //else if (Status == "Inactive")
+            //    Color = "<span style='color:red'> (" + Status + ")</span>";
             else if (Status == "Discharge")
                 Color = "<span style='color:red'> (" + Status + ")</span>";
             string ClientName = sname[0].LastName + " , " + sname[0].FirstName + Color;
@@ -773,6 +773,8 @@ namespace ClientDB.Controllers
             Class DischargeClass = dbobj.Classes.Where(x => x.ClassCd == "DSCH" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
             var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
+            var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
+            var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).OrderByDescending(x => x.StartDate).FirstOrDefault();
                 try
                 {
                     if (placements != null)
@@ -780,19 +782,50 @@ namespace ClientDB.Controllers
                         foreach (var item in placements)
                         {
                             //item.Location = Convert.ToInt32(DischargeClass.ClassId);
-                            item.PrevClassId = item.Location;
-                            item.Location = Convert.ToInt32(DischargeClass.ClassId);
+                            //item.PrevClassId = item.Location;
+                            //item.Location = Convert.ToInt32(DischargeClass.ClassId);
                             item.ModifiedBy = sess.LoginId;
                             item.ModifiedOn = DateTime.Now;
-                            item.EndDate = DateTime.Now;
-                            item.Discharge = 1;
+                            //item.EndDate = DateTime.Now;
+                            // Set EndDate only if it has not been set
+                            if (item.EndDate == null)
+                            {
+                                item.EndDate = DateTime.Now;
+                            }
+                            //item.Discharge = 1;
                         }
                     }
-                    if (studentPersonals != null)
+                    // Create a new placement in the "Discharged" class
+                    if (mostRecentPlacement != null)
                     {
-                        studentPersonals.PlacementStatus = "D";
+                        Placement newPlacement = new Placement()
+                        {
+                            StudentPersonalId = ClientID,
+                            Department = mostRecentPlacement.Department,
+                            PlacementType = mostRecentPlacement.PlacementType,
+                            PlacementDepartment = mostRecentPlacement.PlacementDepartment,
+                            StartDate = DateTime.Now,
+                            EndDate = DateTime.Now,
+                            Location = DischargeClass.ClassId,
+                            PlacementReason = placementRsn.LookupId,
+                            Status = 1,
+                            SchoolId = sess.SchoolId,
+                            CreatedBy = sess.LoginId,
+                            CreatedOn = DateTime.Now
+                        };
+                        dbobj.Placements.Add(newPlacement);
                     }
+                    //if (studentPersonals != null)
+                    //{
+                    //    studentPersonals.PlacementStatus = "D";
+                    //}
                     dbobj.SaveChanges();
+                    var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
+                    var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
+                    if (StudStatus != null)
+                    {
+                        Session["PlacementStat"] = (StudStatus.PlacementStatus == null) ? "A" : StudStatus.PlacementStatus;
+                    }
                     return "Success";
                 }
                 catch
@@ -819,27 +852,38 @@ namespace ClientDB.Controllers
                 {
                     foreach (var item in placements)
                     {
-                        item.Location = item.PrevClassId;
-                        item.ModifiedBy = sess.LoginId;
-                        item.ModifiedOn = DateTime.Now;
-                        item.Discharge = 0;
-                    }
-                }
-                if (studentPersonals != null)
-                {
-                    if (placements != null)
-                    {
-                        if (placements.Count > 0)
+                        //item.Location = item.PrevClassId;
+                        //item.Discharge = 0;
+                        if (item.Location == DischargeClassId)
                         {
-                            studentPersonals.PlacementStatus = "A";
+                            item.ModifiedBy = sess.LoginId;
+                            item.ModifiedOn = DateTime.Now;
+                            item.Status = 0;
+                            item.EndDate = null;
                         }
-                        else
-                            studentPersonals.PlacementStatus = "I";
                     }
-                    else
-                        studentPersonals.PlacementStatus = "I";
                 }
+                //if (studentPersonals != null)
+                //{
+                    //if (placements != null)
+                    //{
+                        //if (placements.Count > 0)
+                        //{
+                            //studentPersonals.PlacementStatus = "A";
+                        //}
+                        //else
+                        //    studentPersonals.PlacementStatus = "I";
+                    //}
+                    //else
+                    //    studentPersonals.PlacementStatus = "I";
+                //}
                 dbobj.SaveChanges();
+                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
+                var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
+                if (StudStatus != null)
+                {
+                    Session["PlacementStat"] = (StudStatus.PlacementStatus == null) ? "A" : StudStatus.PlacementStatus;
+                }
 
                 return "Success";
             }

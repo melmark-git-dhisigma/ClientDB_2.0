@@ -4319,6 +4319,7 @@ namespace ClientDB.AppFunctions
                 studentPA = dbobj.StudentPersonalPAs.Where(objStudentPA => objStudentPA.StudentPersonalId == ClientId && objStudentPA.SchoolId == sess.SchoolId).SingleOrDefault();
                 stdAddrRel = dbobj.StudentAddresRels.Where(x => x.StudentPersonalId == ClientId && x.ContactSequence == 0).SingleOrDefault();
                 //AddressType is 0 for MelmarkPA (check for NE)
+                if (stdAddrRel != null) 
                 address = dbobj.AddressLists.Where(x => x.AddressId == stdAddrRel.AddressId).SingleOrDefault();
                 var EmergencyContacts = dbobj.EmergencyContactSchools.Where(objEmergencyContact => objEmergencyContact.StudentPersonalId == ClientId).ToList();
                 var SchoolsAttended = dbobj.SchoolsAttendeds.Where(objSchoolAttended => objSchoolAttended.StudentPersonalId == ClientId).ToList();
@@ -4379,11 +4380,14 @@ namespace ClientDB.AppFunctions
                 var fundingSource = dbobj.StudentPersonalPAs.Where(x => x.StudentPersonalId == ClientId).SingleOrDefault();
 
                 regModel.FunderListString = "";
-                if (fundingSource.FundingSource != null)
+                if (fundingSource != null)
                 {
-                    if (fundingSource.FundingSource != "")
+                    if (fundingSource.FundingSource != null)
                     {
-                        regModel.FunderListString = fundingSource.FundingSource + ";";
+                        if (fundingSource.FundingSource != "")
+                        {
+                            regModel.FunderListString = fundingSource.FundingSource + ";";
+                        }
                     }
                 }
                 if (clntFunder.Count > 0)
@@ -9014,14 +9018,14 @@ namespace ClientDB.AppFunctions
                 {
                     return Status;
                 }
-                else if (placementStatus.PlacementStatus == "I")
-                {
-                    Status = "Inactive";
-                }
-                else if (placementStatus.PlacementStatus == "H")
-                {
-                    Status = "On-Hold";
-                }
+                //else if (placementStatus.PlacementStatus == "I")
+                //{
+                //    Status = "Inactive";
+                //}
+                //else if (placementStatus.PlacementStatus == "H")
+                //{
+                //    Status = "On-Hold";
+                //}
                 else if (placementStatus.PlacementStatus == "D")
                 {
                     Status = "Discharge";
@@ -9060,29 +9064,29 @@ namespace ClientDB.AppFunctions
                     }
                 }
 
-                var Listonholddata = dbobj.LookUps.Where(x => x.LookupType == "Placement Reason" && x.LookupDesc == "On-Hold").ToList();
-                foreach (var data in PlacementList)
-                {
-                    if (data.PlacementReason == Listonholddata[0].LookupId)
-                    {
-                        Status = "On-Hold";
-                        //UpdatePlacementDBStatus(Status, ClientID, SchoolId);
-                        return Status;
-                    }
-                }
+                //var Listonholddata = dbobj.LookUps.Where(x => x.LookupType == "Placement Reason" && x.LookupDesc == "On-Hold").ToList();
+                //foreach (var data in PlacementList)
+                //{
+                //    if (data.PlacementReason == Listonholddata[0].LookupId)
+                //    {
+                //        Status = "On-Hold"; 
+                //        //UpdatePlacementDBStatus(Status, ClientID, SchoolId);
+                //        return Status;
+                //    }
+                //}
 
-                var ListInactivedata = dbobj.LookUps.Where(x => x.LookupType == "Placement Reason" && x.LookupDesc == "Inactive").ToList();
-                foreach (var data in PlacementList)
-                {
+                //var ListInactivedata = dbobj.LookUps.Where(x => x.LookupType == "Placement Reason" && x.LookupDesc == "Inactive").ToList();
+                //foreach (var data in PlacementList)
+                //{
 
-                    if (data.PlacementReason == ListInactivedata[0].LookupId)
-                    {
-                        Status = "Inactive";
-                        //UpdatePlacementDBStatus(Status, ClientID, SchoolId);
-                        return Status;
-                    }
+                //    if (data.PlacementReason == ListInactivedata[0].LookupId)
+                //    {
+                //        Status = "Inactive";
+                //        //UpdatePlacementDBStatus(Status, ClientID, SchoolId);
+                //        return Status;
+                //    }
 
-                }
+                //}
             }
             //}
             //UpdatePlacementDBStatus(Status, ClientID, SchoolId);
