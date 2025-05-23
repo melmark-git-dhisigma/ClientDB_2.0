@@ -167,18 +167,15 @@
             else if (radioValue2 == 2) {
                 radioValue2 = false;
             }
-            //if (radioValue3 == 1) {
-            //    radioValue3 = 1;
-            //}
-            //else if (radioValue3 == 2) {
-            //    radioValue3 = 2;
-            //}
-            //else if (radioValue3 == 4) {
-            //    radioValue3 = 4;
-            //}
-
-            radioValue3 = 0;
-            $("input[name='activeClient1'][value='3']").prop("checked", true);
+            if (radioValue3 == 1) {
+                radioValue3 = 1;
+            }
+            else if (radioValue3 == 2) {
+                radioValue3 = 2;
+            }
+            else if (radioValue3 == 4) {
+                radioValue3 = 4;
+            }
 
             var drpSort = document.getElementById('ddlSort');
             var sortArgmnt = drpSort.options[drpSort.selectedIndex].text;
@@ -545,7 +542,7 @@
                                             <input type="button" id="btnSearchNew" style="float:none;" value="Search" onclick="searchButtonNew()" />
                                         </td>
                                          <td style="width:15%;">
-                                            <span class="lblSpan">Search By</span><br />
+                                            <span class="lblSpan">Filtered By</span><br />
                                             <%if (ViewBag.activeClientstatus == 1)
                                               { %>
                                             <input type="radio" name="activeClient1" value="1" onchange="sortClients()"  checked="checked" />Active
