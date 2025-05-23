@@ -862,6 +862,7 @@ namespace ClientDB.Reports
         " ,EMERGENCYCONT.Mobile AS EmergencyContactMobile " +
         " FROM StudentPersonal SP " +
         " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " +
+        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
         " LEFT JOIN " +
         " (SELECT CP.ContactPersonalId,CP.LastName,CP.FirstName,CP.StudentPersonalId,AL.Phone,AL.Mobile,AL.OtherPhone  FROM " +
         "   [dbo].[ContactPersonal] CP " +
@@ -870,7 +871,7 @@ namespace ClientDB.Reports
         " INNER JOIN [dbo].[StudentAddresRel] SAR ON SAR.ContactPersonalId=CP.ContactPersonalId " +
         " INNER JOIN [dbo].[AddressList] AL ON AL.AddressId=SAR.AddressId " +
         " WHERE LP.LookupName='Emergency Contact' AND SAR.ContactSequence=1 AND CP.Status=1) EMERGENCYCONT ON SP.StudentPersonalId=EMERGENCYCONT.StudentPersonalId " +
-        "  WHERE SP.StudentType='Client' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+        "  WHERE SP.StudentType='Client' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
         " 							FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
         " 							WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
         " 							ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
@@ -887,6 +888,7 @@ namespace ClientDB.Reports
         " FROM StudentPersonal SP " +
         " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " +
         " INNER JOIN  ContactPersonal AS CP ON SP.StudentPersonalId = CP.StudentPersonalId " +
+        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
         " INNER JOIN [dbo].[StudentContactRelationship] SCR ON CP.ContactPersonalId=SCR.ContactPersonalId		" +
         " INNER JOIN [dbo].[StudentAddresRel] SAR ON SAR.ContactPersonalId=CP.ContactPersonalId " +
         " INNER JOIN [dbo].[AddressList] AL ON AL.AddressId=SAR.AddressId  " +
@@ -895,7 +897,7 @@ namespace ClientDB.Reports
         " 							FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
         " 							WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
         " 							ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LOOKUPTYPE= 'Department'  and ST.StudentType='Client') " +
         "  and ST.StudentPersonalId not in (SELECT Distinct " +
         "  ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
         "  AND CONVERT(INT,SP.ClientId)>0 AND CP.IsEmergency='true' AND CP.Status=1) ";
@@ -1086,7 +1088,8 @@ namespace ClientDB.Reports
                                    ",(SELECT LookupName FROM LookUp WHERE LookupId=PL.BehaviorAnalyst) AS BehaviorAnalyst " +
                                    "FROM StudentPersonal SP LEFT JOIN [dbo].[Placement] PL ON SP.StudentPersonalId=PL.StudentPersonalId  " +
                                    "LEFT JOIN LookUp LP ON LP.LookupId=PL.PlacementType		 " +
-                                   " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                                   "INNER JOIN LookUp LKP ON LKP.LookupId = PL.Department " +
+                                   " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType ='Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                                    "FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
                                    "WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                                    "ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
@@ -1575,8 +1578,6 @@ namespace ClientDB.Reports
                     divPlacement.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
-                    btnShowReportVendor.Visible = false;
-                    btnResetVendor.Visible = false;
                     hdnMenu.Value = "btnAllFunder";
                     RVClientReport.SizeToReportContent = false;
                     tdMsg.InnerHtml = "";
