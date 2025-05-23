@@ -1506,7 +1506,7 @@ namespace ClientDB.Reports
             }
         }
 
-        protected void btnAllFunder_Click(object sender, EventArgs e)
+        protected void btnOldAllFunder_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1550,6 +1550,111 @@ namespace ClientDB.Reports
             {
                 throw ex;
             }
+        }
+
+        protected void btnAllFunder_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldAllFunder_Click(sender, e);
+                }
+                else
+                {
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    divStatisticalNew.Visible = false;
+                    divchanges.Visible = false;
+                    FillFundingSource();
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = true;
+                    divPlacement.Visible = false;
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
+                    hdnMenu.Value = "btnAllFunder";
+                    RVClientReport.SizeToReportContent = false;
+                    tdMsg.InnerHtml = "";
+                    RVClientReport.Visible = false;
+                    HeadingDiv.Visible = true;
+                    HeadingDiv.InnerHtml = "All Clients by Funder";
+                    RVClientReport.Visible = false;
+                    int Schoolid = 0;
+                    string schooltype = ConfigurationManager.AppSettings["Server"];
+                    if (schooltype == "NE")
+                        Schoolid = 1;
+                    else
+                        Schoolid = 2;
+                    divbirthdate.Visible = false;
+                    string funderQuery = "SELECT SPA.FundingSource,SP.LastName+','+SP.FirstName AS ClientName,SP.ClientId,SP.SchoolId FROM StudentPersonal SP INNER JOIN StudentPersonalPA SPA ON SP.StudentPersonalId=SPA.StudentPersonalId " +
+                                         " WHERE SPA.FundingSource IS NOT NULL AND SPA.FundingSource<>'' AND SP.StudentType='Client' AND SP.PlacementStatus<>'I' AND CONVERT(INT,SP.ClientId)>0  ORDER BY SPA.FundingSource,SP.ClientId";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(funderQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnFunder(dt);
+                    dt.DefaultView.Sort = dt.Columns["Funder"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+                    var jsonData = JsonConvert.SerializeObject(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerFunder(" + jsonData + ");", true);
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DataTable GetSelectedColumnFunder(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "FundingSource", "ClientName", "ClientId"};
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("FundingSource"))
+            {
+                newTable.Columns["FundingSource"].ColumnName = "Funder";
+            }
+
+            if (newTable.Columns.Contains("ClientName"))
+            {
+                newTable.Columns["ClientName"].ColumnName = "ClientName";
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "ClientId";
+            }
+
+            return newTable;
         }
         private void FillDept(DropDownList ddlDept)
         {
@@ -1712,7 +1817,9 @@ namespace ClientDB.Reports
                     Schoolid = 1;
                 else
                     Schoolid = 2;
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                if (!checkHighcharts.Checked)
+                {
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
                 RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FunderReport"];
                 RVClientReport.ShowParameterPrompts = false;
                 ReportParameter[] parm = new ReportParameter[2];
@@ -1720,6 +1827,35 @@ namespace ClientDB.Reports
                 parm[1] = new ReportParameter("FundingSource", ddlFundingSource.SelectedValue.ToString());
                 this.RVClientReport.ServerReport.SetParameters(parm);
                 RVClientReport.ServerReport.Refresh();
+            }
+                else
+                {
+                    string funderQuery = "SELECT SPA.FundingSource,SP.LastName+','+SP.FirstName AS ClientName,SP.ClientId,SP.SchoolId FROM StudentPersonal SP INNER JOIN StudentPersonalPA SPA ON SP.StudentPersonalId=SPA.StudentPersonalId " +
+                                         " WHERE SPA.FundingSource IS NOT NULL AND SPA.FundingSource<>'' AND SP.StudentType='Client' AND SP.PlacementStatus<>'I' AND CONVERT(INT,SP.ClientId)>0  ORDER BY SPA.FundingSource,SP.ClientId";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(funderQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    if (ddlFundingSource.SelectedValue.ToString() != "0")
+                    {
+                        for (int i = dt.Rows.Count - 1; i >= 0; i--)
+                        {
+                            if (dt.Rows[i]["FundingSource"].ToString() != ddlFundingSource.SelectedValue.ToString())
+                            {
+                                dt.Rows[i].Delete();
+                            }
+                        }
+                        dt.AcceptChanges();
+                    }
+                    dt = GetSelectedColumnFunder(dt);
+                    dt.DefaultView.Sort = dt.Columns["Funder"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+                    var jsonData = JsonConvert.SerializeObject(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerFunder(" + jsonData + ");", true);
+                }
             }
             catch (Exception ex)
             {
