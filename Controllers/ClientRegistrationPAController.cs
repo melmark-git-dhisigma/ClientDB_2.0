@@ -764,15 +764,15 @@ namespace ClientDB.Controllers
 
             int ClientID = sess.StudentId, SchoolId = sess.SchoolId;
 
-            var currLocationId = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).ToList();
+            //var currLocationId = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).ToList();
 
-            int? currLocation = currLocationId[0].Location;
+            //int? currLocation = currLocationId[0].Location;
 
             
-            StdtClass stdc = dbobj.StdtClasses.Where(x => x.StdtId == ClientID && x.ClassId == currLocation && x.ActiveInd == "A").SingleOrDefault();
+            //StdtClass stdc = dbobj.StdtClasses.Where(x => x.StdtId == ClientID && x.ClassId == currLocation && x.ActiveInd == "A").SingleOrDefault();
             Class DischargeClass = dbobj.Classes.Where(x => x.ClassCd == "DSCH" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
-            var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
+            //var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
             var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).OrderByDescending(x => x.StartDate).FirstOrDefault();
                 try
@@ -843,9 +843,10 @@ namespace ClientDB.Controllers
 
             Class DischargeClass = dbobj.Classes.Where(x => x.ClassCd == "DSCH" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             int DischargeClassId = Convert.ToInt32(DischargeClass.ClassId);
-            StdtClass stdc = dbobj.StdtClasses.Where(x => x.StdtId == ClientID && x.ClassId == DischargeClassId && x.ActiveInd == "A").SingleOrDefault();
+            //StdtClass stdc = dbobj.StdtClasses.Where(x => x.StdtId == ClientID && x.ClassId == DischargeClassId && x.ActiveInd == "A").SingleOrDefault();
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
-            var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
+            //var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
+            var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             try
             {
                 if (placements != null)
@@ -854,7 +855,7 @@ namespace ClientDB.Controllers
                     {
                         //item.Location = item.PrevClassId;
                         //item.Discharge = 0;
-                        if (item.Location == DischargeClassId)
+                        if (item.Location == DischargeClassId && item.PlacementReason == placementRsn.LookupId)
                         {
                             item.ModifiedBy = sess.LoginId;
                             item.ModifiedOn = DateTime.Now;
