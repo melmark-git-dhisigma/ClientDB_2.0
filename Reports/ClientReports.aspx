@@ -841,6 +841,186 @@
             paginationContainer.appendChild(nextButton);
         }
 
+
+        //Funder Table
+        var sortState = {}; // Keeps track of sort direction per funder
+
+        function loadDataFromServerFunder(data) {
+            fullData = data;
+            document.getElementById("filterDiv").style.display = "none";
+            document.getElementById("buttonContainer").style.display = "none";
+
+            var grouped = {};
+            data.forEach(function (row) {
+                if (!grouped[row.Funder]) {
+                    grouped[row.Funder] = [];
+                }
+                grouped[row.Funder].push({
+                    ClientId: row.ClientId,
+                    ClientName: row.ClientName
+                });
+            });
+
+            var tableHeader = document.getElementById('tableHeader');
+            var tableBody = document.getElementById('tableBody');
+            tableHeader.innerHTML = "";
+            tableBody.innerHTML = "";
+
+            for (var funder in grouped) {
+                var tableId = "innerTable_" + funder.replace(/\s+/g, "_"); // unique ID
+                var outerRow = document.createElement('tr');
+                var outerCell = document.createElement('td');
+                outerCell.colSpan = 2;
+
+                var innerTable = document.createElement('table');
+                innerTable.id = tableId;
+                innerTable.style.width = "60%";
+                innerTable.style.tableLayout = "fixed"; // ensure fixed column width
+                innerTable.style.borderCollapse = "collapse"; // cleaner layout
+                innerTable.border = "1";
+                innerTable.style.marginBottom = "20px";
+                innerTable.style.marginLeft = "auto";  // center horizontally
+                innerTable.style.marginRight = "auto";
+
+                var funderHeaderRow = document.createElement('tr');
+                var funderHeaderCell = document.createElement('th');
+                funderHeaderCell.colSpan = 2;
+                funderHeaderCell.innerText = funder;
+                funderHeaderCell.style.backgroundColor = "#4CAF50";
+                funderHeaderCell.style.color = "white";
+                funderHeaderRow.appendChild(funderHeaderCell);
+                innerTable.appendChild(funderHeaderRow);
+
+                // Column headers with unique IDs
+                var columnsRow = document.createElement('tr');
+
+                var idHeader = document.createElement('th');
+                idHeader.id = tableId + "_col0";
+                idHeader.innerText = "Client ID ⬍";
+                idHeader.style.cursor = "pointer";
+                idHeader.onclick = (function (tableId, colIndex, headerId) {
+                    return function () {
+                        handleSort(tableId, colIndex, headerId);
+                    };
+                })(tableId, 0, idHeader.id);
+
+                var nameHeader = document.createElement('th');
+                nameHeader.id = tableId + "_col1";
+                nameHeader.innerText = "Client Name ⬍";
+                nameHeader.style.cursor = "pointer";
+                nameHeader.onclick = (function (tableId, colIndex, headerId) {
+                    return function () {
+                        handleSort(tableId, colIndex, headerId);
+                    };
+                })(tableId, 1, nameHeader.id);
+
+                columnsRow.appendChild(idHeader);
+                columnsRow.appendChild(nameHeader);
+                innerTable.appendChild(columnsRow);
+
+                // Data rows
+                grouped[funder].forEach(function (client) {
+                    var row = document.createElement('tr');
+                    var idCell = document.createElement('td');
+                    idCell.innerText = client.ClientId;
+                    var nameCell = document.createElement('td');
+                    nameCell.innerText = client.ClientName;
+                    row.appendChild(idCell);
+                    row.appendChild(nameCell);
+                    innerTable.appendChild(row);
+                });
+
+                outerCell.appendChild(innerTable);
+                outerRow.appendChild(outerCell);
+                tableBody.appendChild(outerRow);
+            }
+        }
+        var tableSortState = {};
+        function handleSort(tableId, columnIndex, headerId) {
+            var key = tableId + "_" + columnIndex;
+            var ascending = true;
+
+            // Toggle sort direction
+            if (tableSortState[key] !== undefined) {
+                ascending = !tableSortState[key];
+            }
+            tableSortState = {}; // Reset state for other columns
+            tableSortState[key] = ascending;
+
+            // Reset all header arrows in this table
+            var header = document.getElementById(headerId);
+            var headerRow = header.parentNode;
+            var headers = headerRow.getElementsByTagName("th");
+
+            for (var i = 0; i < headers.length; i++) {
+                headers[i].innerText = headers[i].innerText.replace(" ▲", "").replace(" ▼", "").replace(" ⬍", "") + " ⬍";
+            }
+
+            // Set arrow on active column
+            var baseText = header.innerText.replace(" ⬍", "").replace(" ▲", "").replace(" ▼", "");
+            header.innerText = baseText + (ascending ? " ▲" : " ▼");
+
+            // Sort table
+            sortHtmlTableByColumn(tableId, columnIndex, ascending);
+        }
+        function sortHtmlTableByColumn(tableId, columnIndex, asc) {
+            var table = document.getElementById(tableId);
+            if (!table) return;
+
+            var rows = table.rows;
+            var switching = true;
+
+            while (switching) {
+                switching = false;
+                for (var i = 2; i < rows.length - 1; i++) {
+                    var x = rows[i].getElementsByTagName("TD")[columnIndex];
+                    var y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+                    if (!x || !y) continue;
+
+                    var xVal = x.innerText.toLowerCase();
+                    var yVal = y.innerText.toLowerCase();
+
+                    var shouldSwitch = asc ? xVal > yVal : xVal < yVal;
+
+                    if (shouldSwitch) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        function toggleSort(funder, column) {
+            var state = sortState[funder];
+            if (state.column === column) {
+                state.asc = !state.asc;
+            } else {
+                state.column = column;
+                state.asc = true;
+            }
+
+            fullData.sort(function (a, b) {
+                if (a.Funder !== funder) return 0; // only sort within the matching funder
+
+                var valA = a[column];
+                var valB = b[column];
+
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+
+                if (valA < valB) return state.asc ? -1 : 1;
+                if (valA > valB) return state.asc ? 1 : -1;
+                return 0;
+            });
+
+            loadDataFromServerFunder(fullData);
+        }
+
+
     </script>
     <style>
         /*Column Dropdown Styling*/
