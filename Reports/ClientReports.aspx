@@ -156,7 +156,7 @@
                     return false;
                 }
             }
-            return true;
+            return handleClientClick();
         }
 
 
@@ -307,6 +307,32 @@
         }
     </style>
     <style>
+        /*Loader Styling*/
+        .loader-overlay {
+            position: absolute; /* Scope to parent */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+            .loader-overlay.visible {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+        .loader-text {
+            font-size: 1.5rem;
+            color: #333;
+        }
 
         /*Table Styling*/
 
@@ -406,6 +432,21 @@
     </style>
    
     <script>
+        function showLoader() {
+            document.getElementById("loaderOverlay").classList.add("visible");
+        }
+
+        function hideLoader() {
+            document.getElementById("loaderOverlay").classList.remove("visible");
+        }
+
+        function handleClientClick() {
+            var checkbox = document.getElementById('<%= checkHighcharts.ClientID %>');
+            if (checkbox && checkbox.checked) {
+                showLoader();
+            }
+            return true;
+        }
 
         var currentPage = 1;
         var rowsPerPage = 10;
@@ -420,6 +461,7 @@
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
                 document.getElementById("noOfClients").textContent = "Total No. of Clients : 0";
+                hideLoader();
                 return;
             }
             else
@@ -467,6 +509,7 @@
 
             //Display count of clients
             document.getElementById("noOfClients").textContent = "Total No. of Clients : " + data.length;
+            hideLoader();
         }
 
         function createPaginationControls(totalRows, data) {
@@ -598,6 +641,7 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                hideLoader();
                 return;
             } else {
                 tableHeader.style.removeProperty("display");
@@ -699,6 +743,7 @@
             }
 
             createPaginationControlsEmergency(data.length, data);
+            hideLoader();
         }
 
         function createPaginationControlsEmergency(totalRows, data) {
@@ -758,6 +803,7 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                hideLoader();
                 return;
             }
             else
@@ -831,6 +877,7 @@
 
             // Create pagination controls
             createPaginationControlsProgramRoster(data.length, data);
+            hideLoader();
         }
 
         function createPaginationControlsProgramRoster(totalRows, data) {
@@ -887,6 +934,7 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                hideLoader();
                 return;
             }
             else
@@ -993,6 +1041,7 @@
 
             // Create pagination controls
             createPaginationControlsVendor(data.length, data);
+            hideLoader();
         }
         function createPaginationControlsVendor(totalRows, data) {
             var totalPages = Math.ceil(totalRows / rowsPerPage);
@@ -1051,6 +1100,7 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                hideLoader();
                 return;
             }
             else
@@ -1123,6 +1173,7 @@
 
             // Create pagination controls
             createPaginationControlsQuarter(data.length, data);
+            hideLoader();
         }
         function createPaginationControlsQuarter(totalRows, data) {
             var totalPages = Math.ceil(totalRows / rowsPerPage);
@@ -1259,6 +1310,7 @@
                 outerRow.appendChild(outerCell);
                 tableBody.appendChild(outerRow);
             }
+            hideLoader();
         }
         var tableSortState = {};
         function handleSort(tableId, columnIndex, headerId) {
@@ -1900,6 +1952,7 @@
 
 
         function getSelectedValuesAndSend() {
+            showLoader();
             document.getElementById("btnShowReport").style.display = 'inline-block';
             document.getElementById("btnResetAllClient").style.display = 'inline-block';
             event.preventDefault();
@@ -1939,10 +1992,13 @@
                                 var data = JSON.parse(jsonResponse.d);
                                 currentPage = 1;
                                 loadDataFromServer(data);
+                                hideLoader();
                             } catch (e) {
+                                hideLoader();
                                 console.error("Error parsing JSON:", e);
                             }
                         } else {
+                            hideLoader();
                             console.error("Empty response received.");
                         }
                     }
@@ -1952,6 +2008,7 @@
         }
 
         function getSelectedValuesAndSendVendor() {
+            showLoader();
             document.getElementById("btnShowReportVendor").style.display = 'inline-block';
             document.getElementById("btnResetVendor").style.display = 'inline-block';
             event.preventDefault();
@@ -1993,9 +2050,11 @@
                             currentPage = 1;
                             loadDataFromServerVendor(data);
                         } catch (e) {
+                            hideLoader();
                             console.error("Error parsing JSON:", e);
                         }
                     } else {
+                        hideLoader();
                         console.error("Empty response received.");
                     }
                 }
@@ -2050,22 +2109,22 @@
                     <div class="leftContainer2" style="width: 23%">
 
                         <asp:CheckBox ID="checkHighcharts" runat="server" />
-                        <asp:Button ID="btnallClient" CssClass="leftMenu" runat="server" Text="All Clients Info" ToolTip="All Clients Info" OnClick="btnallClient_Click"></asp:Button>
+                        <asp:Button ID="btnallClient" CssClass="leftMenu" runat="server" Text="All Clients Info" ToolTip="All Clients Info" OnClientClick="return handleClientClick();"    OnClick="btnallClient_Click"></asp:Button>
 
-                        <asp:Button ID="btnClienContact" CssClass="leftMenu" runat="server" Text="Emergency/Home Contact" ToolTip="Emergency/Home Contact" OnClick="btnClienContact_Click"></asp:Button>
+                        <asp:Button ID="btnClienContact" CssClass="leftMenu" runat="server" Text="Emergency/Home Contact" ToolTip="Emergency/Home Contact" OnClientClick="return handleClientClick();" OnClick="btnClienContact_Click"></asp:Button>
 
                         <%--                                    <asp:Button ID="btnClientContactRes" CssClass="leftMenu" runat="server" Text="Emergency/Home Contact – Residence Only" ToolTip="Emergency/Home Contact – Residence Only"   ></asp:Button>--%>
 
-                        <asp:Button ID="btnPgmRoster" CssClass="leftMenu" runat="server" Text="Program Roster" ToolTip="Program Roster" OnClick="btnPgmRoster_Click"></asp:Button>
+                        <asp:Button ID="btnPgmRoster" CssClass="leftMenu" runat="server" Text="Program Roster" ToolTip="Program Roster" OnClientClick="return handleClientClick();" OnClick="btnPgmRoster_Click"></asp:Button>
 
-                        <asp:Button ID="btnVendor" runat="server" CssClass="leftMenu" Text="Client/Contact/Vendor" ToolTip="Client/Contact/Vendor" OnClick="btnVendor_Click"></asp:Button>
+                        <asp:Button ID="btnVendor" runat="server" CssClass="leftMenu" Text="Client/Contact/Vendor" ToolTip="Client/Contact/Vendor" OnClientClick="return handleClientClick();" OnClick="btnVendor_Click"></asp:Button>
 
                         <%--<asp:Button ID="btnVenderDischarged" runat="server" CssClass="leftMenu" Text="Client/Contact/Vendor – Discharged" ToolTip="Client/Contact/Vendor – Discharged"   ></asp:Button>--%>
 
                         <asp:Button ID="btnBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate Quarter" ToolTip="All Clients by Birthdate Quarter" OnClick="btnBirthdate_Click"></asp:Button>
 
-                        <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClick="btnResRoster_Click"></asp:Button>
-                        <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClick="btnAllFunder_Click"></asp:Button>
+                        <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClientClick="return handleClientClick();" OnClick="btnResRoster_Click"></asp:Button>
+                        <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
                         <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClick="btnAllPlacement_Click"></asp:Button>
                         <asp:Button ID="btnAllBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate" ToolTip="All Clients by Birthdate" OnClick="btnAllBirthdate_Click"></asp:Button>
                         <asp:Button ID="btnAllAdmissionDate" runat="server" CssClass="leftMenu" Text="All Clients by Admission date" ToolTip="All Clients by Admission date" OnClick="btnAllAdmissionDate_Click"></asp:Button>
@@ -2080,7 +2139,7 @@
 
                     <div class="middleContainer" style="width: 75%">
 
-                        <div id="content">
+                        <div id="content" style="position: relative;">
                             <div class="headingDivBar" style="width: 100%" id="HeadingDiv" runat="server" visible="false">
                             </div>
                             <div style="float: left; width: 100%" id="tdMsg" runat="server" visible="false">
@@ -2159,7 +2218,7 @@
 
                                             </td>
                                             <td>
-                                                <asp:Button ID="btnquarter" runat="server" Text="Show Report" OnClick="btnquarter_Click" Width="120px" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" />
+                                                <asp:Button ID="btnquarter" runat="server" Text="Show Report" OnClientClick="return handleClientClick();" OnClick="btnquarter_Click" Width="120px" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" />
                                             </td>
                                         </tr>
                                     </table>
@@ -2349,7 +2408,7 @@
                                                 </asp:DropDownList>
                                             </td>
                                             <td style="width: 65%">
-                                                <asp:Button ID="btnShowFunder" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnShowFunder_Click" />
+                                                <asp:Button ID="btnShowFunder" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick ="return handleClientClick();" OnClick="btnShowFunder_Click" />
                                             </td>
                                         </tr>
                                     </table>
@@ -2576,9 +2635,9 @@
                                     </div>
                                 <div id="buttonContainer" style="text-align: left; width:270px; height:25px;">
                                     <asp:Button ID="btnShowReport" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSend();" />
-                                    <asp:Button ID="btnResetAllClient" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClick="btnallClient_Click" />
+                                    <asp:Button ID="btnResetAllClient" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClientClick="return handleClientClick();" OnClick="btnallClient_Click" />
                                     <asp:Button ID="btnShowReportVendor" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSendVendor();" />
-                                    <asp:Button ID="btnResetVendor" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClick="btnVendor_Click" />
+                                    <asp:Button ID="btnResetVendor" CssClass="button-style" runat="server" Visible="false" Text="Reset"  OnClientClick="return handleClientClick();" OnClick="btnVendor_Click" />
                                     <%--<asp:Button ID="btnOldReport" CssClass="button-style" runat="server" Visible="false" Text="Old Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnOldReport_Click" />--%>
 
                                 </div>
@@ -2594,6 +2653,9 @@
                                     </tbody>
                                 </table>
                                 
+                            </div>
+                            <div id="loaderOverlay" class="loader-overlay">
+                                <div class="loader-text">Loading ...</div>
                             </div>
 
 
