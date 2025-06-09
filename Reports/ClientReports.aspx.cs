@@ -23,6 +23,32 @@ using System.Text.RegularExpressions;
 
 namespace ClientDB.Reports
 {
+    public class Logger
+    {
+        public static string strPath = AppDomain.CurrentDomain.BaseDirectory;
+        public static string logFilePath = strPath + @"/ErrorLog/log.txt";
+
+        public static void LogError(string message, Exception ex = null)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(logFilePath, true)) 
+                {
+                    writer.WriteLine("DateTime: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                    writer.WriteLine("Message: " + message);
+                    if (ex != null)
+                    {
+                        writer.WriteLine("Exception: " + ex.Message);
+                        writer.WriteLine("Stack Trace: " + ex.StackTrace);
+                    }
+                    writer.WriteLine("\n");
+                }
+            }
+            catch
+            {
+            }
+        }
+    }
     public partial class ClientReports : System.Web.UI.Page
     {
 
@@ -109,6 +135,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnBirthdate";
                 RVClientReport.Visible = false;
                 if (ddlQuarter.SelectedItem.Value != "0")
@@ -169,6 +197,9 @@ namespace ClientDB.Reports
                 divbirthdate.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
+
                 for (int i = 0; i < ChkStatisticalList2.Items.Count; i++)
                 {
                     ChkStatisticalList2.Items[i].Selected = true;
@@ -791,6 +822,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnClienContact";
                 int Schoolid = 0;
                 string schooltype = ConfigurationManager.AppSettings["Server"];
@@ -842,12 +875,13 @@ namespace ClientDB.Reports
                     divPlacement.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
                     hdnMenu.Value = "btnClienContact";
                     RVClientReport.Visible = false;
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "Emergency/Home Contact";
                     btnShowReport.Visible = false;
-                    btnResetAllClient.Visible = false;
 
 
                     string query = "SELECT SP.StudentPersonalId, PLC.EndDate, SP.SchoolId, SP.LastName+','+SP.FirstName AS studentPersonalName " +
@@ -1016,6 +1050,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnPgmRoster";
                 RVClientReport.SizeToReportContent = true;
                 tdMsg.InnerHtml = "";
@@ -1065,6 +1101,8 @@ namespace ClientDB.Reports
                     divPlacement.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
                     hdnMenu.Value = "btnPgmRoster";
                     RVClientReport.SizeToReportContent = false;
                     tdMsg.InnerHtml = "";
@@ -1218,7 +1256,7 @@ namespace ClientDB.Reports
             return existing == "" ? newValue : existing + ", " + newValue;
         }
 
-        protected void btnVendor_Click(object sender, EventArgs e)
+        protected void btnOldVendor_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1246,6 +1284,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnVendor";
                 RVClientReport.SizeToReportContent = true;
                 tdMsg.InnerHtml = "";
@@ -1276,7 +1316,454 @@ namespace ClientDB.Reports
                 throw ex;
             }
         }
+        protected void btnVendor_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldVendor_Click(sender, e);
+                }
+                else
+                {
+                    HContactStudname.Value = "All";
+                    HContactstatus.Value = "0,1,2";
+                    HContactRelation.Value = "All";
 
+                    CheckBoxListcontact.Items[0].Selected = true;
+                    CheckBoxListcontact.Items[1].Selected = false;
+
+                    divbirthdate.Visible = false;
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    divStatisticalNew.Visible = false;
+                    divchanges.Visible = false;
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = false;
+                    divPlacement.Visible = false;
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = true;
+                    btnResetVendor.Visible = true;
+                    hdnMenu.Value = "btnVendor";
+                    RVClientReport.SizeToReportContent = true;
+                    tdMsg.InnerHtml = "";
+                    RVClientReport.Visible = false;
+                    HeadingDiv.Visible = true;
+                    HeadingDiv.InnerHtml = "Client/Contact/Vendor";
+                    SqlDataAdapter da = new SqlDataAdapter();
+                    SqlCommand cmd = null;
+                    DataTable dt = new DataTable();
+                    DataTable dtFinal = new DataTable();
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    cmd = new SqlCommand("clientcontactreport", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@HContactStudname", HContactStudname.Value);
+                    cmd.Parameters.AddWithValue("@HContactstatus", HContactstatus.Value);
+                    cmd.Parameters.AddWithValue("@HContactRelation", HContactRelation.Value);
+
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dtFinal = GetSelectedColumnsVendor(dt);
+                    DataTable dtActive = new DataTable();
+                    dtActive.Columns.Add("Status");
+                    dtActive.Rows.Add("1");
+                    dtFinal = filterDataTableVendor(dtFinal, dtActive);
+                    PopulateDropdownVendor(dtFinal);
+                    var jsonData = ConvertDataTableToJson(dtFinal);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerVendor(" + jsonData + ");", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("btnVendor_Click",ex);
+            }
+        }
+        public DataTable GetSelectedColumnsVendor(DataTable originalTable)
+        {
+            //To return only required columns for the table.
+            DataTable newTable = new DataTable();
+
+            string[] selectedColumns = { "CLIENTLAST", "CLIENTFIRST", "DOB", "ADMISSIONDATE", "PROGRAM", "RELATIONSHIP", "CONTACTLAST", "CONTACTFIRST", "TYPE", "STREETNAME", "PHONE", "MOBILE", "ORGANIZATION", "OCCUPATION", "EMAIL", "EMERGENCY", "STATUS" };
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    if (columnName == "DOB" || columnName == "ADMISSIONDATE")
+                        newTable.Columns.Add(columnName, typeof(string));
+                    else
+                        newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    if (columnName == "PROGRAM")
+                    {
+                        newRow[columnName] = "PROG : " + row[columnName].ToString() + "\nACTIVE : " + row["PLACEMENT"].ToString();
+                    }
+                    else if (columnName == "STREETNAME")
+                    {
+                        newRow[columnName] = row[columnName] + "\n" + row["FLOOR"].ToString() + "\n" + row["CITY"];
+                    }
+                    else if (columnName == "DOB" || columnName == "ADMISSIONDATE")
+                    {
+                        string input = row[columnName].ToString();
+                        input = input.Replace("-", "/");
+                        string[] formats = {
+                                               "M/d/yyyy h:mm:ss tt",   // e.g. 4/14/1993 12:00:00 AM
+                                               "MM/dd/yyyy h:mm:ss tt", // e.g. 04/14/1993 12:00:00 AM
+                                               "dd/MM/yyyy HH:mm:ss",   // e.g. 15/05/2004 00:00:00
+                                               "d/M/yyyy H:mm:ss"       // e.g. 5/6/2023 1:00:00
+                                           };
+                        DateTime parsedDate;
+                        if (DateTime.TryParseExact(input, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+                        {
+                            string formattedDate = parsedDate.ToString("MM/dd/yyyy");
+                            newRow[columnName] = formattedDate;
+                        }
+                        else
+                        {
+                            Logger.LogError("Failed to parse date: " + input);
+                        }
+                    }
+                    else
+                        newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("CLIENTLAST"))
+            {
+                newTable.Columns["CLIENTLAST"].ColumnName = "Client Last";
+            }
+
+            if (newTable.Columns.Contains("CLIENTFIRST"))
+            {
+                newTable.Columns["CLIENTFIRST"].ColumnName = "Client First";
+            }
+
+            if (newTable.Columns.Contains("DOB"))
+            {
+                newTable.Columns["DOB"].ColumnName = "Date of Birth";
+            }
+
+            if (newTable.Columns.Contains("ADMISSIONDATE"))
+            {
+                newTable.Columns["ADMISSIONDATE"].ColumnName = "Admission Date";
+            }
+
+            if (newTable.Columns.Contains("PROGRAM"))
+            {
+                newTable.Columns["PROGRAM"].ColumnName = "Program and Active Placement(s)";
+            }
+
+            if (newTable.Columns.Contains("RELATIONSHIP"))
+            {
+                newTable.Columns["RELATIONSHIP"].ColumnName = "Relationship";
+            }
+
+            if (newTable.Columns.Contains("CONTACTLAST"))
+            {
+                newTable.Columns["CONTACTLAST"].ColumnName = "Last";
+            }
+
+            if (newTable.Columns.Contains("CONTACTFIRST"))
+            {
+                newTable.Columns["CONTACTFIRST"].ColumnName = "First";
+            }
+
+            if (newTable.Columns.Contains("TYPE"))
+            {
+                newTable.Columns["TYPE"].ColumnName = "Type";
+            }
+
+            if (newTable.Columns.Contains("STREETNAME"))
+            {
+                newTable.Columns["STREETNAME"].ColumnName = "Street Address";
+            }
+
+            if (newTable.Columns.Contains("PHONE"))
+            {
+                newTable.Columns["PHONE"].ColumnName = "Phone";
+            }
+
+            if (newTable.Columns.Contains("MOBILE"))
+            {
+                newTable.Columns["MOBILE"].ColumnName = "Mobile";
+            }
+
+            if (newTable.Columns.Contains("ORGANIZATION"))
+            {
+                newTable.Columns["ORGANIZATION"].ColumnName = "Organization";
+            }
+
+            if (newTable.Columns.Contains("OCCUPATION"))
+            {
+                newTable.Columns["OCCUPATION"].ColumnName = "Occupation";
+            }
+
+            if (newTable.Columns.Contains("EMAIL"))
+            {
+                newTable.Columns["EMAIL"].ColumnName = "Email";
+            }
+
+            if (newTable.Columns.Contains("EMERGENCY"))
+            {
+                newTable.Columns["EMERGENCY"].ColumnName = "Emerg.Contact";
+            }
+
+            if (newTable.Columns.Contains("STATUS"))
+            {
+                newTable.Columns["STATUS"].ColumnName = "Status";
+            }
+
+            newTable.DefaultView.Sort = newTable.Columns["Client Last"].ColumnName + " ASC";
+            newTable = newTable.DefaultView.ToTable();
+
+            return newTable;
+        }
+        private void PopulateDropdownVendor(DataTable dtFinal)
+        {
+            //Populate dropdown menu for filtration
+            DataTable dt = dtFinal.Copy();
+            StringBuilder htmlBuilder = new StringBuilder();
+            Literal dropdown = new Literal();
+
+            for(int i=0;i< dt.Columns.Count; i++)
+            {
+                if (dt.Columns[i].ColumnName == "Client Last" || dt.Columns[i].ColumnName == "Relationship" || dt.Columns[i].ColumnName == "Status")
+                {
+                    htmlBuilder.Append("<div class='dropdown'>");
+                    if(dt.Columns[i].ColumnName == "Client Last")
+                        htmlBuilder.Append("<button class='dropdown-btn'>Client &#9660</button>");
+                    else if(dt.Columns[i].ColumnName == "Relationship")
+                        htmlBuilder.Append("<button class='dropdown-btn'>Relationship &#9660</button>");
+                    else if (dt.Columns[i].ColumnName == "Status")
+                        htmlBuilder.Append("<button class='dropdown-btn'>Status &#9660</button>");
+
+
+                    htmlBuilder.Append("<div class='dropdown-content'>");
+
+                    HashSet<string> uniqueValues = new HashSet<string>();
+                    List<string> sortedValues = new List<string>();
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string value = "";
+                            if(dt.Columns[i].ColumnName == "Client Last")
+                                value = row[dt.Columns[i]].ToString() + " " + row["Client First"].ToString();
+                            else
+                                value = row[dt.Columns[i]].ToString();
+
+                            if (!uniqueValues.Contains(value) && !string.IsNullOrWhiteSpace(value))
+                            {
+                                uniqueValues.Add(value);
+                            }
+                        }
+                    sortedValues = uniqueValues.ToList();
+                    sortedValues.Sort();
+
+                    foreach (string value in sortedValues)
+                    {
+                        if (dt.Columns[i].ColumnName == "Client Last")
+                            htmlBuilder.Append("<label><input type='checkbox' value='" + value + "' class='filter-checkbox' data-column='Client'> " + value + "</label><br>");
+                        else if (dt.Columns[i].ColumnName == "Relationship")
+                            htmlBuilder.Append("<label><input type='checkbox' value='" + value + "' class='filter-checkbox' data-column='Relationship'> " + value + "</label><br>");
+                    }
+                    if (dt.Columns[i].ColumnName == "Status")
+                    {
+                        htmlBuilder.Append("<label><input type='checkbox' value='1' class='filter-checkbox' data-column='Status'>Active</label><br>");
+                        htmlBuilder.Append("<label><input type='checkbox' value='2' class='filter-checkbox' data-column='Status'>Discharged</label><br>");
+                    }
+                    htmlBuilder.Append("</div>");
+                    htmlBuilder.Append("</div>");
+                }
+                dropdown.Text = htmlBuilder.ToString();
+                dropdown_container.Controls.Add(dropdown);
+            }
+        }
+        public static DataTable filterDataTableVendor(DataTable fullData, DataTable selectedData)
+        {
+            //Filter the table based on selected data
+            DataTable filteredData = fullData.Clone();
+
+            foreach (DataRow fullRow in fullData.Rows)
+            {
+                bool isMatch = true;
+
+                foreach (DataColumn selectedColumn in selectedData.Columns)
+                {
+                    if (fullData.Columns.Contains(selectedColumn.ColumnName))
+                    {
+                        List<string> selectedValues = selectedData.AsEnumerable()
+                            .Select(row => row[selectedColumn.ColumnName] != DBNull.Value
+                                ? row[selectedColumn.ColumnName].ToString().Trim()
+                                : string.Empty)
+                            .Where(val => !string.IsNullOrEmpty(val))
+                            .ToList();
+
+                        string fullRowValue = fullRow[selectedColumn.ColumnName] != DBNull.Value
+                            ? fullRow[selectedColumn.ColumnName].ToString().Trim()
+                            : string.Empty;
+
+                        if (selectedColumn.ColumnName == "Location") //Extract individual classes (Day and Residential)
+                        {
+
+                            DataTable newDataTable = new DataTable();
+                            newDataTable.Columns.Add(selectedColumn.ColumnName, typeof(string));
+                            DataRow newRow = newDataTable.NewRow();
+                            newRow[selectedColumn.ColumnName] = fullRowValue;
+                            newDataTable.Rows.Add(newRow);
+                            List<string> roomNamesInRow = ExtractLocation(newDataTable, selectedColumn.ColumnName);
+
+                            if (!selectedValues.Any(selectedRoom => roomNamesInRow.Contains(selectedRoom)))
+                            {
+                                isMatch = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (selectedValues.Count > 0 && !selectedValues.Contains(fullRowValue))
+                            {
+                                isMatch = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (isMatch)
+                {
+                    filteredData.ImportRow(fullRow);
+                }
+            }
+
+
+            if (selectedData.Columns.Contains("Status"))
+                return filteredData; //Already filtered based on status
+            else
+            {
+                // Making Active, the default status
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Status");
+                dt.Rows.Add("1");
+                return filterDataTable(filteredData, dt);
+            }
+        }
+        [WebMethod]
+        public static string CreateDataTableFromSelectedValuesVendor(Dictionary<string, List<string>> selectedValues)
+        {
+            //Create datatable of filters
+            try
+            {
+                DataTable dt = new DataTable();
+
+                foreach (KeyValuePair<string, List<string>> entry in selectedValues)
+                {
+                    dt.Columns.Add(entry.Key);
+                }
+
+                int maxSelections = 0;
+                foreach (KeyValuePair<string, List<string>> entry in selectedValues)
+                {
+                    if (entry.Value.Count > maxSelections)
+                    {
+                        maxSelections = entry.Value.Count;
+                    }
+                }
+
+                for (int i = 0; i < maxSelections; i++)
+                {
+                    DataRow row = dt.NewRow();
+
+                    foreach (KeyValuePair<string, List<string>> entry in selectedValues)
+                    {
+                        List<string> selectedTexts = entry.Value;
+
+                        if (i < selectedTexts.Count)
+                        {
+                            row[entry.Key] = selectedTexts[i];
+                        }
+                        else
+                        {
+                            row[entry.Key] = DBNull.Value;
+                        }
+                    }
+
+                    dt.Rows.Add(row);
+                }
+                if (dt.Columns.Contains("Client"))
+                {
+                    dt.Columns.Add("Client Last", typeof(string));
+                    dt.Columns.Add("Client First", typeof(string));
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        dr["Client Last"] = dr["Client"].ToString().Split(' ').First();
+                        dr["Client First"] = dr["Client"].ToString().Split(' ').Last();
+                    }
+                    dt.Columns.Remove("Client");
+                }
+                ClientReports clientReportsInstance = new ClientReports();
+                DataTable dtFinal = clientReportsInstance.getVendorReport(dt);
+                string jsonData = clientReportsInstance.ConvertDataTableToJson(dtFinal);
+                return jsonData;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        private DataTable getVendorReport(DataTable dataTbl)
+        {
+            try
+            {
+                string HContactStudname_Value = "All";
+                string HContactstatus_Value = "0,1,2";
+                string HContactRelation_Value = "All";
+                SqlDataAdapter da = new SqlDataAdapter();
+                SqlCommand cmd = null;
+                DataTable dt = new DataTable();
+                DataTable dtFinal = new DataTable();
+                SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                con.Open();
+                cmd = new SqlCommand("clientcontactreport", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@HContactStudname", HContactStudname_Value);
+                cmd.Parameters.AddWithValue("@HContactstatus", HContactstatus_Value);
+                cmd.Parameters.AddWithValue("@HContactRelation", HContactRelation_Value);
+
+                da = new SqlDataAdapter(cmd);
+                da.Fill(dt);
+                dtFinal = GetSelectedColumnsVendor(dt);
+                if (dataTbl.Rows.Count == 0) // No filter
+                {
+                    DataTable dtActive = new DataTable();
+                    dtActive.Columns.Add("Status");
+                    dtActive.Rows.Add("1");
+                    dtFinal = filterDataTableVendor(dtFinal, dtActive);
+                    return dtFinal;
+                }
+                else
+                    return filterDataTableVendor(dtFinal, dataTbl); //Filter present
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         protected void btnShowVendor_Click(object sender, EventArgs e)
         {
             try
@@ -1387,6 +1874,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
 
                 hdnMenu.Value = "btnBirthdate";
                 RVClientReport.SizeToReportContent = false;
@@ -1419,6 +1908,8 @@ namespace ClientDB.Reports
                 divchanges.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnResRoster";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -1468,6 +1959,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = true;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnAllPlacement";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -1526,6 +2019,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnAllFunder";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -1577,7 +2072,7 @@ namespace ClientDB.Reports
                     divFunder.Visible = true;
                     divPlacement.Visible = false;
                     btnShowReport.Visible = false;
-                    btnResetAllClient.Visible = false;
+                    btnResetAllClient.Visible = false;                    
                     hdnMenu.Value = "btnAllFunder";
                     RVClientReport.SizeToReportContent = false;
                     tdMsg.InnerHtml = "";
@@ -1812,6 +2307,8 @@ namespace ClientDB.Reports
                 divDischarge.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 int Schoolid = 0;
                 string schooltype = ConfigurationManager.AppSettings["Server"];
                 if (schooltype == "NE")
@@ -1881,6 +2378,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnAllBirthdate";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -1925,6 +2424,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnAllAdmissionDate";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -1967,6 +2468,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnAllDischargedate";
                 RVClientReport.SizeToReportContent = false;
                 tdMsg.InnerHtml = "";
@@ -2005,6 +2508,8 @@ namespace ClientDB.Reports
                 divPlacement.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
                 hdnMenu.Value = "btnStatistical";
                 tdMsg.InnerHtml = "";
                 RVClientReport.Visible = false;
@@ -2217,6 +2722,8 @@ namespace ClientDB.Reports
             divPlacement.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
+            btnShowReportVendor.Visible = false;
+            btnResetVendor.Visible = false;
             hdnMenu.Value = "btnContactChanges";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
@@ -2239,6 +2746,8 @@ namespace ClientDB.Reports
             divPlacement.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
+            btnShowReportVendor.Visible = false;
+            btnResetVendor.Visible = false;
             hdnMenu.Value = "btnGuardianChanges";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
@@ -2261,6 +2770,8 @@ namespace ClientDB.Reports
             divPlacement.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
+            btnShowReportVendor.Visible = false;
+            btnResetVendor.Visible = false;
             hdnMenu.Value = "btnPlcChange";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;
@@ -2283,6 +2794,8 @@ namespace ClientDB.Reports
             divPlacement.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
+            btnShowReportVendor.Visible = false;
+            btnResetVendor.Visible = false;
             hdnMenu.Value = "btnFundChange";
             tdMsg.InnerHtml = "";
             RVClientReport.Visible = false;

@@ -842,6 +842,158 @@
         }
 
 
+		//Client/Contact/Vendor Table
+        function loadDataFromServerVendor(data) {
+            fullData = data;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            tableBody.innerHTML = '';
+            var table = document.getElementById("table");
+            table.style.tableLayout = "auto";
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                return;
+            }
+            else
+                tableHeader.style.removeProperty("display");
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear any existing headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+
+            // Create header cells
+            columns.forEach(function (col) {
+                if (col != "Status") {
+                    var th = document.createElement('th');
+                    th.textContent = col;
+                    headerRow.appendChild(th);
+                }
+            });
+
+            // Append the header row
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic: slice data for the current page
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            //// Populate table body with rows for the current page
+            //pageData.forEach(function (row) {
+            //    var tr = document.createElement('tr');
+            //    columns.forEach(function (col) {
+            //        var td = document.createElement('td');
+            //        td.textContent = row[col];
+            //        tr.appendChild(td);
+            //    });
+            //    tableBody.appendChild(tr);
+            //});
+
+            // Calculate row spans for each Client Name
+            var rowSpanMap = {};
+            for (var i = 0; i < pageData.length; i++) {
+                var key = pageData[i]["Client Last"]; // Grouping key
+                if (rowSpanMap[key]) {
+                    rowSpanMap[key] += 1;
+                } else {
+                    rowSpanMap[key] = 1;
+                }
+            }
+
+            // Populate table body with grouped rows
+            var seen = {}; // Track seen Client Name values to prevent duplicate cells
+            for (var i = 0; i < pageData.length; i++) {
+                var tr = document.createElement('tr');
+                var key = pageData[i]["Client Last"]; // Grouping key
+
+                for (var index = 0; index < columns.length; index++) {
+                    var columnName = columns[index];
+                    var td = document.createElement('td');
+
+                    // Merge "Client Name", "Birth Date", and "Age" together
+                    if (columnName === "Client Last") {
+                        if (!seen[key]) { // Only add merged cell if not already seen
+                            seen[key] = true; // Mark as seen
+                            td.textContent = pageData[i]["Client Last"];
+                            td.setAttribute("rowspan", rowSpanMap[key]); // Set rowspan for correct merging
+                            tr.appendChild(td);
+
+                            var tdClientFirst = document.createElement("td");
+                            tdClientFirst.textContent = pageData[i]["Client First"];
+                            tdClientFirst.setAttribute("rowspan", rowSpanMap[key]);
+                            tr.appendChild(tdClientFirst);
+
+                            // Also merge Birth Date and Age into the same row
+                            var tdBirthDate = document.createElement("td");
+                            tdBirthDate.textContent = pageData[i]["Date of Birth"];
+                            tdBirthDate.setAttribute("rowspan", rowSpanMap[key]);
+                            tdBirthDate.style.whiteSpace = "nowrap";
+                            tr.appendChild(tdBirthDate);
+
+                            var tdAdmDate = document.createElement("td");
+                            tdAdmDate.textContent = pageData[i]["Admission Date"];
+                            tdAdmDate.setAttribute("rowspan", rowSpanMap[key]);
+                            tdAdmDate.style.whiteSpace = "nowrap";
+                            tr.appendChild(tdAdmDate);
+
+                            var tdPrgmPlc = document.createElement("td");
+                            tdPrgmPlc.textContent = pageData[i]["Program and Active Placement(s)"];
+                            tdPrgmPlc.setAttribute("rowspan", rowSpanMap[key]);
+                            tr.appendChild(tdPrgmPlc);
+                        }
+                    }
+                    else if (columnName !== "Client First" && columnName !== "Date of Birth" && columnName !== "Admission Date" && columnName !== "Program and Active Placement(s)" && columnName !== "Status") {
+                        // Normal columns without merging
+                        td.textContent = pageData[i][columnName];
+                        tr.appendChild(td);
+                    }
+                }
+
+                // Append the row to the table
+                tableBody.appendChild(tr);
+            }
+
+            // Create pagination controls
+            createPaginationControlsVendor(data.length, data);
+        }
+        function createPaginationControlsVendor(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServerVendor(data); // Re-load the table data for the new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + Math.ceil(totalRows / rowsPerPage);
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServerVendor(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+        }
+
         //Funder Table
         var sortState = {}; // Keeps track of sort direction per funder
 
@@ -1129,6 +1281,11 @@
             });
         });
 
+        $(document).ready(function () {
+            $('#<%= btnVendor.ClientID %>').click(function () {
+                $('#<%= dropdown_container.ClientID %>').toggle();
+            });
+        });
 
 
         function getSelectedValuesAndSend() {
@@ -1182,6 +1339,59 @@
 
                 xhr.send(JSON.stringify({ selectedValues: selectedValues }));
             }
+
+        function getSelectedValuesAndSendVendor() {
+            document.getElementById("btnShowReportVendor").style.display = 'inline-block';
+            document.getElementById("btnResetVendor").style.display = 'inline-block';
+            event.preventDefault();
+            var selectedValues = {};
+
+            var checkboxes = document.querySelectorAll(".filter-checkbox:checked");
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                var checkbox = checkboxes[i];
+                var column = checkbox.getAttribute("data-column");
+                if (column == "Status")
+                    var text = checkbox.value;
+                else {
+                    var label = checkbox.closest("label");
+
+                    var text = label ? label.textContent.trim() : "";
+
+
+                    text = text.replace(/^\s+|\s+$/g, "");
+                }
+                if (!selectedValues[column]) {
+                    selectedValues[column] = [];
+                }
+                selectedValues[column].push(text);
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "ClientReports.aspx/CreateDataTableFromSelectedValuesVendor", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var trimmedResponse = xhr.responseText.trim();
+
+                    if (trimmedResponse) {
+                        try {
+                            var jsonResponse = JSON.parse(trimmedResponse);
+                            var data = JSON.parse(jsonResponse.d);
+                            currentPage = 1;
+                            loadDataFromServerVendor(data);
+                        } catch (e) {
+                            console.error("Error parsing JSON:", e);
+                        }
+                    } else {
+                        console.error("Empty response received.");
+                    }
+                }
+            };
+
+            xhr.send(JSON.stringify({ selectedValues: selectedValues }));
+        }
     </script>
 
     <style type="text/css">
@@ -1756,6 +1966,8 @@
                                 <div id="buttonContainer" style="text-align: left; width:270px; height:25px;">
                                     <asp:Button ID="btnShowReport" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSend();" />
                                     <asp:Button ID="btnResetAllClient" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClick="btnallClient_Click" />
+                                    <asp:Button ID="btnShowReportVendor" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSendVendor();" />
+                                    <asp:Button ID="btnResetVendor" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClick="btnVendor_Click" />
                                     <%--<asp:Button ID="btnOldReport" CssClass="button-style" runat="server" Visible="false" Text="Old Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnOldReport_Click" />--%>
 
                                 </div>
