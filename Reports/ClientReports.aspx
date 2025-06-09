@@ -12,24 +12,30 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
 
-    <%--    <link href="../Documents/CSS/General.css" rel="stylesheet" />--%>
-    <script src="../Documents/JS/jquery-1.8.0.min.js"></script>
-    <script src="../Documents/JS/jquery.form.js"></script>
-    <%-- <script src="../Documents/JS/jquery-ui-1.10.3.custom.js"></script>--%>
-    <link href="../Documents/CSS/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
-    <script src="../Documents/JS/jquery.validationEngine-en.js"></script>
-    <script src="../Documents/JS/jquery.validationEngine.js"></script>
-    <script src="../Documents/JS/jquery.unobtrusive-ajax.js"></script>
-    <link href="../Documents/CSS/jquery-ui.css" rel="stylesheet" />
-    <script src="../Documents/JS/jquery-ui-1.11.2.js"></script>
-    <link href="../Documents/CSS/validationEngine.jquery.css" rel="stylesheet" />
-    <link href="../Documents/CSS/ReportStyle.css" rel="stylesheet" />
-    <script src="../../Documents/JS/jquery.timeentry.js" type="text/javascript"></script>
-    <script src="~/Documents/JS/jquery-ui-1.8.24.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery UI CDN -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+
+<!-- Other JS and CSS -->
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Local Scripts (Ensure the paths are correct) -->
+<script src="../Documents/JS/jquery.validationEngine-en.js"></script>
+<script src="../Documents/JS/jquery.validationEngine.js"></script>
+<script src="../Documents/JS/jquery.unobtrusive-ajax.js"></script>
+
+<!-- Local Stylesheets -->
+<link href="../Documents/CSS/validationEngine.jquery.css" rel="stylesheet" />
+<link href="../Documents/CSS/ReportStyle.css" rel="stylesheet" />
+
+
     <style type="text/css">
         .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
             width: 50% !important;
@@ -495,6 +501,18 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelWithImages();
+                loadDataFromServer(data);loadDataFromServer(data);
+                document.getElementById("filterDiv").style.display = 'block';
+                document.getElementById("buttonContainer").style.display = 'block';
+                document.getElementById("btnShowReport").style.display = 'inline-block';
+                document.getElementById("btnResetAllClient").style.display = 'inline-block';
+            };
+            paginationContainer.appendChild(exportButton);
         }
 
 
@@ -715,6 +733,14 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelEmergency();
+                loadDataFromServerEmergency(data);
+            };
+            paginationContainer.appendChild(exportButton);
         }
 
 
@@ -839,10 +865,18 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelProgramRoster();
+                loadDataFromServerProgramRoster(data);
+            };
+            paginationContainer.appendChild(exportButton);
         }
 
 
-		//Client/Contact/Vendor Table
+        //Client/Contact/Vendor Table
         function loadDataFromServerVendor(data) {
             fullData = data;
             var tableBody = document.getElementById("tableBody");
@@ -992,9 +1026,17 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelClientContactVendor();
+                loadDataFromServerVendor(data);
+            };
+            paginationContainer.appendChild(exportButton);
         }
 
-		//Birthdate Quarter Table
+        //Birthdate Quarter Table
         function loadDataFromServerQuarter(data) {
             fullData = data;
             if (HeadingDiv.innerHTML === "Residential Roster Report") {
@@ -1114,7 +1156,16 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelWithImages();
+                loadDataFromServerQuarter(data);
+            };
+            paginationContainer.appendChild(exportButton);
         }
+
 
         //Funder Table
         var sortState = {}; // Keeps track of sort direction per funder
@@ -1296,6 +1347,444 @@
 
 
     </script>
+    <script>
+        //Export Feature
+        
+        function exportToExcelWithImages() {
+            var workbook = new ExcelJS.Workbook();
+            var headingDiv = document.getElementById("HeadingDiv").textContent.trim();
+
+            var now = new Date();
+            var formattedDateTime = now.toLocaleDateString().replace(/\//g, '-') + " " +
+                                    now.toLocaleTimeString().replace(/:/g, '-').replace(/ /g, '');
+
+
+            var worksheet = workbook.addWorksheet(formattedDateTime);
+
+            var columns = Object.keys(fullData[0]);
+
+            worksheet.columns = columns.map(function (col) {
+                return { header: col, key: col, width: 25 };
+            });
+            var headerRow = worksheet.getRow(1);
+            headerRow.eachCell(function (cell) {
+                cell.font = { 
+                    bold: true,
+                    color: { argb: 'FFFFFFFF' }
+                };
+
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: '4CAF50' }
+                };
+
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            });
+            var imageCounter = 1;
+
+            for (var i = 0; i < fullData.length; i++) {
+                var row = fullData[i];
+                var excelRow = worksheet.addRow([]); 
+
+                for (var j = 0; j < columns.length; j++) {
+                    var col = columns[j];
+                    var value = row[col];
+
+                    var cell = excelRow.getCell(j + 1);
+
+                    // Check for image base64 string
+                    if (typeof value === "string" &&
+                        (value.startsWith("/9j/") || value.startsWith("iVBOR") || value.startsWith("R0lGOD"))) {
+
+                        var mimeType = "image/jpeg";
+                        if (value.startsWith("iVBOR")) mimeType = "image/png";
+                        if (value.startsWith("R0lGOD")) mimeType = "image/gif";
+
+                        var imageId = workbook.addImage({
+                            base64: "data:" + mimeType + ";base64," + value,
+                            extension: mimeType.split('/')[1],
+                        });
+
+                        worksheet.addImage(imageId, {
+                            tl: { col: j, row: i + 1 },
+                            ext: { width: 100, height: 80 }
+                        });
+                        cell.value = "";
+                        worksheet.getRow(i + 2).height = 80;
+                    } else {
+                        cell.value = value;
+                    }
+
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                }
+            }
+
+            workbook.xlsx.writeBuffer().then(function (buffer) {
+                saveAs(new Blob([buffer]), headingDiv + ".xlsx");
+            });
+        }
+
+
+
+        function exportToExcelProgramRoster() {
+            var workbook = new ExcelJS.Workbook();
+            var worksheetName = new Date().toLocaleDateString().replace(/\//g, '-') + " " +
+                                new Date().toLocaleTimeString().replace(/:/g, '-').replace(/ /g, '');
+            var worksheet = workbook.addWorksheet(worksheetName);
+
+            var headingDiv = document.getElementById("HeadingDiv").textContent.trim();
+
+            var columns = Object.keys(fullData[0]);
+            var colIndex = 1;
+            var headerRow1 = [];
+            var headerRow2 = [];
+
+            columns.forEach(function(colName, index) {
+                var colmn = worksheet.getColumn(index + 1);
+                console.log(colName.length);
+                colmn.width = colName.length + 1;
+        });
+
+            while (colIndex <= columns.length) {
+                var col = columns[colIndex - 1];
+                var parts = col.split("/");
+
+                if (parts.length > 1) {
+
+                    worksheet.mergeCells(1, colIndex, 1, colIndex + 3);
+                    worksheet.getCell(1, colIndex).value = parts[0];
+                    worksheet.getCell(1, colIndex).alignment = { vertical: 'middle', horizontal: 'center' };
+                    worksheet.getCell(1, colIndex).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    worksheet.getCell(1, colIndex).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } };
+                    worksheet.getCell(1, colIndex).border = {
+                        top: { style: 'thin', color: { argb: '000000' } },
+                        left: { style: 'thin', color: { argb: '000000' } },
+                        bottom: { style: 'thin', color: { argb: '000000' } },
+                        right: { style: 'thin', color: { argb: '000000' } }
+                    };
+
+                    for (var i = 0; i < 4; i++) {
+                        var subHeader = columns[colIndex - 1 + i].split("/")[1];
+                        worksheet.getCell(2, colIndex + i).value = subHeader;
+                        worksheet.getCell(2, colIndex + i).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                        worksheet.getCell(2, colIndex + i).fill = {type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' }};
+                        worksheet.getCell(2, colIndex + i).alignment = { vertical: 'middle', horizontal: 'center' };
+                        worksheet.getCell(2,colIndex + i).border = {
+                            top: { style: 'thin', color: { argb: '000000' } },
+                            left: { style: 'thin', color: { argb: '000000' } },
+                            bottom: { style: 'thin', color: { argb: '000000' } },
+                            right: { style: 'thin', color: { argb: '000000' } }
+                        };
+                    }
+                    colIndex += 4;
+                } else {
+                    worksheet.mergeCells(1, colIndex, 2, colIndex);
+                    worksheet.getCell(1, colIndex).value = col;
+                    worksheet.getCell(1, colIndex).alignment = { vertical: 'middle', horizontal: 'center' };
+                    worksheet.getCell(1, colIndex).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    worksheet.getCell(1, colIndex).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } };
+                    worksheet.getCell(1, colIndex).border = {
+                        top: { style: 'thin', color: { argb: '000000' } },
+                        left: { style: 'thin', color: { argb: '000000' } },
+                        bottom: { style: 'thin', color: { argb: '000000' } },
+                        right: { style: 'thin', color: { argb: '000000' } }
+                    };
+                    colIndex++;
+                }
+            }
+
+            fullData.forEach(function (rowData, rowIdx) {
+                var row = worksheet.getRow(rowIdx + 3);
+                Object.values(rowData).forEach(function (value, colIdx) {
+                    var cell = row.getCell(colIdx + 1);
+
+                        cell.value = value;
+                        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                });
+            });
+
+            workbook.xlsx.writeBuffer().then(function (buffer) {
+                saveAs(new Blob([buffer]), headingDiv + ".xlsx");
+            });
+        }
+
+        function exportToExcelEmergency() {
+            var workbook = new ExcelJS.Workbook();
+            var worksheetName = new Date().toLocaleDateString().replace(/\//g, '-') + " " +
+                                new Date().toLocaleTimeString().replace(/:/g, '-').replace(/ /g, '');
+            var worksheet = workbook.addWorksheet(worksheetName);
+
+            var headingDiv = document.getElementById("HeadingDiv").textContent.trim();
+            var columns = Object.keys(fullData[0]);
+
+            var headerRow1 = worksheet.getRow(1);
+            var headerRow2 = worksheet.getRow(2);
+            var colIdx = 1;
+
+            columns.forEach(function (colName, index) {
+                var colmn = worksheet.getColumn(index + 1);
+                console.log(colName.length);
+                colmn.width = colName.length + 2;
+            });
+
+            while (colIdx <= columns.length) {
+                var col = columns[colIdx - 1];
+
+                if (col === "Contact Name") {
+                    worksheet.mergeCells(1, colIdx, 1, colIdx + 1);
+                    headerRow1.getCell(colIdx).value = "Emergency Contact";
+                    headerRow1.getCell(colIdx).alignment = { vertical: "middle", horizontal: "center" };
+                    headerRow1.getCell(colIdx).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    headerRow1.getCell(colIdx).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } };
+
+                    headerRow2.getCell(colIdx).value = columns[colIdx - 1];
+                    headerRow2.getCell(colIdx + 1).value = columns[colIdx];
+                    headerRow2.getCell(colIdx).font = headerRow2.getCell(colIdx + 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    headerRow2.getCell(colIdx).alignment = headerRow2.getCell(colIdx + 1).alignment = { vertical: "middle", horizontal: "center" };
+                    headerRow2.getCell(colIdx).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } };
+
+                    headerRow2.getCell(colIdx + 1).font = headerRow2.getCell(colIdx + 1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    headerRow2.getCell(colIdx + 1).alignment = headerRow2.getCell(colIdx + 1).alignment = { vertical: "middle", horizontal: "center" };
+                    headerRow2.getCell(colIdx + 1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } };
+                    
+                    colIdx += 2;
+                } else if (col === "Birth Date" || col === "Age") {
+                    worksheet.mergeCells(1, colIdx, 2, colIdx); 
+                    var cell = headerRow1.getCell(colIdx);
+                    cell.value = col;
+                    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    cell.alignment = { vertical: "middle", horizontal: "center" };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } };  
+                    
+                    colIdx++;
+                } else {
+                    worksheet.mergeCells(1, colIdx, 2, colIdx);
+                    var cell = headerRow1.getCell(colIdx);
+                    cell.value = col;
+                    cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                    cell.alignment = { vertical: "middle", horizontal: "center" };
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4CAF50' } }; 
+                    
+                    colIdx++;
+                }
+            }
+
+            var rowSpanMap = {};
+            for (var i = 0; i < fullData.length; i++) {
+                var key = fullData[i]["Client Name"];
+                rowSpanMap[key] = (rowSpanMap[key] || 0) + 1;
+            }
+
+            var seenClients = {};
+            var dataStartRow = 3;
+
+            for (var i = 0; i < fullData.length; i++) {
+                var rowData = fullData[i];
+                var key = rowData["Client Name"];
+                var row = worksheet.getRow(dataStartRow + i);
+                var cellIndex = 1;
+
+                for (var j = 0; j < columns.length; j++) {
+                    var colName = columns[j];
+
+                    if (colName === "Client Name") {
+                        if (!seenClients[key]) {
+                            seenClients[key] = true;
+
+                            worksheet.mergeCells(dataStartRow + i, cellIndex, dataStartRow + i + rowSpanMap[key] - 1, cellIndex);
+                            worksheet.getCell(dataStartRow + i, cellIndex).value = rowData["Client Name"];
+                            worksheet.getCell(dataStartRow + i, cellIndex).alignment = { vertical: "middle", horizontal: "center" };
+                            cellIndex++;
+
+                            worksheet.mergeCells(dataStartRow + i, cellIndex, dataStartRow + i + rowSpanMap[key] - 1, cellIndex);
+                            worksheet.getCell(dataStartRow + i, cellIndex).value = rowData["Birth Date"];
+                            worksheet.getCell(dataStartRow + i, cellIndex).alignment = { vertical: "middle", horizontal: "center" };
+                            cellIndex++;
+
+                            worksheet.mergeCells(dataStartRow + i, cellIndex, dataStartRow + i + rowSpanMap[key] - 1, cellIndex);
+                            worksheet.getCell(dataStartRow + i, cellIndex).value = rowData["Age"];
+                            worksheet.getCell(dataStartRow + i, cellIndex).alignment = { vertical: "middle", horizontal: "center" };
+                            cellIndex++;
+                        } else {
+                            cellIndex += 3;
+                        }
+                    } else if (colName === "Birth Date" || colName === "Age") {
+                        continue;
+                    } else {
+                        var value = rowData[colName];
+                        var cell = row.getCell(cellIndex);
+
+                        cell.value = value;
+                        cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
+                        
+                        cellIndex++;
+                    }
+                }
+            }
+            var totalRows = worksheet.rowCount;
+
+            for (var i = 1; i <= totalRows; i++) {
+                var row = worksheet.getRow(i);
+                row.eachCell({ includeEmpty: true }, function (cell) {
+                    cell.border = {
+                        top: { style: 'thin', color: { argb: '000000' } },
+                        left: { style: 'thin', color: { argb: '000000' } },
+                        bottom: { style: 'thin', color: { argb: '000000' } },
+                        right: { style: 'thin', color: { argb: '000000' } }
+                    };
+                });
+        }
+            workbook.xlsx.writeBuffer().then(function (buffer) {
+                saveAs(new Blob([buffer]), headingDiv + ".xlsx");
+            });
+        }
+
+        function exportToExcelClientContactVendor() {
+            var workbook = new ExcelJS.Workbook();
+            var headingDiv = document.getElementById("HeadingDiv").textContent.trim();
+
+            var now = new Date();
+            var formattedDateTime = now.toLocaleDateString().replace(/\//g, '-') + " " +
+                now.toLocaleTimeString().replace(/:/g, '-').replace(/ /g, '');
+
+            var worksheet = workbook.addWorksheet(formattedDateTime);
+
+            if (!fullData || fullData.length === 0) {
+                alert("No data to export");
+                return;
+            }
+
+            var columns = Object.keys(fullData[0]);
+
+            // Set header row
+            worksheet.columns = columns.map(function (col) {
+                return { header: col, key: col, width: 25 };
+            });
+
+            var headerRow = worksheet.getRow(1);
+            headerRow.eachCell(function (cell) {
+                cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: '4CAF50' }
+                };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            });
+
+            // Group rows by Client Last
+            var rowSpanMap = {};
+            for (var i = 0; i < fullData.length; i++) {
+                var key = fullData[i]["Client Last"];
+                if (rowSpanMap[key]) {
+                    rowSpanMap[key] += 1;
+                } else {
+                    rowSpanMap[key] = 1;
+                }
+            }
+
+            var processed = {};
+            var currentRowIndex = 2;
+
+            for (var i = 0; i < fullData.length; i++) {
+                var row = fullData[i];
+                var key = row["Client Last"];
+                var excelRow = worksheet.getRow(currentRowIndex);
+                var colIndex = 1;
+
+                if (!processed[key]) {
+                    processed[key] = true;
+
+                    var rowspan = rowSpanMap[key];
+                    var mergeColumns = [
+                        "Client Last",
+                        "Client First",
+                        "Date of Birth",
+                        "Admission Date",
+                        "Program and Active Placement(s)"
+                    ];
+
+                    for (var j = 0; j < mergeColumns.length; j++) {
+                        var colName = mergeColumns[j];
+                        var colPos = columns.indexOf(colName) + 1;
+
+                        if (rowspan > 1) {
+                            worksheet.mergeCells(currentRowIndex, colPos, currentRowIndex + rowspan - 1, colPos);
+                        }
+
+                        var cell = worksheet.getCell(currentRowIndex, colPos);
+                        cell.value = row[colName];
+                        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                        cell.border = {
+                            top: { style: 'thin' },
+                            left: { style: 'thin' },
+                            bottom: { style: 'thin' },
+                            right: { style: 'thin' }
+                        };
+                    }
+                }
+
+                // Write non-merged columns (excluding the 5 merged + Status)
+                for (var k = 0; k < columns.length; k++) {
+                    var colName = columns[k];
+                    if (
+                        colName !== "Client Last" &&
+                        colName !== "Client First" &&
+                        colName !== "Date of Birth" &&
+                        colName !== "Admission Date" &&
+                        colName !== "Program and Active Placement(s)" &&
+                        colName !== "Status"
+                    ) {
+                        var cell = excelRow.getCell(k + 1);
+                        cell.value = row[colName];
+                        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                        cell.border = {
+                            top: { style: 'thin' },
+                            left: { style: 'thin' },
+                            bottom: { style: 'thin' },
+                            right: { style: 'thin' }
+                        };
+                    }
+                }
+
+                currentRowIndex++;
+            }
+
+            workbook.xlsx.writeBuffer().then(function (buffer) {
+                saveAs(new Blob([buffer]), headingDiv + ".xlsx");
+            });
+        }
+
+
+
+
+    </script>
     <style>
         /*Column Dropdown Styling*/
 
@@ -1460,7 +1949,7 @@
                 };
 
                 xhr.send(JSON.stringify({ selectedValues: selectedValues }));
-            }
+        }
 
         function getSelectedValuesAndSendVendor() {
             document.getElementById("btnShowReportVendor").style.display = 'inline-block';
