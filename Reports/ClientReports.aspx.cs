@@ -250,6 +250,7 @@ namespace ClientDB.Reports
                         da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
                         dt = GetSelectedColumnQuarter(dt, ddlQuarter.SelectedItem.Value);
+                        if (dt.Rows.Count > 0)
                         dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Birth Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
                         var jsonData = JsonConvert.SerializeObject(dt);
                         ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
