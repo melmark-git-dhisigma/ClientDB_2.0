@@ -462,6 +462,8 @@ namespace ClientDB.Reports
                     btnResetAllClient.Visible = true;
                     btnShowReport.Visible = true;
                     btnReset.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
                     for (int i = 0; i < ChkStatisticalList2.Items.Count; i++)
                     {
                         ChkStatisticalList2.Items[i].Selected = true;
@@ -621,7 +623,7 @@ namespace ClientDB.Reports
                 cmd.Parameters.AddWithValue("@ParamCity", para);
                 cmd.Parameters.AddWithValue("@ParamState", para);
                 cmd.Parameters.AddWithValue("@ParamStudRow", para);
-                cmd.Parameters.AddWithValue("@GetActiveID", "A,I,D");
+                cmd.Parameters.AddWithValue("@GetActiveID", "A,D");
                 da = new SqlDataAdapter(cmd);
                 da.Fill(dt);
                 dtFinal = GetSelectedColumns(dt);
@@ -2125,7 +2127,8 @@ namespace ClientDB.Reports
                         Schoolid = 1;
                     else
                         Schoolid = 2;
-                    string resRosterQuery = "SELECT  SP.StudentPersonalId ,SP.SchoolId ,SP.LastName+','+SP.FirstName AS studentPersonalName " + 
+                    string resRosterQuery = "SELECT  (select ClassName from Class where Classid = PL.Location) as Location " +
+                                    " ,SP.StudentPersonalId ,SP.SchoolId ,SP.LastName+','+SP.FirstName AS studentPersonalName " + 
 		                            " ,CONVERT(VARCHAR(10), SP.[BirthDate], 101) AS BirthDate	 " + 
 		                            " ,DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) >  GETDATE() THEN 1 ELSE 0 END) AS Age " + 
 		                            " ,CASE WHEN DATEPART(MM,SP.BirthDate)>= 01 AND DATEPART(MM,SP.BirthDate)<= 03 THEN 1 ELSE  " + 
@@ -2136,8 +2139,9 @@ namespace ClientDB.Reports
 		                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PL.Department) AS Department " + 
 		                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PL.BehaviorAnalyst) AS BehaviorAnalyst " + 
 		                            " FROM StudentPersonal SP LEFT JOIN [dbo].[Placement] PL ON SP.StudentPersonalId=PL.StudentPersonalId  " + 
-                                    " INNER JOIN LookUp LKP ON LKP.LookupId = PL.Department " + 
-		                            " LEFT JOIN (SELECT * FROM LookUp WHERE LookupName='Residential School') LP ON LP.LookupId=PL.PlacementType		 " + 
+                                    " INNER JOIN LookUp LKP ON LKP.LookupId = PL.Department " +
+                                    " INNER JOIN LookUp LP ON LP.LookupId=PL.PlacementType " +
+                                    " INNER JOIN (SELECT * FROM Class WHERE ResidenceInd = 1) CL ON	CL.ClassId = PL.Location " +
 		                            " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
                                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
                                     " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
@@ -2154,7 +2158,7 @@ namespace ClientDB.Reports
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
                     dt = GetSelectedColumnResRoster(dt);
-                    dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
+                    dt.DefaultView.Sort = dt.Columns["Location"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
                     var jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
@@ -2169,7 +2173,7 @@ namespace ClientDB.Reports
         public DataTable GetSelectedColumnResRoster(DataTable originalTable)
         {
             DataTable newTable = new DataTable();
-            string[] selectedColumns = { "studentPersonalName", "BirthDate", "Age", "Gender", "StartDate", "EndDate", "Department", "BehaviorAnalyst" };
+            string[] selectedColumns = { "Location", "studentPersonalName", "BirthDate", "Age", "Gender", "StartDate", "EndDate", "Department", "BehaviorAnalyst" };
 
             foreach (var columnName in selectedColumns)
             {
