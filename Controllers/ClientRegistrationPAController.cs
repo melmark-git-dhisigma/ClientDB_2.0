@@ -774,7 +774,7 @@ namespace ClientDB.Controllers
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
             //var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
             var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
-            var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).OrderByDescending(x => x.StartDate).FirstOrDefault();
+            var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && (x.Location != DischargeClass.ClassId && x.PlacementReason != placementRsn.LookupId)).OrderByDescending(x => x.StartDate).FirstOrDefault();
                 try
                 {
                     if (placements != null)
@@ -804,6 +804,25 @@ namespace ClientDB.Controllers
                             Department = mostRecentPlacement.Department,
                             PlacementType = mostRecentPlacement.PlacementType,
                             PlacementDepartment = mostRecentPlacement.PlacementDepartment,
+                            StartDate = DateTime.Now,
+                            EndDate = DateTime.Now,
+                            Location = DischargeClass.ClassId,
+                            PlacementReason = placementRsn.LookupId,
+                            Status = 1,
+                            SchoolId = sess.SchoolId,
+                            CreatedBy = sess.LoginId,
+                            CreatedOn = DateTime.Now
+                        };
+                        dbobj.Placements.Add(newPlacement);
+                    }
+                    else
+                    {
+                        Placement newPlacement = new Placement()
+                        {
+                            StudentPersonalId = ClientID,
+                            Department = null,
+                            PlacementType = null,
+                            PlacementDepartment = null,
                             StartDate = DateTime.Now,
                             EndDate = DateTime.Now,
                             Location = DischargeClass.ClassId,

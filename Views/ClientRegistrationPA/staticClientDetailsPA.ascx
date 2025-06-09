@@ -76,39 +76,39 @@
 
 <script type="text/javascript">
 function DischargeClient() {
-    document.getElementById('popup').style.display = 'none';
-                $.ajax( 
-                  {
-                      type: "POST",
-                      url: "../ClientRegistrationPA/DischargeStudent",
-                      data: "",
-                      //data: "{'stdId':'" + stdId + "'}",
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      //async: false,
-                      success: function (response) {
-                          loadClientStaticDetails();
-                      }
-                  });
-                $('#btnGeneral').trigger("click");
-}
-function ActivateClient() {
-    document.getElementById('popup2').style.display = 'none';
-    $.ajax(
-      {
-          type: "POST",
-          url: "../ClientRegistrationPA/ActivateStudent",
-          data: "",
-          //data: "{'stdId':'" + stdId + "'}",
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          //async: false,
-          success: function (data) {
-              loadClientStaticDetails();
-          }
-      });
-    $('#btnGeneral').trigger("click");
-}
+    	document.getElementById('popup').style.display = 'none';
+        $.ajax( 
+            {
+                type: "POST",
+                url: "../ClientRegistrationPA/DischargeStudent",
+                data: "",
+                //data: "{'stdId':'" + stdId + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //async: false,
+                success: function (response) {
+                    loadClientStaticDetails();
+                }
+            });
+        $('#btnGeneral').trigger("click");
+    }
+    function ActivateClient() {
+	    document.getElementById('popup2').style.display = 'none';
+	    $.ajax(
+	      {
+	          type: "POST",
+	          url: "../ClientRegistrationPA/ActivateStudent",
+	          data: "",
+	          //data: "{'stdId':'" + stdId + "'}",
+	          contentType: "application/json; charset=utf-8",
+	          dataType: "json",
+	          //async: false,
+	          success: function (data) {
+	              loadClientStaticDetails();
+	          }
+	      });
+	    $('#btnGeneral').trigger("click");
+    }
 </script>
 
 
@@ -278,7 +278,7 @@ function ActivateClient() {
         </tbody>
     </table>
                          <div id="disch" style="display:none">
-    <input id="btnDischarge"  type="submit" value="Discharge Client"  onClick="document.getElementById('popup').style.display = 'block';" style="display:<%=DischBtnStatus %>;float:right;border:none;width:120px !important; height:43px;font-weight:bold;font-size:small;background-repeat:no-repeat;background-position:top left;margin-top:5px; margin-right: 5px; margin-bottom: 5px;background:red !important;"/>
+    <input id="btnDischarge" type="submit" value="Discharge Client" onClick="document.getElementById('popup').style.display = 'block';"style="display:<%=DischBtnStatus %>;float:right;border:none;width:120px !important; height:43px;font-weight:bold;font-size:small;background-repeat:no-repeat;background-position:top left;margin-top:5px; margin-right: 5px; margin-bottom: 5px;background:red !important;"/>
     <input id="btnActivate" type="submit" value="Activate Client" onClick="document.getElementById('popup2').style.display = 'block';" style="display:<%=ActivateBtnStatus %>;float:right;border:none;width:120px !important; height:43px;font-weight:bold;font-size:small;background-repeat:no-repeat;background-position:top left;margin-top:5px; margin-right: 5px; margin-bottom: 5px;"/>
     </div>
 </div>
