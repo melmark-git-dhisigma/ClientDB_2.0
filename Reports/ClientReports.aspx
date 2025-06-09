@@ -461,6 +461,8 @@
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
                 document.getElementById("noOfClients").textContent = "Total No. of Clients : 0";
+                var paginationContainer = document.getElementById("paginationControls");
+                paginationContainer.innerHTML = '';
                 hideLoader();
                 return;
             }
@@ -641,6 +643,8 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                var paginationContainer = document.getElementById("paginationControls");
+                paginationContainer.innerHTML = '';
                 hideLoader();
                 return;
             } else {
@@ -803,6 +807,8 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                var paginationContainer = document.getElementById("paginationControls");
+                paginationContainer.innerHTML = '';
                 hideLoader();
                 return;
             }
@@ -934,6 +940,8 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                var paginationContainer = document.getElementById("paginationControls");
+                paginationContainer.innerHTML = '';
                 hideLoader();
                 return;
             }
@@ -1100,6 +1108,8 @@
             if (!data || data.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
+                var paginationContainer = document.getElementById("paginationControls");
+                paginationContainer.innerHTML = '';
                 hideLoader();
                 return;
             }
@@ -1225,6 +1235,20 @@
             fullData = data;
             document.getElementById("filterDiv").style.display = "none";
             document.getElementById("buttonContainer").style.display = "none";
+            var tableHeader = document.getElementById('tableHeader');
+            var tableBody = document.getElementById('tableBody');
+
+            if (!data || data.length === 0) {
+                console.log("no data");
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                var paginationContainer = document.getElementById("paginationControls");
+                paginationContainer.innerHTML = '';
+                hideLoader();
+                return;
+            }
+            else
+                tableHeader.style.removeProperty("display");
 
             var grouped = {};
             data.forEach(function (row) {
@@ -1237,8 +1261,7 @@
                 });
             });
 
-            var tableHeader = document.getElementById('tableHeader');
-            var tableBody = document.getElementById('tableBody');
+            
             tableHeader.innerHTML = "";
             tableBody.innerHTML = "";
 
@@ -1330,12 +1353,12 @@
             var headers = headerRow.getElementsByTagName("th");
 
             for (var i = 0; i < headers.length; i++) {
-                headers[i].innerText = headers[i].innerText.replace(" ▲", "").replace(" ▼", "").replace(" ⬍", "") + " ⬍";
+                headers[i].innerText = headers[i].innerText.replace(" ⬆", "").replace(" ⬇", "").replace(" ⬍", "") + " ⬍";
             }
 
             // Set arrow on active column
-            var baseText = header.innerText.replace(" ⬍", "").replace(" ▲", "").replace(" ▼", "");
-            header.innerText = baseText + (ascending ? " ▲" : " ▼");
+            var baseText = header.innerText.replace(" ⬍", "").replace(" ⬆", "").replace(" ⬇", "");
+            header.innerText = baseText + (ascending ? " ⬆" : " ⬇");
 
             // Sort table
             sortHtmlTableByColumn(tableId, columnIndex, ascending);
