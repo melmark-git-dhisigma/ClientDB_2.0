@@ -264,6 +264,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -539,6 +540,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
 
@@ -640,6 +642,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -1108,6 +1111,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -1229,6 +1233,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -1534,6 +1539,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 Logger.LogError("btnVendor_Click",ex);
             }
         }
@@ -2167,6 +2173,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -2398,6 +2405,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -2648,6 +2656,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
