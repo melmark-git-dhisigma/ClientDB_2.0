@@ -2686,28 +2686,113 @@ namespace ClientDB.Reports
                 RVClientReport.Visible = false;
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "All Clients by Birthdate";
-                RVClientReport.Visible = true;
                 string BithdateStart = (txtBithdateStart.Text != "" ? GetDateFromText(txtBithdateStart.Text) : "");
                 string BirthdateEnd = (txtBirthdateEnd.Text != "" ? GetDateFromText(txtBirthdateEnd.Text) : "");
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["BirthdateReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[5];
-                parm[0] = new ReportParameter("Month", ddlMonth.SelectedItem.Value.ToString());
-                parm[1] = new ReportParameter("AgeFrom", (txtAgeFrom.Text == "" ? "0" : txtAgeFrom.Text));
-                parm[2] = new ReportParameter("AgeTo", (txtAgeTo.Text == "" ? "200" : txtAgeTo.Text));
-                parm[3] = new ReportParameter("StartDate", (BithdateStart == "" ? "1900-01-01" : BithdateStart));
-                parm[4] = new ReportParameter("EndDate", (BirthdateEnd == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : BirthdateEnd));
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
-                divbirthdate.Visible = false;
+                if (checkHighcharts.Checked)
+                {
+                    RVClientReport.Visible = false;
+                    ddlMonth.SelectedItem.Value = "0";
+                    txtAgeTo.Text = txtAgeFrom.Text = txtBithdateStart.Text = txtBirthdateEnd.Text = "";
+                    string birthdateQuery = "SELECT distinct ClientId,Lastname,Firstname ,CONVERT(VARCHAR(20),BirthDate,101) AS BirthDate,BirthDate AS BDate " +
+                    " ,DATEDIFF(YEAR,BirthDate,GETDATE())-(CASE WHEN DATEADD(YY,DATEDIFF(YEAR,BirthDate,GETDATE()),BirthDate) > GETDATE() THEN 1 " +
+                    " ELSE 0 END) AS Age, DATENAME(month,BirthDate) Month FROM StudentPersonal ST  " +
+                    " JOIN Placement PLC ON PLC.StudentPersonalId = ST.StudentPersonalId " +
+                    " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                    " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and " +
+                    " LKP.LookupType = 'Department' AND " +
+                    " ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                    " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                    " and ST.StudentPersonalId not in (SELECT Distinct " +
+                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND ClientId IS NOT NULL AND ClientId<>'' AND CONVERT(INT,ClientId)>0  ORDER BY Lastname";
+
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(birthdateQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsBirthdate(dt);
+                    dt.DefaultView.Sort = dt.Columns["Last Name"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["BirthdateReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[5];
+                    parm[0] = new ReportParameter("Month", ddlMonth.SelectedItem.Value.ToString());
+                    parm[1] = new ReportParameter("AgeFrom", (txtAgeFrom.Text == "" ? "0" : txtAgeFrom.Text));
+                    parm[2] = new ReportParameter("AgeTo", (txtAgeTo.Text == "" ? "200" : txtAgeTo.Text));
+                    parm[3] = new ReportParameter("StartDate", (BithdateStart == "" ? "1900-01-01" : BithdateStart));
+                    parm[4] = new ReportParameter("EndDate", (BirthdateEnd == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : BirthdateEnd));
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                    divbirthdate.Visible = false;
+                }
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
+        public DataTable GetSelectedColumnsBirthdate(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "ClientId", "Lastname", "Firstname", "BirthDate", "Age"};
 
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client Id";
+            }
+
+            if (newTable.Columns.Contains("Lastname"))
+            {
+                newTable.Columns["Lastname"].ColumnName = "Last Name";
+            }
+
+            if (newTable.Columns.Contains("Firstname"))
+            {
+                newTable.Columns["Firstname"].ColumnName = "First Name";
+            }
+
+            if (newTable.Columns.Contains("BirthDate"))
+            {
+                newTable.Columns["BirthDate"].ColumnName = "Birth Date";
+            }
+
+            return newTable;
+        }
         protected void btnAllAdmissionDate_Click(object sender, EventArgs e)
         {
             try
@@ -2852,24 +2937,115 @@ namespace ClientDB.Reports
             try
             {
                 divContact.Visible = false;
-                RVClientReport.Visible = true;
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["BirthdateReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[5];
-                parm[0] = new ReportParameter("Month", ddlMonth.SelectedItem.Value.ToString());
-                parm[1] = new ReportParameter("AgeFrom", (txtAgeFrom.Text == "" ? "0" : txtAgeFrom.Text));
-                parm[2] = new ReportParameter("AgeTo", (txtAgeTo.Text == "" ? "200" : txtAgeTo.Text));
-                parm[3] = new ReportParameter("StartDate", (txtBithdateStart.Text == "" ? "1900-01-01" : txtBithdateStart.Text));
-                parm[4] = new ReportParameter("EndDate", (txtBirthdateEnd.Text == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : txtBirthdateEnd.Text));
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (checkHighcharts.Checked)
+                {
+                    RVClientReport.Visible = false;
+
+                    string birthdateQuery = "SELECT distinct ClientId,Lastname,Firstname ,CONVERT(VARCHAR(20),BirthDate,101) AS BirthDate,BirthDate AS BDate " +
+                    " ,DATEDIFF(YEAR,BirthDate,GETDATE())-(CASE WHEN DATEADD(YY,DATEDIFF(YEAR,BirthDate,GETDATE()),BirthDate) > GETDATE() THEN 1 " +
+                    " ELSE 0 END) AS Age, DATENAME(month,BirthDate) Month FROM StudentPersonal ST  " +
+                    " JOIN Placement PLC ON PLC.StudentPersonalId = ST.StudentPersonalId " +
+                    " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                    " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and " +
+                    " LKP.LookupType = 'Department' AND " +
+                    " ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                    " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                    " and ST.StudentPersonalId not in (SELECT Distinct " +
+                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND ClientId IS NOT NULL AND ClientId<>'' AND CONVERT(INT,ClientId)>0  ORDER BY Lastname";
+
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(birthdateQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+
+                    dt = FilterTableBirthdate(dt);
+                    dt = GetSelectedColumnsBirthdate(dt);
+                    dt.DefaultView.Sort = dt.Columns["Last Name"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["BirthdateReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[5];
+                    parm[0] = new ReportParameter("Month", ddlMonth.SelectedItem.Value.ToString());
+                    parm[1] = new ReportParameter("AgeFrom", (txtAgeFrom.Text == "" ? "0" : txtAgeFrom.Text));
+                    parm[2] = new ReportParameter("AgeTo", (txtAgeTo.Text == "" ? "200" : txtAgeTo.Text));
+                    parm[3] = new ReportParameter("StartDate", (txtBithdateStart.Text == "" ? "1900-01-01" : txtBithdateStart.Text));
+                    parm[4] = new ReportParameter("EndDate", (txtBirthdateEnd.Text == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : txtBirthdateEnd.Text));
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
+
+        public DataTable FilterTableBirthdate(DataTable originalTable)
+        {
+            string month = ddlMonth.SelectedItem.Value.ToString();
+            int ageFrom = string.IsNullOrWhiteSpace(txtAgeFrom.Text) ? 0 : Convert.ToInt32(txtAgeFrom.Text);
+            int ageTo = string.IsNullOrWhiteSpace(txtAgeTo.Text) ? 200 : Convert.ToInt32(txtAgeTo.Text);
+            string bDateS = txtBithdateStart.Text == "" ? "01/01/1900" : txtBithdateStart.Text;
+            string bDateE = txtBirthdateEnd.Text == "" ? DateTime.Now.ToString("MM/dd/yyyy") : txtBirthdateEnd.Text;
+            bDateS = bDateS.Replace("-", "/");
+            bDateE = bDateE.Replace("-", "/");
+
+            DateTime bDateStart = DateTime.ParseExact(bDateS,"MM/dd/yyyy",CultureInfo.InvariantCulture);
+            DateTime bDateEnd = DateTime.ParseExact(bDateE,"MM/dd/yyyy",CultureInfo.InvariantCulture);
+
+
+            DataTable filteredTable = originalTable.Clone();
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DateTime birthDate = DateTime.ParseExact(
+                string.IsNullOrWhiteSpace(row["BirthDate"].ToString()) ? DateTime.Now.ToString("MM/dd/yyyy") : row["BirthDate"].ToString(),
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture
+                );;
+                int age;
+
+                if (!int.TryParse(row["Age"] != null ? row["Age"].ToString() : "", out age))
+                    continue;
+
+                // Filter by month
+                if (!string.IsNullOrWhiteSpace(month) && month != "0")
+                {
+                    string rowMonth = row["Month"].ToString();
+                    if (!rowMonth.Equals(month, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                }
+
+                // Filter by age range
+                if (age < ageFrom || age > ageTo)
+                    continue;
+
+                // Filter by birth date range
+                if (birthDate < bDateStart || birthDate > bDateEnd)
+                    continue;
+
+                filteredTable.ImportRow(row);
+            }
+
+            return filteredTable;
+        }
+
 
         protected void btnShowAdmissionDate_Click(object sender, EventArgs e)
         {

@@ -1420,6 +1420,161 @@
             loadDataFromServerFunder(fullData);
         }
 
+        //Birthdate Table
+        function LoadDataFromServerBirthdate(data) {
+            fullData = data;
+            rowsPerPage = 15;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            document.getElementById("filterDiv").style.display = "none";
+            document.getElementById("buttonContainer").style.display = "none";
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                document.getElementById("paginationControls").innerHTML = '';
+                hideLoader();
+                return;
+            } else {
+                tableHeader.style.removeProperty("display");
+            }
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear and build headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+            columns.forEach(function (col, index) {
+                var th = document.createElement('th');
+                th.textContent = col + " ⬍"; // Add default sort icon
+                var headerId = "birthdate_header_" + index;
+                th.id = headerId;
+
+                // Add click event to enable sorting
+                th.style.cursor = "pointer";
+                th.onclick = function () {
+                    SortColumns("table", index, headerId, fullData, LoadDataFromServerBirthdate);
+                };
+
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table rows
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Create pagination controls
+            createPaginationControlsBirthdate(data.length, data);
+            hideLoader();
+        }
+
+        function createPaginationControlsBirthdate(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    LoadDataFromServerBirthdate(data); // Reload birthdate table for new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            // Page indicator
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+            paginationContainer.appendChild(pageIndicator);
+
+            // Next button
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    LoadDataFromServerBirthdate(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelWithImages();
+                LoadDataFromServerBirthdate(data);
+            };
+            paginationContainer.appendChild(exportButton);
+        }
+
+        function SortColumns(tableId, columnIndex, headerId, fullDataArray, reloadFunction) {
+            var key = tableId + "_" + columnIndex;
+            var ascending = true;
+
+            if (tableSortState[key] !== undefined) {
+                ascending = !tableSortState[key];
+            }
+            tableSortState = {}; 
+            tableSortState[key] = ascending;
+
+            var header = document.getElementById(headerId);
+            var headerRow = header.parentNode;
+            var headers = headerRow.getElementsByTagName("th");
+
+            for (var i = 0; i < headers.length; i++) {
+                headers[i].innerText = headers[i].innerText.replace(" ⬆", "").replace(" ⬇", "").replace(" ⬍", "") + " ⬍";
+            }
+
+            var baseText = header.innerText.replace(" ⬍", "").replace(" ⬆", "").replace(" ⬇", "");
+            header.innerText = baseText + (ascending ? " ⬆" : " ⬇");
+
+            var columnKey = Object.keys(fullDataArray[0])[columnIndex];
+
+            fullDataArray.sort(function (a, b) {
+                var valA = a[columnKey];
+                var valB = b[columnKey];
+
+                var dateA = new Date(valA);
+                var dateB = new Date(valB);
+                if (!isNaN(dateA) && !isNaN(dateB)) {
+                    return ascending ? dateA - dateB : dateB - dateA;
+                }
+
+                var numA = parseFloat(valA);
+                var numB = parseFloat(valB);
+                if (!isNaN(numA) && !isNaN(numB)) {
+                    return ascending ? numA - numB : numB - numA;
+                }
+
+                return ascending
+                    ? String(valA).localeCompare(String(valB))
+                    : String(valB).localeCompare(String(valA));
+            });
+
+            currentPage = 1;
+            reloadFunction(fullDataArray);  
+        }
 
     </script>
     <script>
@@ -2149,7 +2304,7 @@
                         <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClientClick="return handleClientClick();" OnClick="btnResRoster_Click"></asp:Button>
                         <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
                         <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClick="btnAllPlacement_Click"></asp:Button>
-                        <asp:Button ID="btnAllBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate" ToolTip="All Clients by Birthdate" OnClick="btnAllBirthdate_Click"></asp:Button>
+                        <asp:Button ID="btnAllBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate" ToolTip="All Clients by Birthdate" OnClientClick="return handleClientClick();" OnClick="btnAllBirthdate_Click"></asp:Button>
                         <asp:Button ID="btnAllAdmissionDate" runat="server" CssClass="leftMenu" Text="All Clients by Admission date" ToolTip="All Clients by Admission date" OnClick="btnAllAdmissionDate_Click"></asp:Button>
                         <asp:Button ID="btnAllDischargedate" runat="server" CssClass="leftMenu" Text="All Clients by Discharge date" ToolTip="All Clients by Discharge date" OnClick="btnAllDischargedate_Click"></asp:Button>
                         <asp:Button ID="btnStatistical" runat="server" CssClass="leftMenu" Text="Statistical Report" ToolTip="Statistical Report" OnClick="btnStatistical_Click"></asp:Button>
@@ -2476,7 +2631,7 @@
                                             <td></td>
                                             <td></td>
                                             <td>
-                                                <asp:Button ID="btnShowBirthdate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnShowBirthdate_Click" />
+                                                <asp:Button ID="btnShowBirthdate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowBirthdate_Click" />
                                             </td>
                                         </tr>
                                     </table>
