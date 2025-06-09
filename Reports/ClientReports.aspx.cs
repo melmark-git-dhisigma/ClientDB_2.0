@@ -2049,7 +2049,7 @@ namespace ClientDB.Reports
             }
         }
 
-        protected void btnResRoster_Click(object sender, EventArgs e)
+        protected void btnOldResRoster_Click(object sender, EventArgs e)
         {
             try
             {
@@ -2094,7 +2094,141 @@ namespace ClientDB.Reports
                 throw ex;
             }
         }
+        protected void btnResRoster_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldResRoster_Click(sender, e);
+                }
+                else
+                {
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    divStatisticalNew.Visible = false;
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = false;
+                    divPlacement.Visible = false;
+                    divchanges.Visible = false;
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
+                    hdnMenu.Value = "btnResRoster";
+                    RVClientReport.SizeToReportContent = false;
+                    tdMsg.InnerHtml = "";
+                    RVClientReport.Visible = false;
+                    HeadingDiv.Visible = true;
+                    HeadingDiv.InnerHtml = "Residential Roster Report";
+                    RVClientReport.Visible = false;
+                    int Schoolid = 0;
+                    string schooltype = ConfigurationManager.AppSettings["Server"];
+                    if (schooltype == "NE")
+                        Schoolid = 1;
+                    else
+                        Schoolid = 2;
+                    string resRosterQuery = "SELECT  SP.StudentPersonalId ,SP.SchoolId ,SP.LastName+','+SP.FirstName AS studentPersonalName " + 
+		                            " ,CONVERT(VARCHAR(10), SP.[BirthDate], 101) AS BirthDate	 " + 
+		                            " ,DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) >  GETDATE() THEN 1 ELSE 0 END) AS Age " + 
+		                            " ,CASE WHEN DATEPART(MM,SP.BirthDate)>= 01 AND DATEPART(MM,SP.BirthDate)<= 03 THEN 1 ELSE  " + 
+		                            " CASE WHEN DATEPART(MM,SP.BirthDate)>= 04 AND DATEPART(MM,SP.BirthDate)<= 06 THEN 2 ELSE " + 
+		                            " CASE WHEN DATEPART(MM,SP.BirthDate)>= 07 AND DATEPART(MM,SP.BirthDate)<= 09 THEN 3 ELSE 4 END END END AS mMonth " + 
+		                            " ,CASE WHEN SP.Gender=1 THEN 'Male'	ELSE 'Female'	END Gender ,LP.LookupName AS PlacementType " + 
+		                            " ,CONVERT(VARCHAR(10),PL.StartDate,101) AS StartDate ,CONVERT(VARCHAR(10),PL.EndDate,101) AS EndDate " + 
+		                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PL.Department) AS Department " + 
+		                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PL.BehaviorAnalyst) AS BehaviorAnalyst " + 
+		                            " FROM StudentPersonal SP LEFT JOIN [dbo].[Placement] PL ON SP.StudentPersonalId=PL.StudentPersonalId  " + 
+                                    " INNER JOIN LookUp LKP ON LKP.LookupId = PL.Department " + 
+		                            " LEFT JOIN (SELECT * FROM LookUp WHERE LookupName='Residential School') LP ON LP.LookupId=PL.PlacementType		 " + 
+		                            " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
+                                    " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+                                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
+                                    " and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SP.ClientId)>0";
 
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(resRosterQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnResRoster(dt);
+                    dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+                    var jsonData = JsonConvert.SerializeObject(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
+                    divbirthdate.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public DataTable GetSelectedColumnResRoster(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "studentPersonalName", "BirthDate", "Age", "Gender", "StartDate", "EndDate", "Department", "BehaviorAnalyst" };
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("studentPersonalName"))
+            {
+                newTable.Columns["studentPersonalName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("BirthDate"))
+            {
+                newTable.Columns["BirthDate"].ColumnName = "Birth Date";
+            }
+
+            if (newTable.Columns.Contains("StartDate"))
+            {
+                newTable.Columns["StartDate"].ColumnName = "Start Date";
+            }
+
+            if (newTable.Columns.Contains("EndDate"))
+            {
+                newTable.Columns["EndDate"].ColumnName = "End Date";
+            }
+
+            if (newTable.Columns.Contains("Department"))
+            {
+                newTable.Columns["Department"].ColumnName = "Program";
+            }
+
+            if (newTable.Columns.Contains("BehaviorAnalyst"))
+            {
+                newTable.Columns["BehaviorAnalyst"].ColumnName = "Behavior Analyst";
+            }
+
+            return newTable;
+        }
         protected void btnAllPlacement_Click(object sender, EventArgs e)
         {
             try
