@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Share/Site.Master" Inherits="System.Web.Mvc.ViewPage<IEnumerable<ClientDB.Models.RegistrationModel>>" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    Melmark New England
+    EnvisionSmart
    
 </asp:Content>
 

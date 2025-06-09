@@ -4,12 +4,12 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-     <% var sess = (clsSession)Session["UserSessionClient"]; %>
+     <%--<% var sess = (clsSession)Session["UserSessionClient"]; %>
        <% if(sess.SchoolId==2){ %> Melmark Pennsylvania
     <%}else if(sess.SchoolId==1){ %>
     Melmark New England
-    <%} %>
-   
+    <%} %>--%>
+   EnvisionSmart
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">

@@ -8,7 +8,7 @@
     <script src="../../Documents/JS/jquery-1.8.0.min.js"></script>
     <script src="../../Documents/JS/slides.min.jquery.js"></script>
     <link href="../../Documents/CSS/style.css" rel="stylesheet" />
-    <title><%=Session["PageName"].ToString() %></title>
+    <title>EnvisionSmart<%--<%=Session["PageName"].ToString() %>--%></title>
     <style type="text/css">
         .Main {
             height: auto;
