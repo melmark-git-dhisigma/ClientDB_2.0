@@ -997,6 +997,9 @@
 		//Birthdate Quarter Table
         function loadDataFromServerQuarter(data) {
             fullData = data;
+            if (HeadingDiv.innerHTML === "Residential Roster Report") {
+                rowsPerPage = 15;
+            }
             var tableBody = document.getElementById("tableBody");
             var tableHeader = document.getElementById("tableHeader");
             document.getElementById("filterDiv").style.display = "none";
