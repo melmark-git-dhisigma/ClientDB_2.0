@@ -53,11 +53,11 @@ namespace ClientDB.Controllers
         public string GetTitleReport()
         {
             string title = System.Configuration.ConfigurationManager.AppSettings["Server"].ToString();
-            if (title == "PA")
-                title = "Melmark Pennsylvania";
-            else
-                title = "Melmark New England";
-            return title;
+            //if (title == "PA")
+            //    title = "Melmark Pennsylvania";
+            //else
+            //    title = "Melmark New England";
+            return "EnvisionSmart";//title;
 
         }
 
