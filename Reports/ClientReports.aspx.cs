@@ -505,6 +505,7 @@ namespace ClientDB.Reports
                         con.Open();
                         cmd = new SqlCommand("ClientStatisticalGraph", con);
                         cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 300;
 
                         cmd.Parameters.AddWithValue("@ParamStudName", ContainsLoop("Student Name", selectedItemList));
                         cmd.Parameters.AddWithValue("@ParamGender", ContainsLoop("Gender", selectedItemList));
@@ -613,6 +614,7 @@ namespace ClientDB.Reports
                 con.Open();
                 cmd = new SqlCommand("ClientStatisticalGraph", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandTimeout = 300;
                 string para = "true";
                 cmd.Parameters.AddWithValue("@ParamStudName", para);
                 cmd.Parameters.AddWithValue("@ParamGender", para);
