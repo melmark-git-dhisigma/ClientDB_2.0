@@ -790,7 +790,7 @@ namespace ClientDB.Controllers
                             // Set EndDate only if it has not been set
                             if (item.EndDate == null)
                             {
-                                item.EndDate = DateTime.Now;
+                                item.EndDate = DateTime.Now.AddDays(-1);
                             }
                             //item.Discharge = 1;
                         }
