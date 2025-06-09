@@ -250,8 +250,7 @@ namespace ClientDB.Reports
                         da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
                         dt = GetSelectedColumnQuarter(dt, ddlQuarter.SelectedItem.Value);
-                        dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
-                        dt = dt.DefaultView.ToTable();
+                        dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Birth Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
                         var jsonData = JsonConvert.SerializeObject(dt);
                         ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
                         
@@ -281,7 +280,7 @@ namespace ClientDB.Reports
             originalTable.AcceptChanges();
 
             DataTable newTable = new DataTable();
-            string[] selectedColumns = { "ImageUrl", "studentPersonalName", "BirthDate", "Age"};
+            string[] selectedColumns = { "studentPersonalName", "BirthDate", "Age"};
 
             foreach (var columnName in selectedColumns)
             {
@@ -301,11 +300,6 @@ namespace ClientDB.Reports
                 }
 
                 newTable.Rows.Add(newRow);
-            }
-
-            if (newTable.Columns.Contains("ImageUrl"))
-            {
-                newTable.Columns["ImageUrl"].ColumnName = "Photo";
             }
 
             if (newTable.Columns.Contains("studentPersonalName"))
@@ -2363,7 +2357,9 @@ namespace ClientDB.Reports
                     divFunder.Visible = true;
                     divPlacement.Visible = false;
                     btnShowReport.Visible = false;
-                    btnResetAllClient.Visible = false;                    
+                    btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
                     hdnMenu.Value = "btnAllFunder";
                     RVClientReport.SizeToReportContent = false;
                     tdMsg.InnerHtml = "";
@@ -2609,14 +2605,14 @@ namespace ClientDB.Reports
                 if (!checkHighcharts.Checked)
                 {
                     RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FunderReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[2];
-                parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
-                parm[1] = new ReportParameter("FundingSource", ddlFundingSource.SelectedValue.ToString());
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
-            }
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FunderReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[2];
+                    parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
+                    parm[1] = new ReportParameter("FundingSource", ddlFundingSource.SelectedValue.ToString());
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
                 else
                 {
                     string funderQuery = "SELECT SPA.FundingSource,SP.LastName+','+SP.FirstName AS ClientName,SP.ClientId,SP.SchoolId FROM StudentPersonal SP INNER JOIN StudentPersonalPA SPA ON SP.StudentPersonalId=SPA.StudentPersonalId " +
