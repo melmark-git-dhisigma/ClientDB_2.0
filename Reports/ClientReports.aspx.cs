@@ -119,7 +119,7 @@ namespace ClientDB.Reports
 
 
 
-        protected void btnquarter_Click(object sender, EventArgs e)
+        protected void btnOldquarter_Click(object sender, EventArgs e)
         {
             try
             {
@@ -169,6 +169,163 @@ namespace ClientDB.Reports
                 throw ex;
             }
         }
+        protected void btnquarter_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!checkHighcharts.Checked)
+                {
+                    btnOldquarter_Click(sender, e);
+                }
+                else
+                {
+                    divContact.Visible = false;
+                    divnodata.Visible = false;
+                    divStatisticalNew.Visible = false;
+                    divchanges.Visible = false;
+                    divStatistical.Visible = false;
+                    divDischarge.Visible = false;
+                    divAdmission.Visible = false;
+                    divbyBirthdate.Visible = false;
+                    divFunder.Visible = false;
+                    divPlacement.Visible = false;
+                    btnShowReport.Visible = false;
+                    btnResetAllClient.Visible = false;
+                    btnShowReportVendor.Visible = false;
+                    btnResetVendor.Visible = false;
+                    hdnMenu.Value = "btnBirthdate";
+                    RVClientReport.Visible = false;
+                    if (ddlQuarter.SelectedItem.Value != "0")
+                    {
+                        tdMsg.InnerHtml = "";
+                        int Schoolid = 0;
+                        string schooltype = ConfigurationManager.AppSettings["Server"];
+                        if (schooltype == "NE")
+                            Schoolid = 1;
+                        else
+                            Schoolid = 2;
+
+                        string quarterQuery = "SELECT        SD.StudentPersonalId, SD.SchoolId, SD.LastName + ',' + SD.FirstName AS studentPersonalName, CASE WHEN [ImageUrl] IS NULL OR " + 
+                               " [ImageUrl] = '' THEN CASE WHEN SD.Gender = 1 THEN " +
+                               " (SELECT        FormatImg " + 
+                               " FROM            [dbo].[DefaultImage] " + 
+                               "  WHERE        Sex = 'M') ELSE " + 
+                               " (SELECT        FormatImg " + 
+                               " FROM            [dbo].[DefaultImage] " + 
+                               " WHERE        Sex = 'F') END ELSE [ImageUrl] END AS ImageUrl, CONVERT(VARCHAR(10), SD.BirthDate, 101) AS BirthDate, SD.PlaceOfBirth, SD.CountryOfBirth,  " + 
+                               " SD.Height, SD.Weight, " + 
+                               " (SELECT        LookupName " + 
+                               " FROM            LookUp " + 
+                               "  WHERE        (LookupId = PL.PlacementType)) AS PlacementType, " + 
+                               " (SELECT        LookupName " + 
+                               " FROM            LookUp AS LookUp_3 " + 
+                               "  WHERE        (LookupId = PL.Department)) AS Department, " + 
+                               " (SELECT        LookupName " + 
+                               " FROM            LookUp AS LookUp_2 " + 
+                               " WHERE        (LookupId = PL.BehaviorAnalyst)) AS BehaviorAnalyst, " + 
+                               " (SELECT        LookupName " + 
+                               " FROM            LookUp AS LookUp_1 " + 
+                               " WHERE        (LookupId = PL.PrimaryNurse)) AS PrimaryNurse, EC.LastName + ',' + EC.FirstName AS emerContact, EC.Title, EC.Phone, DATEDIFF(YEAR,  " + 
+                               " SD.BirthDate, GETDATE()) - (CASE WHEN DATEADD(YY, DATEDIFF(YEAR, SD.BirthDate, GETDATE()), SD.BirthDate) > GETDATE() THEN 1 ELSE 0 END) AS Age,  " + 
+                               " CASE WHEN DATEPART(MM, SD.BirthDate) >= 01 AND DATEPART(MM, SD.BirthDate) <= 03 THEN 1 ELSE CASE WHEN DATEPART(MM, SD.BirthDate) >= 04 AND  " + 
+                               " DATEPART(MM, SD.BirthDate) <= 06 THEN 2 ELSE CASE WHEN DATEPART(MM, SD.BirthDate) >= 07 AND DATEPART(MM, SD.BirthDate)  " + 
+                               " <= 09 THEN 3 ELSE 4 END END END AS mMonth, CASE WHEN SD.Gender = 1 THEN 'Male' ELSE 'Female' END AS Gender " + 
+                               " FROM            StudentPersonal AS SD LEFT OUTER JOIN " + 
+                               " Placement AS PL ON PL.StudentPersonalId = SD.StudentPersonalId LEFT OUTER JOIN " + 
+                               " EmergencyContactSchool AS EC ON EC.StudentPersonalId = SD.StudentPersonalId " + 
+                               " INNER JOIN LookUp LKP on LKP.LookupId = PL.Department " + 
+                               " WHERE        (SD.StudentType = 'Client ')  and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department' " + 
+                               " and SD.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                               " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
+                               " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                               " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+                               " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
+                               " and ST.StudentPersonalId not in (SELECT Distinct " + 
+                               " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SD.ClientId)>0"; 
+                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand(quarterQuery, con);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                        dt = GetSelectedColumnQuarter(dt, ddlQuarter.SelectedItem.Value);
+                        dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
+                        dt = dt.DefaultView.ToTable();
+                        var jsonData = JsonConvert.SerializeObject(dt);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
+                        
+                    }
+                    else
+                    {
+                        tdMsg.InnerHtml = "<div class='warning_box'>Please select birthdate quarter</div>";
+                        ddlQuarter.Focus();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public DataTable GetSelectedColumnQuarter(DataTable originalTable, string quarter)
+        {
+            for (int i = originalTable.Rows.Count - 1; i >= 0; i--)
+            {
+                if (originalTable.Rows[i]["mMonth"].ToString() != quarter)
+                {
+                    originalTable.Rows[i].Delete();
+                }
+            }
+            originalTable.AcceptChanges();
+
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "ImageUrl", "studentPersonalName", "BirthDate", "Age"};
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ImageUrl"))
+            {
+                newTable.Columns["ImageUrl"].ColumnName = "Photo";
+            }
+
+            if (newTable.Columns.Contains("studentPersonalName"))
+            {
+                newTable.Columns["studentPersonalName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("BirthDate"))
+            {
+                newTable.Columns["BirthDate"].ColumnName = "Birth Date";
+            }
+            newTable = newTable
+                                .AsEnumerable()
+                                .GroupBy(row => string.Join("|", row.ItemArray))
+                                .Select(group => group.First())
+                                .CopyToDataTable();
+
+            return newTable;
+        }
+
         protected void btnOldReport_Click(object sender, EventArgs e)
         {
             try

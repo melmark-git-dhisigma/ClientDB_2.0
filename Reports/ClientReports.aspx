@@ -994,6 +994,125 @@
             paginationContainer.appendChild(nextButton);
         }
 
+		//Birthdate Quarter Table
+        function loadDataFromServerQuarter(data) {
+            fullData = data;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            document.getElementById("filterDiv").style.display = "none";
+            document.getElementById("buttonContainer").style.display = "none";
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                return;
+            }
+            else
+                tableHeader.style.removeProperty("display");
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear any existing headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+
+            // Create header cells
+            columns.forEach(function (col) {
+                var th = document.createElement('th');
+                th.textContent = col;
+                headerRow.appendChild(th);
+            });
+
+            // Append the header row
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic: slice data for the current page
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table body with rows for the current page
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+
+                    if (typeof row[col] === "string" && (col.toLowerCase().includes("image") || row[col].startsWith("/9j/") || row[col].startsWith("R0lGOD") || row[col].startsWith("iVBORw0KGgoAAA"))) {
+                        var img = document.createElement('img');
+
+                        // Check for JPEG image format
+                        if (row[col].startsWith("/9j/")) {
+                            img.src = "data:image/jpeg;base64," + row[col]; // JPEG format
+                        }
+                            // Check for GIF image format
+                        else if (row[col].startsWith("R0lGOD")) {
+                            img.src = "data:image/gif;base64," + row[col];  // GIF format
+                        }
+                            // Check for PNG image format
+                        else if (row[col].startsWith("iVBORw0KGgoAAA")) {
+                            img.src = "data:image/png;base64," + row[col];  // PNG format
+                        }
+
+                        img.style.maxWidth = "100px";
+                        img.style.height = "auto";
+                        td.appendChild(img);
+                    }
+                    else {
+                        if (col.includes("image")) {
+                            var img = document.createElement('img');
+                            img.src = "/Images/Client.gif";
+                            img.style.maxWidth = "100px";
+                            img.style.height = "auto";
+                            td.appendChild(img);
+                        }
+                        else
+                            td.textContent = row[col];
+                    }
+
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Create pagination controls
+            createPaginationControlsQuarter(data.length, data);
+        }
+        function createPaginationControlsQuarter(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServerQuarter(data); // Re-load the table data for the new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + Math.ceil(totalRows / rowsPerPage);
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServerQuarter(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+        }
+
         //Funder Table
         var sortState = {}; // Keeps track of sort direction per funder
 
