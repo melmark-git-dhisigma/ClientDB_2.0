@@ -2820,24 +2820,101 @@ namespace ClientDB.Reports
                 RVClientReport.Visible = false;
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "All Clients by Admission date";
-                RVClientReport.Visible = true;
-                string AdmissionFrom = (txtAdmissionFrom.Text != "" ? GetDateFromText(txtAdmissionFrom.Text) : "");
-                string AdmissionTo = (txtAdmissionTo.Text != "" ? GetDateFromText(txtAdmissionTo.Text) : "");
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["AdmissionDateReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[3];
-                parm[0] = new ReportParameter("AdmStart", (AdmissionFrom == "" ? "1900-01-01" : AdmissionFrom));
-                parm[1] = new ReportParameter("AdmEnd", (AdmissionTo == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : AdmissionTo));
-                parm[2] = new ReportParameter("NumberOfAdm", (txtNumberOfAdmission.Text == "" ? "10000000" : txtNumberOfAdmission.Text));
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
-                divbirthdate.Visible = false;
+                if (checkHighcharts.Checked)
+                {
+                    string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
+                            " JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId " +
+                            " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1  " +
+                            " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                            " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                            " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                            " and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,ClientId)>0 ORDER BY AdmissionDate DESC ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(admissionQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsAdmissionDate(dt);
+                    if (dt.Rows.Count > 0)
+                    dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Admission Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    string AdmissionFrom = (txtAdmissionFrom.Text != "" ? GetDateFromText(txtAdmissionFrom.Text) : "");
+                    string AdmissionTo = (txtAdmissionTo.Text != "" ? GetDateFromText(txtAdmissionTo.Text) : "");
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["AdmissionDateReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[3];
+                    parm[0] = new ReportParameter("AdmStart", (AdmissionFrom == "" ? "1900-01-01" : AdmissionFrom));
+                    parm[1] = new ReportParameter("AdmEnd", (AdmissionTo == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : AdmissionTo));
+                    parm[2] = new ReportParameter("NumberOfAdm", (txtNumberOfAdmission.Text == "" ? "10000000" : txtNumberOfAdmission.Text));
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
+                    divbirthdate.Visible = false;
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
+        }
+        public DataTable GetSelectedColumnsAdmissionDate(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "ClientId", "Lastname", "Firstname", "AdmDate"};
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client Id";
+            }
+
+            if (newTable.Columns.Contains("Lastname"))
+            {
+                newTable.Columns["Lastname"].ColumnName = "Last Name";
+            }
+
+            if (newTable.Columns.Contains("Firstname"))
+            {
+                newTable.Columns["Firstname"].ColumnName = "First Name";
+            }
+
+            if (newTable.Columns.Contains("AdmDate"))
+            {
+                newTable.Columns["AdmDate"].ColumnName = "Admission Date";
+            }
+
+            return newTable;
         }
 
         protected void btnAllDischargedate_Click(object sender, EventArgs e)
@@ -3054,23 +3131,97 @@ namespace ClientDB.Reports
         {
             try
             {
-                RVClientReport.Visible = true;
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["AdmissionDateReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[3];
-                parm[0] = new ReportParameter("AdmStart", (txtAdmissionFrom.Text == "" ? "1900-01-01" : txtAdmissionFrom.Text));
-                parm[1] = new ReportParameter("AdmEnd", (txtAdmissionTo.Text == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : txtAdmissionTo.Text));
-                parm[2] = new ReportParameter("NumberOfAdm", (txtNumberOfAdmission.Text == "" ? "10000000" : txtNumberOfAdmission.Text));
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (checkHighcharts.Checked)
+                {
+                    RVClientReport.Visible = false;
+                    string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
+                            " JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId " +
+                            " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1  " +
+                            " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                            " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                            " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                            " and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,ClientId)>0 ORDER BY AdmissionDate DESC ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(admissionQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = FilterTableAdmissionDate(dt);
+                    dt = GetSelectedColumnsAdmissionDate(dt);
+                    if(dt.Rows.Count>0)
+                    dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Admission Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["AdmissionDateReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[3];
+                    parm[0] = new ReportParameter("AdmStart", (txtAdmissionFrom.Text == "" ? "1900-01-01" : txtAdmissionFrom.Text));
+                    parm[1] = new ReportParameter("AdmEnd", (txtAdmissionTo.Text == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : txtAdmissionTo.Text));
+                    parm[2] = new ReportParameter("NumberOfAdm", (txtNumberOfAdmission.Text == "" ? "10000000" : txtNumberOfAdmission.Text));
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
+        public DataTable FilterTableAdmissionDate(DataTable originalTable)
+        {
+            int count = Convert.ToInt32(txtNumberOfAdmission.Text == "" ? "-1" : txtNumberOfAdmission.Text);
+            string admDateFrom = txtAdmissionFrom.Text == "" ? "01/01/1900" : txtAdmissionFrom.Text;
+            string admDateTo = txtAdmissionTo.Text == "" ? DateTime.Now.ToString("MM/dd/yyyy") : txtAdmissionTo.Text;
+            admDateFrom = admDateFrom.Replace("-", "/");
+            admDateTo = admDateTo.Replace("-", "/");
 
+            DateTime admissionStart = DateTime.ParseExact(admDateFrom, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            DateTime admissionEnd = DateTime.ParseExact(admDateTo, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+
+            DataTable filteredTable = originalTable.Clone();
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DateTime admissionDate = DateTime.ParseExact(
+                string.IsNullOrWhiteSpace(row["AdmDate"].ToString()) ? DateTime.Now.ToString("MM/dd/yyyy") : row["AdmDate"].ToString(),
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture
+                ); ;
+
+                if (admissionDate < admissionStart || admissionDate > admissionEnd)
+                    continue;
+
+                filteredTable.ImportRow(row);
+            }
+            if(filteredTable.Rows.Count == 0)
+                return originalTable.Clone();
+            else if(filteredTable.Rows.Count > 0)
+                filteredTable = filteredTable.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("AdmDate"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
+            else
+                return filteredTable;
+
+            if (count >= 0)
+            {
+                filteredTable = filteredTable.AsEnumerable().Take(count).CopyToDataTable();
+            }
+
+
+
+            return filteredTable;
+        }
         protected void btnShowDischarge_Click(object sender, EventArgs e)
         {
             try

@@ -2305,7 +2305,7 @@
                         <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
                         <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClick="btnAllPlacement_Click"></asp:Button>
                         <asp:Button ID="btnAllBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate" ToolTip="All Clients by Birthdate" OnClientClick="return handleClientClick();" OnClick="btnAllBirthdate_Click"></asp:Button>
-                        <asp:Button ID="btnAllAdmissionDate" runat="server" CssClass="leftMenu" Text="All Clients by Admission date" ToolTip="All Clients by Admission date" OnClick="btnAllAdmissionDate_Click"></asp:Button>
+                        <asp:Button ID="btnAllAdmissionDate" runat="server" CssClass="leftMenu" Text="All Clients by Admission date" ToolTip="All Clients by Admission date" OnClientClick="return handleClientClick();" OnClick="btnAllAdmissionDate_Click"></asp:Button>
                         <asp:Button ID="btnAllDischargedate" runat="server" CssClass="leftMenu" Text="All Clients by Discharge date" ToolTip="All Clients by Discharge date" OnClick="btnAllDischargedate_Click"></asp:Button>
                         <asp:Button ID="btnStatistical" runat="server" CssClass="leftMenu" Text="Statistical Report" ToolTip="Statistical Report" OnClick="btnStatistical_Click"></asp:Button>
                         <asp:Button ID="btnFundChange" runat="server" CssClass="leftMenu" Text="Funding Changes" ToolTip="Funding Changes" OnClick="btnFundChange_Click" OnClientClick="resetVal();"></asp:Button>
@@ -2654,7 +2654,7 @@
                                             </td>
                                             <td></td>
                                             <td>
-                                                <asp:Button ID="btnShowAdmissionDate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnShowAdmissionDate_Click" /></td>
+                                                <asp:Button ID="btnShowAdmissionDate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowAdmissionDate_Click" /></td>
                                         </tr>
                                     </table>
                                 </div>
