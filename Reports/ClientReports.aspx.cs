@@ -2273,34 +2273,148 @@ namespace ClientDB.Reports
                     Schoolid = 1;
                 else
                     Schoolid = 2;
-                string ActiveStartDate = (txtActiveStartDate.Text != "" ? GetDateFromText(txtActiveStartDate.Text) : "");
-                string ActiveEndDate = (txtActiveEndDate.Text != "" ? GetDateFromText(txtActiveEndDate.Text) : "");
-                string DischrEndDate = (txtDischrEndDate.Text != "" ? GetDateFromText(txtDischrEndDate.Text) : "");
-                string DischrStartDate = (txtDischrStartDate.Text != "" ? GetDateFromText(txtDischrStartDate.Text) : "");
-                string NewEndDate = (txtNewEndDate.Text != "" ? GetDateFromText(txtNewEndDate.Text) : "");
-                string NewStartDate = (txtNewStartDate.Text != "" ? GetDateFromText(txtNewStartDate.Text) : "");
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[8];
-                parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
-                parm[1] = new ReportParameter("Department", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocDept.SelectedValue.ToString() : ddlDeptPlctypeDept.SelectedValue.ToString())));
-                parm[2] = new ReportParameter("PlacementType", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Placement Type" ? ddlDeptPlctypePlcType.SelectedValue.ToString() : ddlDeptPlctypePlcType.SelectedValue.ToString())));
-                parm[3] = new ReportParameter("Location", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocLoc.SelectedValue.ToString() : ddlLocLoc.SelectedValue.ToString())));
-                parm[4] = new ReportParameter("StartDate", (hdnDateRange.Value == "" ? "1900-01-01" : (hdnDateRange.Value == "Active Placement" ? ActiveStartDate : (hdnDateRange.Value == "Discharged Placement" ? DischrStartDate : NewStartDate))));
-                parm[5] = new ReportParameter("EndDate", (hdnDateRange.Value == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : (hdnDateRange.Value == "Active Placement" ? ActiveEndDate : (hdnDateRange.Value == "Discharged Placement" ? DischrEndDate : NewEndDate))));
-                parm[6] = new ReportParameter("DateType", (hdnDateRange.Value == "" ? "0" :(hdnDateRange.Value == "Active Placement"?"Active Placement,New Placement":hdnDateRange.Value)));
-                parm[7] = new ReportParameter("CategoryType", (hdnballet.Value == "" ? "0" : hdnballet.Value));
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (checkHighcharts.Checked)
+                {
+                    RVClientReport.Visible = false;
+                    string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
+                                            " END AS PlacementStatus ,(SELECT STUFF(ISNULL((SELECT ', ' + DATA " +
+                                            " FROM  " +
+                                            " [Split] (IsDays,',') WHERE DATA<>'0' " +
+                                            " FOR XML PATH (''), TYPE).value('.','VARCHAR(max)'), ''), 1, 2, '')) Days FROM (SELECT SP.SchoolId,PT.StudentPersonalId,SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,PT.BehaviorAnalyst,PT.Department " +
+                                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PT.Department) AS DepartmentName,CONVERT(VARCHAR(20),PT.EndDate,101) EndDate,CONVERT(DATE,PT.EndDate) EdDate,PT.Location " +
+                                            " ,(SELECT ClassName FROM Class WHERE ClassId=PT.Location) AS LocationName ,PT.PlacementDepartment " +
+                                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementDepartment) AS PlacementDepartmentName " +
+                                            " ,PT.PlacementReason,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementReason) AS PlacementReasonName  " +
+                                            " ,PT.PlacementType,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementType) AS PlacementTypeName " +
+                                            " ,PT.Reason,CONVERT(VARCHAR(20),PT.StartDate,101) StartDate,CONVERT(DATE,PT.StartDate) StDate,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementReason) PLCStatus " +
+                                            " ,CONVERT(DATE,PT.CreatedOn) CreatedBy,(CASE WHEN PT.IsMonday=1 THEN 'Monday' ELSE '0' END +','+CASE WHEN PT.IsTuesday=1 THEN 'Tuesday' ELSE '0' END +','+ " +
+                                            " CASE WHEN PT.IsWednesday=1 THEN 'Wednesday' ELSE '0' END +','+CASE WHEN PT.IsThursday=1 THEN 'Thursday' ELSE '0' END +','+CASE WHEN PT.IsFriday=1 THEN 'Friday' ELSE '0' END +','+ " +
+                                            " CASE WHEN PT.IsSaturday=1 THEN 'Saturday' ELSE '0' END +','+CASE WHEN PT.IsSunday=1 THEN 'Sunday' ELSE '0' END ) IsDays " +
+                                            " FROM Placement PT LEFT JOIN StudentPersonal SP " +
+                                            " ON PT.StudentPersonalId=SP.StudentPersonalId WHERE  " +
+                                            " SP.StudentType='Client'    " +
+                                            " AND SP.ClientId IS NOT NULL  AND CONVERT(INT,SP.ClientId)>0  " +
+                                            " AND PT.Status=1 " +
+                                            " AND (CONVERT(DATE,PT.EndDate)>CONVERT(DATE,GETDATE()) OR PT.EndDate IS NULL)  " +
+                                            " AND PT.PlacementReason IS NOT NULL) PLACE  ORDER BY ClientId ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(placementQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnPlacement(dt);
+                    dt.DefaultView.Sort = dt.Columns["Client Id"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+                    var jsonData = JsonConvert.SerializeObject(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerPlacement(" + jsonData + ");", true);
+
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    string ActiveStartDate = (txtActiveStartDate.Text != "" ? GetDateFromText(txtActiveStartDate.Text) : "");
+                    string ActiveEndDate = (txtActiveEndDate.Text != "" ? GetDateFromText(txtActiveEndDate.Text) : "");
+                    string DischrEndDate = (txtDischrEndDate.Text != "" ? GetDateFromText(txtDischrEndDate.Text) : "");
+                    string DischrStartDate = (txtDischrStartDate.Text != "" ? GetDateFromText(txtDischrStartDate.Text) : "");
+                    string NewEndDate = (txtNewEndDate.Text != "" ? GetDateFromText(txtNewEndDate.Text) : "");
+                    string NewStartDate = (txtNewStartDate.Text != "" ? GetDateFromText(txtNewStartDate.Text) : "");
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[8];
+                    parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
+                    parm[1] = new ReportParameter("Department", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocDept.SelectedValue.ToString() : ddlDeptPlctypeDept.SelectedValue.ToString())));
+                    parm[2] = new ReportParameter("PlacementType", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Placement Type" ? ddlDeptPlctypePlcType.SelectedValue.ToString() : ddlDeptPlctypePlcType.SelectedValue.ToString())));
+                    parm[3] = new ReportParameter("Location", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocLoc.SelectedValue.ToString() : ddlLocLoc.SelectedValue.ToString())));
+                    parm[4] = new ReportParameter("StartDate", (hdnDateRange.Value == "" ? "1900-01-01" : (hdnDateRange.Value == "Active Placement" ? ActiveStartDate : (hdnDateRange.Value == "Discharged Placement" ? DischrStartDate : NewStartDate))));
+                    parm[5] = new ReportParameter("EndDate", (hdnDateRange.Value == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : (hdnDateRange.Value == "Active Placement" ? ActiveEndDate : (hdnDateRange.Value == "Discharged Placement" ? DischrEndDate : NewEndDate))));
+                    parm[6] = new ReportParameter("DateType", (hdnDateRange.Value == "" ? "0" : (hdnDateRange.Value == "Active Placement" ? "Active Placement,New Placement" : hdnDateRange.Value)));
+                    parm[7] = new ReportParameter("CategoryType", (hdnballet.Value == "" ? "0" : hdnballet.Value));
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
                 divbirthdate.Visible = false;
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
+        public DataTable GetSelectedColumnPlacement(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "ClientId", "ClientName", "PlacementDepartmentName", "PlacementTypeName", "DepartmentName", "LocationName", "PlacementReasonName", "StartDate",  "EndDate", "Days" };
 
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client Id";
+            }
+
+            if (newTable.Columns.Contains("ClientName"))
+            {
+                newTable.Columns["ClientName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("PlacementDepartmentName"))
+            {
+                newTable.Columns["PlacementDepartmentName"].ColumnName = "Department";
+            }
+
+            if (newTable.Columns.Contains("PlacementTypeName"))
+            {
+                newTable.Columns["PlacementTypeName"].ColumnName = "Placement Type";
+            }
+
+            if (newTable.Columns.Contains("PlacementTypeName"))
+            {
+                newTable.Columns["DepartmentName"].ColumnName = "Program";
+            }
+
+            if (newTable.Columns.Contains("LocationName"))
+            {
+                newTable.Columns["LocationName"].ColumnName = "Location";
+            }
+
+            if (newTable.Columns.Contains("PlacementReasonName"))
+            {
+                newTable.Columns["PlacementReasonName"].ColumnName = "Placement Reason";
+            }
+
+            if (newTable.Columns.Contains("StartDate"))
+            {
+                newTable.Columns["StartDate"].ColumnName = "Start Date";
+            }
+
+            if (newTable.Columns.Contains("EndDate"))
+            {
+                newTable.Columns["EndDate"].ColumnName = "End Date";
+            }
+
+            return newTable;
+        }
         protected void btnOldAllFunder_Click(object sender, EventArgs e)
         {
             try
@@ -3304,27 +3418,136 @@ namespace ClientDB.Reports
                 string DischrStartDate = (txtDischrStartDate.Text != "" ? GetDateFromText(txtDischrStartDate.Text) : "");
                 string NewEndDate = (txtNewEndDate.Text != "" ? GetDateFromText(txtNewEndDate.Text) : "");
                 string NewStartDate = (txtNewStartDate.Text != "" ? GetDateFromText(txtNewStartDate.Text) : "");
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[8];
-                parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
-                parm[1] = new ReportParameter("Department", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocDept.SelectedValue.ToString() : ddlDeptPlctypeDept.SelectedValue.ToString())));
-                parm[2] = new ReportParameter("PlacementType", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Placement Type" ? ddlDeptPlctypePlcType.SelectedValue.ToString() : ddlDeptPlctypePlcType.SelectedValue.ToString())));
-                parm[3] = new ReportParameter("Location", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocLoc.SelectedValue.ToString() : ddlLocLoc.SelectedValue.ToString())));
-                parm[4] = new ReportParameter("StartDate", (hdnDateRange.Value == "" ? "1900-01-01" : (hdnDateRange.Value == "Active Placement" ? ActiveStartDate : (hdnDateRange.Value == "Discharged Placement" ? DischrStartDate : NewStartDate))));
-                parm[5] = new ReportParameter("EndDate", (hdnDateRange.Value == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : (hdnDateRange.Value == "Active Placement" ? ActiveEndDate : (hdnDateRange.Value == "Discharged Placement" ? DischrEndDate : NewEndDate))));
-                parm[6] = new ReportParameter("DateType", (hdnDateRange.Value == "" ? "0" : (hdnDateRange.Value == "Active Placement" ? "Active Placement,New Placement" : hdnDateRange.Value)));
-                parm[7] = new ReportParameter("CategoryType", (hdnballet.Value == "" ? "0" : hdnballet.Value));
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (checkHighcharts.Checked)
+                {
+                    RVClientReport.Visible = false;
+
+                    string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
+                                            " END AS PlacementStatus ,(SELECT STUFF(ISNULL((SELECT ', ' + DATA " +
+                                            " FROM  " +
+                                            " [Split] (IsDays,',') WHERE DATA<>'0' " +
+                                            " FOR XML PATH (''), TYPE).value('.','VARCHAR(max)'), ''), 1, 2, '')) Days FROM (SELECT SP.SchoolId,PT.StudentPersonalId,SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,PT.BehaviorAnalyst,PT.Department " +
+                                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PT.Department) AS DepartmentName,CONVERT(VARCHAR(20),PT.EndDate,101) EndDate,CONVERT(DATE,PT.EndDate) EdDate,PT.Location " +
+                                            " ,(SELECT ClassName FROM Class WHERE ClassId=PT.Location) AS LocationName ,PT.PlacementDepartment " +
+                                            " ,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementDepartment) AS PlacementDepartmentName " +
+                                            " ,PT.PlacementReason,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementReason) AS PlacementReasonName  " +
+                                            " ,PT.PlacementType,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementType) AS PlacementTypeName " +
+                                            " ,PT.Reason,CONVERT(VARCHAR(20),PT.StartDate,101) StartDate,CONVERT(DATE,PT.StartDate) StDate,(SELECT LookupName FROM LookUp WHERE LookupId=PT.PlacementReason) PLCStatus " +
+                                            " ,CONVERT(DATE,PT.CreatedOn) CreatedBy,(CASE WHEN PT.IsMonday=1 THEN 'Monday' ELSE '0' END +','+CASE WHEN PT.IsTuesday=1 THEN 'Tuesday' ELSE '0' END +','+ " +
+                                            " CASE WHEN PT.IsWednesday=1 THEN 'Wednesday' ELSE '0' END +','+CASE WHEN PT.IsThursday=1 THEN 'Thursday' ELSE '0' END +','+CASE WHEN PT.IsFriday=1 THEN 'Friday' ELSE '0' END +','+ " +
+                                            " CASE WHEN PT.IsSaturday=1 THEN 'Saturday' ELSE '0' END +','+CASE WHEN PT.IsSunday=1 THEN 'Sunday' ELSE '0' END ) IsDays " +
+                                            " FROM Placement PT LEFT JOIN StudentPersonal SP " +
+                                            " ON PT.StudentPersonalId=SP.StudentPersonalId WHERE  " +
+                                            " SP.StudentType='Client'    " +
+                                            " AND SP.ClientId IS NOT NULL  AND CONVERT(INT,SP.ClientId)>0  " +
+                                            " AND PT.Status=1 " +
+                                            " AND (CONVERT(DATE,PT.EndDate)>CONVERT(DATE,GETDATE()) OR PT.EndDate IS NULL)  " +
+                                            " AND PT.PlacementReason IS NOT NULL) PLACE  ORDER BY ClientId ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(placementQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = filterDataTablePlacement(dt);
+                    dt = GetSelectedColumnPlacement(dt);
+                    dt.DefaultView.Sort = dt.Columns["Client Id"].ColumnName + " ASC";
+                    dt = dt.DefaultView.ToTable();
+                    var jsonData = JsonConvert.SerializeObject(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerPlacement(" + jsonData + ");", true);
+
+                }
+                else
+                {
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[8];
+                    parm[0] = new ReportParameter("SchoolID", Schoolid.ToString());
+                    parm[1] = new ReportParameter("Department", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocDept.SelectedValue.ToString() : ddlDeptPlctypeDept.SelectedValue.ToString())));
+                    parm[2] = new ReportParameter("PlacementType", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Placement Type" ? ddlDeptPlctypePlcType.SelectedValue.ToString() : ddlDeptPlctypePlcType.SelectedValue.ToString())));
+                    parm[3] = new ReportParameter("Location", (hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocLoc.SelectedValue.ToString() : ddlLocLoc.SelectedValue.ToString())));
+                    parm[4] = new ReportParameter("StartDate", (hdnDateRange.Value == "" ? "1900-01-01" : (hdnDateRange.Value == "Active Placement" ? ActiveStartDate : (hdnDateRange.Value == "Discharged Placement" ? DischrStartDate : NewStartDate))));
+                    parm[5] = new ReportParameter("EndDate", (hdnDateRange.Value == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : (hdnDateRange.Value == "Active Placement" ? ActiveEndDate : (hdnDateRange.Value == "Discharged Placement" ? DischrEndDate : NewEndDate))));
+                    parm[6] = new ReportParameter("DateType", (hdnDateRange.Value == "" ? "0" : (hdnDateRange.Value == "Active Placement" ? "Active Placement,New Placement" : hdnDateRange.Value)));
+                    parm[7] = new ReportParameter("CategoryType", (hdnballet.Value == "" ? "0" : hdnballet.Value));
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+        public DataTable filterDataTablePlacement(DataTable originalTable)
+            {
+            string ActiveStartDate = (txtActiveStartDate.Text != "" ? GetDateFromText(txtActiveStartDate.Text) : "");
+            string ActiveEndDate = (txtActiveEndDate.Text != "" ? GetDateFromText(txtActiveEndDate.Text) : "");
+            string DischrEndDate = (txtDischrEndDate.Text != "" ? GetDateFromText(txtDischrEndDate.Text) : "");
+            string DischrStartDate = (txtDischrStartDate.Text != "" ? GetDateFromText(txtDischrStartDate.Text) : "");
+            string NewEndDate = (txtNewEndDate.Text != "" ? GetDateFromText(txtNewEndDate.Text) : "");
+            string NewStartDate = (txtNewStartDate.Text != "" ? GetDateFromText(txtNewStartDate.Text) : "");
 
+            string department = hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocDept.SelectedValue.ToString() : ddlDeptPlctypeDept.SelectedValue.ToString());
+            string placementType = hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Placement Type" ? ddlDeptPlctypePlcType.SelectedValue.ToString() : ddlDeptPlctypePlcType.SelectedValue.ToString());
+            string location = hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocLoc.SelectedValue.ToString() : ddlLocLoc.SelectedValue.ToString());
+            string startDate = hdnDateRange.Value == "" ? "1900-01-01" : (hdnDateRange.Value == "Active Placement" ? ActiveStartDate : (hdnDateRange.Value == "Discharged Placement" ? DischrStartDate : NewStartDate));
+            string endDate = hdnDateRange.Value == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : (hdnDateRange.Value == "Active Placement" ? ActiveEndDate : (hdnDateRange.Value == "Discharged Placement" ? DischrEndDate : NewEndDate));
+            string dateType = hdnDateRange.Value == "" ? "0" : (hdnDateRange.Value == "Active Placement" ? "Active Placement,New Placement" : hdnDateRange.Value);
+            string categoryType = hdnballet.Value == "" ? "0" : hdnballet.Value;
+            startDate = startDate.Replace("-", "/");
+            endDate = endDate.Replace("-", "/");
+
+            DateTime DateStart = DateTime.ParseExact(startDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+            DateTime DateEnd = DateTime.ParseExact(endDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+
+
+            DataTable filteredTable = originalTable.Clone();
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                if (categoryType == "Choose Department and Location")
+                {
+                    if (row["PlacementDepartment"].ToString() != department)
+                        continue;
+                    if (row["Location"].ToString() != location)
+                        continue;
+                }
+                else if (categoryType == "Choose Department and Placement Type")
+                {
+                    if (row["PlacementDepartment"].ToString() != department)
+                        continue;
+                    if (row["PlacementType"].ToString() != placementType)
+                        continue;
+                }
+                else if (categoryType == "Choose Location")
+                {
+                    if (row["Location"].ToString() != location)
+                        continue;
+                }
+
+                DateTime stDate = row.Field<DateTime>("StDate");
+                DateTime edDate = row.Table.Columns.Contains("EdDate") && row["EdDate"] != DBNull.Value? row.Field<DateTime>("EdDate"): DateTime.MinValue;
+
+                if(dateType == "New Placement")
+                {
+                    if (row["PlacementStatus"].ToString() != "New Placement")
+                        continue;
+                }
+
+                DateTime compareField = dateType.Contains("Discharged Placement") ? edDate : stDate;
+
+                if (compareField >= DateStart && compareField <= DateEnd)
+                {
+                    filteredTable.ImportRow(row);
+                }
+
+            }
+
+            return filteredTable;
+        }
         private string GetDateFromText(string DateString)
         {
             string[] DateArray = new string[3];
