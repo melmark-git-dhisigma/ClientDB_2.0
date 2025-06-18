@@ -1420,6 +1420,138 @@
             loadDataFromServerFunder(fullData);
         }
 
+        //All Placement Table
+        function loadDataFromServerPlacement(data) {
+            fullData = data;
+            rowsPerPage = 15;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            document.getElementById("filterDiv").style.display = "none";
+            document.getElementById("buttonContainer").style.display = "none";
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                document.getElementById("paginationControls").innerHTML = '';
+                hideLoader();
+                return;
+            } else {
+                tableHeader.style.removeProperty("display");
+            }
+
+            var columns = Object.keys(data[0]);
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+            columns.forEach(function (col, index) {
+                var th = document.createElement('th');
+                th.textContent = col + " ⬍";
+                var headerId = "placement_header_" + index;
+                th.id = headerId;
+                th.style.cursor = "pointer";
+                th.onclick = function () {
+                    SortColumns("table", index, headerId, fullData, loadDataFromServerPlacement);
+                };
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            var previousClientId = null;
+            var rowspanTracker = {};
+
+            // First pass: calculate rowspans for consecutive Client Ids
+            for (var i = 0; i < pageData.length; i++) {
+                var currentId = pageData[i]["Client Id"];
+                if (currentId === previousClientId) {
+                    rowspanTracker[currentId]++;
+            } else {
+            rowspanTracker[currentId] = 1;
+        previousClientId = currentId;
+        }
+        }
+
+        previousClientId = null;
+
+        for (var i = 0; i < pageData.length; i++) {
+            var row = pageData[i];
+            var currentId = row["Client Id"];
+            var isFirstOfGroup = currentId !== previousClientId;
+            var currentRowspan = rowspanTracker[currentId];
+
+            var tr = document.createElement('tr');
+
+            columns.forEach(function(col) {
+                if ((col === "Client Id" || col === "Client Name") && !isFirstOfGroup) {
+                    return; // Skip merged cell
+        }
+
+                var td = document.createElement('td');
+                td.textContent = row[col];
+
+                if ((col === "Client Id" || col === "Client Name") && isFirstOfGroup) {
+                    td.rowSpan = currentRowspan;
+        }
+
+                tr.appendChild(td);
+        });
+
+            previousClientId = currentId;
+            tableBody.appendChild(tr);
+        }
+
+        createPaginationControlsPlacement(data.length, data);
+        hideLoader();
+        }
+
+        function createPaginationControlsPlacement(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            // Previous button
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServerPlacement(data); // Reload birthdate table for new page
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            // Page indicator
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+            paginationContainer.appendChild(pageIndicator);
+
+            // Next button
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServerPlacement(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelPlacement();
+                loadDataFromServerPlacement(data);
+            };
+            paginationContainer.appendChild(exportButton);
+        }
+
         //Birthdate Table
         function LoadDataFromServerBirthdate(data) {
             fullData = data;
@@ -2011,6 +2143,113 @@
             });
         }
 
+        function exportToExcelPlacement() {
+            var workbook = new ExcelJS.Workbook();
+            var headingDiv = document.getElementById("HeadingDiv").textContent.trim();
+
+            var now = new Date();
+            var formattedDateTime = now.toLocaleDateString().replace(/\//g, '-') + " " +
+                                    now.toLocaleTimeString().replace(/:/g, '-').replace(/ /g, '');
+
+            var worksheet = workbook.addWorksheet(formattedDateTime);
+            var columns = Object.keys(fullData[0]);
+
+            worksheet.columns = columns.map(function (col) {
+                return { header: col, key: col, width: 25 };
+            });
+
+            var headerRow = worksheet.getRow(1);
+            headerRow.eachCell(function (cell) {
+                cell.font = {
+                    bold: true,
+                    color: { argb: 'FFFFFFFF' }
+                };
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: '4CAF50' }
+                };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            });
+
+            // Add data rows
+            for (var i = 0; i < fullData.length; i++) {
+                var rowValues = [];
+                for (var j = 0; j < columns.length; j++) {
+                    rowValues.push(fullData[i][columns[j]]);
+                }
+                worksheet.addRow(rowValues);
+            }
+
+            // Merge adjacent identical cells for Client Id and Client Name
+            var currentClientId = null;
+            var currentClientName = null;
+            var startRow = 2;
+            var clientIdCol = columns.indexOf("Client Id") + 1;
+            var clientNameCol = columns.indexOf("Client Name") + 1;
+
+            for (var i = 2; i <= worksheet.rowCount; i++) {
+                var thisClientId = worksheet.getCell(i, clientIdCol).value;
+                var thisClientName = worksheet.getCell(i, clientNameCol).value;
+
+                if (thisClientId !== currentClientId || thisClientName !== currentClientName) {
+                    if (i - startRow > 1) {
+                        worksheet.mergeCells(startRow, clientIdCol, i - 1, clientIdCol);
+                        worksheet.mergeCells(startRow, clientNameCol, i - 1, clientNameCol);
+
+                        var mergedCell1 = worksheet.getCell(startRow, clientIdCol);
+                        var mergedCell2 = worksheet.getCell(startRow, clientNameCol);
+                        mergedCell1.alignment = mergedCell2.alignment = {
+                            vertical: 'middle',
+                            horizontal: 'center',
+                            wrapText: true
+                        };
+                    }
+                    currentClientId = thisClientId;
+                    currentClientName = thisClientName;
+                    startRow = i;
+                }
+            }
+
+            // Merge the last group if needed
+            if (worksheet.rowCount + 1 - startRow > 1) {
+                worksheet.mergeCells(startRow, clientIdCol, worksheet.rowCount, clientIdCol);
+                worksheet.mergeCells(startRow, clientNameCol, worksheet.rowCount, clientNameCol);
+
+                var mergedCell1 = worksheet.getCell(startRow, clientIdCol);
+                var mergedCell2 = worksheet.getCell(startRow, clientNameCol);
+                mergedCell1.alignment = mergedCell2.alignment = {
+                    vertical: 'middle',
+                    horizontal: 'center',
+                    wrapText: true
+                };
+            }
+
+            // Apply border and alignment to all cells
+            worksheet.eachRow(function (row, rowNumber) {
+                row.eachCell(function (cell) {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                    if (rowNumber > 1) {
+                        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                    }
+                });
+            });
+
+            workbook.xlsx.writeBuffer().then(function (buffer) {
+                saveAs(new Blob([buffer]), headingDiv + ".xlsx");
+            });
+        }
 
 
 
@@ -2303,7 +2542,7 @@
 
                         <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClientClick="return handleClientClick();" OnClick="btnResRoster_Click"></asp:Button>
                         <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
-                        <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClick="btnAllPlacement_Click"></asp:Button>
+                        <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClientClick="return handleClientClick();" OnClick="btnAllPlacement_Click"></asp:Button>
                         <asp:Button ID="btnAllBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate" ToolTip="All Clients by Birthdate" OnClientClick="return handleClientClick();" OnClick="btnAllBirthdate_Click"></asp:Button>
                         <asp:Button ID="btnAllAdmissionDate" runat="server" CssClass="leftMenu" Text="All Clients by Admission date" ToolTip="All Clients by Admission date" OnClientClick="return handleClientClick();" OnClick="btnAllAdmissionDate_Click"></asp:Button>
                         <asp:Button ID="btnAllDischargedate" runat="server" CssClass="leftMenu" Text="All Clients by Discharge date" ToolTip="All Clients by Discharge date" OnClick="btnAllDischargedate_Click"></asp:Button>
