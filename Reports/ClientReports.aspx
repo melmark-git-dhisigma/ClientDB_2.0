@@ -932,6 +932,7 @@
         //Client/Contact/Vendor Table
         function loadDataFromServerVendor(data) {
             fullData = data;
+            rowsPerPage = 10;
             var tableBody = document.getElementById("tableBody");
             var tableHeader = document.getElementById("tableHeader");
             tableBody.innerHTML = '';
@@ -1099,6 +1100,8 @@
             if (HeadingDiv.innerHTML === "Residential Roster Report") {
                 rowsPerPage = 15;
             }
+            else 
+            rowsPerPage = 10;
             var tableBody = document.getElementById("tableBody");
             var tableHeader = document.getElementById("tableHeader");
             document.getElementById("filterDiv").style.display = "none";
@@ -1233,40 +1236,46 @@
 
         function loadDataFromServerFunder(data) {
             fullData = data;
+            rowsPerPage = 5;
             document.getElementById("filterDiv").style.display = "none";
             document.getElementById("buttonContainer").style.display = "none";
+
             var tableHeader = document.getElementById('tableHeader');
             var tableBody = document.getElementById('tableBody');
+            var paginationContainer = document.getElementById("paginationControls");
 
             if (!data || data.length === 0) {
-                console.log("no data");
                 tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
                 tableHeader.style.display = "none";
-                var paginationContainer = document.getElementById("paginationControls");
                 paginationContainer.innerHTML = '';
                 hideLoader();
                 return;
-            }
-            else
+            } else {
                 tableHeader.style.removeProperty("display");
+            }
 
+            // Group by Funder
             var grouped = {};
             data.forEach(function (row) {
-                if (!grouped[row.Funder]) {
-                    grouped[row.Funder] = [];
-                }
+                if (!grouped[row.Funder]) grouped[row.Funder] = [];
                 grouped[row.Funder].push({
                     ClientId: row.ClientId,
                     ClientName: row.ClientName
                 });
             });
 
-            
+            var funderNames = Object.keys(grouped);
+            var totalRows = funderNames.length;
+            var start = (currentPage - 1) * rowsPerPage;
+            var end = Math.min(start + rowsPerPage, totalRows);
+
             tableHeader.innerHTML = "";
             tableBody.innerHTML = "";
 
-            for (var funder in grouped) {
-                var tableId = "innerTable_" + funder.replace(/\s+/g, "_"); // unique ID
+            for (var i = start; i < end; i++) {
+                var funder = funderNames[i];
+                var tableId = "innerTable_" + funder.replace(/\s+/g, "_");
+
                 var outerRow = document.createElement('tr');
                 var outerCell = document.createElement('td');
                 outerCell.colSpan = 2;
@@ -1274,12 +1283,10 @@
                 var innerTable = document.createElement('table');
                 innerTable.id = tableId;
                 innerTable.style.width = "60%";
-                innerTable.style.tableLayout = "fixed"; // ensure fixed column width
-                innerTable.style.borderCollapse = "collapse"; // cleaner layout
+                innerTable.style.tableLayout = "fixed";
+                innerTable.style.borderCollapse = "collapse";
                 innerTable.border = "1";
-                innerTable.style.marginBottom = "20px";
-                innerTable.style.marginLeft = "auto";  // center horizontally
-                innerTable.style.marginRight = "auto";
+                innerTable.style.margin = "0 auto 20px auto";
 
                 var funderHeaderRow = document.createElement('tr');
                 var funderHeaderCell = document.createElement('th');
@@ -1290,7 +1297,6 @@
                 funderHeaderRow.appendChild(funderHeaderCell);
                 innerTable.appendChild(funderHeaderRow);
 
-                // Column headers with unique IDs
                 var columnsRow = document.createElement('tr');
 
                 var idHeader = document.createElement('th');
@@ -1317,7 +1323,6 @@
                 columnsRow.appendChild(nameHeader);
                 innerTable.appendChild(columnsRow);
 
-                // Data rows
                 grouped[funder].forEach(function (client) {
                     var row = document.createElement('tr');
                     var idCell = document.createElement('td');
@@ -1333,8 +1338,152 @@
                 outerRow.appendChild(outerCell);
                 tableBody.appendChild(outerRow);
             }
+
+            createPaginationControlsFunder(funderNames.length, data);
             hideLoader();
         }
+
+        function createPaginationControlsFunder(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+            paginationContainer.innerHTML = '';
+
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadDataFromServerFunder(data);
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = ' Page ' + currentPage + ' of ' + totalPages + ' ';
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadDataFromServerFunder(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportFunderTableToExcel(); // or your export logic
+                loadDataFromServerFunder(data);
+            };
+            paginationContainer.appendChild(exportButton);
+        }
+
+        function exportFunderTableToExcel() {
+            var workbook = new ExcelJS.Workbook();
+            var now = new Date();
+            var formattedDateTime = now.toLocaleDateString().replace(/\//g, '-') + " " +
+                                    now.toLocaleTimeString().replace(/:/g, '-').replace(/ /g, '');
+            var worksheet = workbook.addWorksheet("Funder Export");
+
+            var currentRow = 1;
+
+            // Group fullData by funder
+    var grouped = {};
+            fullData.forEach(function(row) {
+    if (!grouped[row.Funder]) {
+        grouped[row.Funder] = [];   
+    }
+    grouped[row.Funder].push({
+        ClientId: row.ClientId,
+        ClientName: row.ClientName
+    });
+    });
+
+
+        // For each funder, create merged header and client rows
+        for (var funder in grouped) {
+            var funderClients = grouped[funder];
+
+            // Merged Funder Title Row
+            worksheet.mergeCells(`A${currentRow}:B${currentRow}`);
+        var funderCell = worksheet.getCell(`A${currentRow}`);
+        funderCell.value = funder;
+        funderCell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
+        funderCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: '4CAF50' }
+        };
+        funderCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        funderCell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        };
+
+        currentRow++;
+
+        // Column headers
+        worksheet.getCell("A" + currentRow).value = "Client ID";
+        worksheet.getCell("B" + currentRow).value = "Client Name";
+
+        ["A", "B"].forEach(function (col) {
+            var cell = worksheet.getCell(col + currentRow);
+            cell.font = { bold: true };
+            cell.alignment = { horizontal: 'center' };
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+
+
+        currentRow++;
+
+        // Client rows
+        funderClients.forEach(client => {
+            worksheet.getCell(`A${currentRow}`).value = client.ClientId;
+        worksheet.getCell(`B${currentRow}`).value = client.ClientName;
+
+        ["A", "B"].forEach(col => {
+            var cell = worksheet.getCell(`${col}${currentRow}`);
+        cell.alignment = { horizontal: 'center' };
+        cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        };
+        });
+
+        currentRow++;
+        });
+
+        // Blank row after each funder block
+        currentRow++;
+        }
+
+        worksheet.columns = [
+            { width: 20 },
+            { width: 30 }
+        ];
+
+        workbook.xlsx.writeBuffer().then(buffer => {
+            saveAs(new Blob([buffer]), "Funder_Grouped_" + formattedDateTime + ".xlsx");
+        });
+        }
+
+
+
         var tableSortState = {};
         function handleSort(tableId, columnIndex, headerId) {
             var key = tableId + "_" + columnIndex;
