@@ -156,6 +156,7 @@
     <Compile Include="Controllers\ProgressController.cs" />
     <Compile Include="Controllers\ProgressReportController.cs" />
     <Compile Include="Controllers\ProtocolSummaryController.cs" />
+	<Compile Include="Controllers\ReportController.cs" />
     <Compile Include="DbModel\AcdSheetMtng.cs">
       <DependentUpon>ModelDb.tt</DependentUpon>
     </Compile>
