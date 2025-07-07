@@ -2381,47 +2381,44 @@
                     var checkbox = checkboxes[i];
                     var column = checkbox.getAttribute("data-column");
 
-                    var label = checkbox.closest("label");
+                    //var label = checkbox.closest("label");
 
-                    var text = label ? label.textContent.trim() : ""; 
+                    //var text = label ? label.textContent.trim() : ""; 
+                    var value = checkbox.value || "";
 
 
-                    text = text.replace(/^\s+|\s+$/g, ""); 
+                    //text = text.replace(/^\s+|\s+$/g, ""); 
 
                     if (!selectedValues[column]) {
                         selectedValues[column] = [];
                     }
 
-                    selectedValues[column].push(text);
+                    selectedValues[column].push(value);
                 }
+                console.log("In getSelectedValuesAndSend" + JSON.stringify(selectedValues));
 
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "ClientReports.aspx/CreateDataTableFromSelectedValues", true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        var trimmedResponse = xhr.responseText.trim();
-
-                        if (trimmedResponse) {
-                            try {
-                                var jsonResponse = JSON.parse(trimmedResponse);
-                                var data = JSON.parse(jsonResponse.d);
-                                currentPage = 1;
-                                loadDataFromServer(data);
-                                hideLoader();
-                            } catch (e) {
-                                hideLoader();
-                                console.error("Error parsing JSON:", e);
-                            }
-                        } else {
-                            hideLoader();
-                            console.error("Empty response received.");
+                $.ajax({
+                    type: "POST",
+                    url: "../Report/GetFilteredReport",
+                    data: JSON.stringify(selectedValues),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        //alert(JSON.stringify(response));
+                        hideLoader();
+                        //var data = JSON.parse(response);
+                        loadDataFromServer(response);
+                    },
+                    error: function (xhr, status, error) {
+                        hideLoader();
+                        try {
+                            var err = JSON.parse(xhr.responseText);
+                            alert("Server error: " + (err.error || "Unknown") + "\n" + (err.stack || ""));
+                        } catch (e) {
+                            alert("Unexpected error: " + xhr.responseText);
                         }
                     }
-                };
-
-                xhr.send(JSON.stringify({ selectedValues: selectedValues }));
+                });
         }
 
         function getSelectedValuesAndSendVendor() {
@@ -2499,7 +2496,7 @@
 <body>
     <form id="FormClientReport" runat="server">
         <div>
-            <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+            <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true"></asp:ScriptManager>
             <asp:HiddenField ID="hdnType" runat="server" />
         </div>
         <div class="mainContainer">
@@ -3051,7 +3048,7 @@
                                 <div id="dropdown_container" runat="server">
                                     </div>
                                 <div id="buttonContainer" style="text-align: left; width:270px; height:25px;">
-                                    <asp:Button ID="btnShowReport" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSend();" />
+                                    <asp:Button ID="btnShowReport" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSend();return false;" />
                                     <asp:Button ID="btnResetAllClient" CssClass="button-style" runat="server" Visible="false" Text="Reset" OnClientClick="return handleClientClick();" OnClick="btnallClient_Click" />
                                     <asp:Button ID="btnShowReportVendor" CssClass="button-style" runat="server" Visible="false" Text="Show Report" OnClientClick="getSelectedValuesAndSendVendor();" />
                                     <asp:Button ID="btnResetVendor" CssClass="button-style" runat="server" Visible="false" Text="Reset"  OnClientClick="return handleClientClick();" OnClick="btnVendor_Click" />

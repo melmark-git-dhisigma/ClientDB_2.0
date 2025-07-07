@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using System.Web.Services;
 using System.Web.Script.Serialization;
 using System.Text.RegularExpressions;
+using System.Web.Script.Services;
 
 
 namespace ClientDB.Reports
@@ -501,11 +502,11 @@ namespace ClientDB.Reports
                         SqlCommand cmd = null;
                         DataTable dt = new DataTable();
                         DataTable dtFinal = new DataTable();
+                        DataTable dtFinalCopy = new DataTable();
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                         con.Open();
                         cmd = new SqlCommand("ClientStatisticalGraph", con);
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.CommandTimeout = 300;
 
                         cmd.Parameters.AddWithValue("@ParamStudName", ContainsLoop("Student Name", selectedItemList));
                         cmd.Parameters.AddWithValue("@ParamGender", ContainsLoop("Gender", selectedItemList));
@@ -524,12 +525,19 @@ namespace ClientDB.Reports
                         da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
 
-                        dtFinal = GetSelectedColumns(dt);
-                        DataTable dtActive = new DataTable();
-                        dtActive.Columns.Add("Status");
-                        dtActive.Rows.Add("Active");
-                        dtFinal = filterDataTable(dtFinal, dtActive);
-                        PopulateDropdown(dtFinal);
+                        dtFinalCopy = GetSelectedColumns(dt);
+                        //DataTable dtActive = new DataTable();
+                        //dtActive.Columns.Add("Status");
+                        //dtActive.Rows.Add("Active");
+                        //dtFinal = filterDataTable(dtFinal, dtActive);
+                        string query = "SELECT ClassName AS 'Location',ClassId AS 'Location Id' FROM class WHERE ActiveInd='A' ORDER BY ClassName";
+                        SqlCommand cmnd = new SqlCommand(query, con);
+                        SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                        DataTable ClassTbl = new DataTable();
+                        sda = new SqlDataAdapter(cmnd);
+                        sda.Fill(ClassTbl);
+                        PopulateDropdown(dtFinalCopy,ClassTbl);
+                        dtFinal = RemoveIdColumns(dtFinalCopy);
                         var jsonData = ConvertDataTableToJson(dtFinal);
                         //noOfClients.Text = "Total No. of Clients : " + dtFinal.Rows.Count.ToString();
                         ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServer(" + jsonData + ");", true);
@@ -614,7 +622,6 @@ namespace ClientDB.Reports
                 con.Open();
                 cmd = new SqlCommand("ClientStatisticalGraph", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandTimeout = 300;
                 string para = "true";
                 cmd.Parameters.AddWithValue("@ParamStudName", para);
                 cmd.Parameters.AddWithValue("@ParamGender", para);
@@ -781,7 +788,7 @@ namespace ClientDB.Reports
         {
             Page.ClientScript.RegisterStartupScript(this.GetType(), "LoadDataScript", script, true);
         }
-        private void PopulateDropdown(DataTable dtFinal)
+        private void PopulateDropdown(DataTable dtFinal, DataTable ClassTbl)
         {
             //Populate dropdown menu for filtration
             DataTable dt = dtFinal.Copy();
@@ -800,7 +807,15 @@ namespace ClientDB.Reports
                     List<string> sortedValues = new List<string>();
                     if (column.ColumnName == "Location")
                     {
-                        sortedValues = ExtractLocation(dt, column.ColumnName);
+                        sortedValues = ExtractLocationWithIdAsString(ClassTbl, "Location", "Location Id");
+                    }
+                    else if (column.ColumnName == "Student Name")
+                    {
+                        sortedValues = ExtractWithIdAsString(dt, "Student Name", "Student Id");
+                    }
+                    else if (column.ColumnName == "Race")
+                    {
+                        sortedValues = ExtractWithIdAsString(dt, "Race", "Race Id");
                     }
                     else
                     {
@@ -814,18 +829,26 @@ namespace ClientDB.Reports
                         }
                         sortedValues = uniqueValues.ToList();
                     }
-                    sortedValues.Sort(); 
 
-                    foreach (string value in sortedValues)
+                    if (column.ColumnName != "Student Name" && column.ColumnName != "Location")
                     {
-                        htmlBuilder.Append("<label><input type='checkbox' value='" + value + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + value + "</label><br>");
+                        sortedValues.Sort();
                     }
 
-                    
                     if (column.ColumnName == "Status")
                     {
-                        //htmlBuilder.Append("<label><input type='checkbox' value='" + "Inactive" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Inactive" + "</label><br>");
+                        htmlBuilder.Append("<label><input type='checkbox' checked value='" + "Active" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Active" + "</label><br>");
                         htmlBuilder.Append("<label><input type='checkbox' value='" + "Discharged" + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + "Discharged" + "</label><br>");
+                    }
+                    else
+                    {
+                        foreach (string value in sortedValues)
+                        {
+                            string[] parts = value.Split(new[] { '~' }, 2);
+                            string firstPortion = parts.Length > 0 ? parts[0].Trim() : "";
+                            string secondPortion = parts.Length > 1 ? parts[1].Trim() : "";
+                            htmlBuilder.Append("<label><input type='checkbox' value='" + firstPortion + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + secondPortion + "</label><br>");
+                        }
                     }
 
                     htmlBuilder.Append("</div>");
@@ -843,7 +866,7 @@ namespace ClientDB.Reports
             //To return only required columns for the table.
             DataTable newTable = new DataTable();
 
-            string[] selectedColumns = { "StudName", "Gender", "StudLanguage", "RaceName", "City", "StudState", "ClassName", "Program", "Placement_Type", "DepartmentName", "StudStatus"};
+            string[] selectedColumns = { "StudName", "StudentPersonalId", "Gender", "StudLanguage", "RaceName", "RaceID", "City", "StudState", "ClassName", "LocationID", "Program", "Placement_Type", "DepartmentName", "StudStatus" };
 
             foreach (var columnName in selectedColumns)
             {
@@ -869,6 +892,11 @@ namespace ClientDB.Reports
             {
                 newTable.Columns["StudName"].ColumnName = "Student Name";
             }
+
+            if (newTable.Columns.Contains("StudentPersonalId"))
+            {
+                newTable.Columns["StudentPersonalId"].ColumnName = "Student Id";
+            }
             
             if (newTable.Columns.Contains("StudLanguage"))
             {
@@ -878,6 +906,10 @@ namespace ClientDB.Reports
             if (newTable.Columns.Contains("RaceName"))
             {
                 newTable.Columns["RaceName"].ColumnName = "Race";
+            }
+            if (newTable.Columns.Contains("RaceID"))
+            {
+                newTable.Columns["RaceID"].ColumnName = "Race Id";
             }
             
             if (newTable.Columns.Contains("StudState"))
@@ -889,7 +921,94 @@ namespace ClientDB.Reports
             {
                 newTable.Columns["ClassName"].ColumnName = "Location";
             }
+            if (newTable.Columns.Contains("LocationID"))
+            {
+                newTable.Columns["LocationID"].ColumnName = "Location Id";
+            }
 
+            if (newTable.Columns.Contains("Placement_Type"))
+            {
+                newTable.Columns["Placement_Type"].ColumnName = "Placement Type";
+            }
+
+            if (newTable.Columns.Contains("DepartmentName"))
+            {
+                newTable.Columns["DepartmentName"].ColumnName = "Department";
+            }
+
+            if (newTable.Columns.Contains("StudStatus"))
+            {
+                newTable.Columns["StudStatus"].ColumnName = "Status";
+            }
+            foreach (DataRow dr in newTable.Rows)
+            {
+                if (dr["Status"] != DBNull.Value)
+                {
+                    string status = dr["Status"].ToString();
+
+                    if (status == "A")
+                        dr["Status"] = "Active";
+                    //else if (status == "I")
+                    //    dr["Status"] = "Inactive";
+                    else if (status == "D")
+                        dr["Status"] = "Discharged";
+                }
+            }
+
+            return newTable;
+        }
+        public DataTable RemoveIdColumns(DataTable originalTable)
+        {
+            //To return only required columns for the table.
+            DataTable newTable = new DataTable();
+
+            string[] selectedColumns = { "Student Name", "Gender", "Primary Language", "Race", "City", "State", "Location", "Program", "Placement Type", "Department", "Status" };
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("StudName"))
+            {
+                newTable.Columns["StudName"].ColumnName = "Student Name";
+            }
+
+            if (newTable.Columns.Contains("StudLanguage"))
+            {
+                newTable.Columns["StudLanguage"].ColumnName = "Primary Language";
+            }
+
+            if (newTable.Columns.Contains("RaceName"))
+            {
+                newTable.Columns["RaceName"].ColumnName = "Race";
+            }
+
+            if (newTable.Columns.Contains("StudState"))
+            {
+                newTable.Columns["StudState"].ColumnName = "State";
+            }
+
+            if (newTable.Columns.Contains("ClassName"))
+            {
+                newTable.Columns["ClassName"].ColumnName = "Location";
+            }
+            
             if (newTable.Columns.Contains("Placement_Type"))
             {
                 newTable.Columns["Placement_Type"].ColumnName = "Placement Type";
@@ -964,6 +1083,105 @@ namespace ClientDB.Reports
                 }
             }
             return new List<string>(rooms); // Convert HashSet to List and return
+        }
+        static List<string> ExtractLocationWithIdAsString(DataTable dt,string locationColumnName,string idColumnName)
+        {
+            var results = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                if (row.IsNull(locationColumnName) || row.IsNull(idColumnName))
+                    continue;
+
+                string rawLocation = row[locationColumnName].ToString().Trim();
+                string rawId = row[idColumnName].ToString().Trim();
+
+                if (rawLocation.Length == 0 || rawId.Length == 0)
+                    continue;
+
+                // Use simple concatenation instead of interpolation:
+                string combined = rawId + "~" + rawLocation;
+                // Or, if you prefer string.Format:
+                // string combined = string.Format("{0}~{1}", rawId, rawLocation);
+
+                results.Add(combined);
+            }
+
+            return results.ToList();
+        }
+        static List<string> ExtractWithIdAsString(DataTable dt, string valueColumnName, string idColumnName)
+        {
+            // Use a HashSet to avoid exact duplicate entries (ID:Value)
+            var idValueSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                // Skip if either column is NULL or empty
+                if (row[valueColumnName] == DBNull.Value || row[idColumnName] == DBNull.Value)
+                    continue;
+
+                string rawValue = row[valueColumnName].ToString().Trim();
+                string rawId = row[idColumnName].ToString().Trim();
+
+                if (string.IsNullOrEmpty(rawValue) || string.IsNullOrEmpty(rawId))
+                    continue;
+
+                // Combine "ID:Value"
+                string combined = string.Format("{0}~{1}", rawId, rawValue);
+                idValueSet.Add(combined);
+            }
+
+            return idValueSet.ToList();
+        }
+        static List<string> ExtractLocationFilter(DataTable dt, string columnName)
+        {
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var results = new List<string>();
+            var regex = new Regex(@":\s*([^:,]+(?:,\s*[^:,]+)*)");
+
+            foreach (DataRow row in dt.Rows)
+            {
+                if (row["Location Id"] == DBNull.Value ||
+                    row["Location"] == DBNull.Value)
+                {
+                    continue;
+                }
+
+                string idValue = row["Location Id"].ToString().Trim();
+                string locationText = row["Location"].ToString();
+                if (string.IsNullOrWhiteSpace(locationText))
+                    continue;
+
+                var matches = regex.Matches(locationText);
+                foreach (Match match in matches)
+                {
+                    string[] roomNames = match.Groups[1].Value.Split(',');
+                    foreach (string rawRoom in roomNames)
+                    {
+                        string room = rawRoom.Trim();
+                        if (room.Length == 0)
+                            continue;
+
+                        string uniqueKey = idValue + "||" + room;
+                        if (!seen.Contains(uniqueKey))
+                        {
+                            seen.Add(uniqueKey);
+                            // Replace interpolated string with concatenation:
+                            results.Add(idValue + ":" + room);
+                        }
+                    }
+                }
+            }
+
+            // Sort by the room portion (after the colon):
+            results.Sort((a, b) =>
+            {
+                var roomA = a.Substring(a.IndexOf(':') + 1);
+                var roomB = b.Substring(b.IndexOf(':') + 1);
+                return string.Compare(roomA, roomB, StringComparison.OrdinalIgnoreCase);
+            });
+
+            return results;
         }
         protected void btnOldClienContact_Click(object sender, EventArgs e)
         {
