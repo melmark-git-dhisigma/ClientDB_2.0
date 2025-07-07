@@ -3273,14 +3273,38 @@ namespace ClientDB.Reports
                 RVClientReport.Visible = false;
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "All Clients by Discharge date";
-                RVClientReport.Visible = true;
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["DischargeDateReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[1];
-                parm[0] = new ReportParameter("Status", "D");//rbtnDischargeStatus.SelectedValue.ToString());
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (checkHighcharts.Checked)
+                {
+                    string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " + 
+                    " ,PL.EndDate AS PLDischargeDate,CONVERT(VARCHAR(20),PL.EndDate,101) EndDate FROM Placement PL INNER JOIN StudentPersonal PA ON PL.StudentPersonalId=PA.StudentPersonalId INNER JOIN Class CLS ON PL.Location = CLS.ClassId WHERE  " + 
+                    " PA.PlacementStatus = 'D' and CLS.ClassCd = 'DSCH' " + 
+                    " AND PA.ClientId<>'' AND PL.Status=1 AND CONVERT(INT,PA.ClientId)>0  ORDER BY PL.EndDate ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(dischargeQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsDischargeDate(dt);
+                    if (dt.Rows.Count > 0)
+                        dt = dt.AsEnumerable().OrderBy(row => DateTime.ParseExact(row.Field<string>("Discharge Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["DischargeDateReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[1];
+                    parm[0] = new ReportParameter("Status", "D");//rbtnDischargeStatus.SelectedValue.ToString());
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
                 divbirthdate.Visible = false;
             }
             catch (Exception ex)
@@ -3288,7 +3312,59 @@ namespace ClientDB.Reports
                 throw ex;
             }
         }
+        protected DataTable GetSelectedColumnsDischargeDate(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "ClientId", "Lastname", "Firstname", "ADate", "EndDate" };
 
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client Id";
+            }
+
+            if (newTable.Columns.Contains("Lastname"))
+            {
+                newTable.Columns["Lastname"].ColumnName = "Last Name";
+            }
+
+            if (newTable.Columns.Contains("Firstname"))
+            {
+                newTable.Columns["Firstname"].ColumnName = "First Name";
+            }
+
+            if (newTable.Columns.Contains("ADate"))
+            {
+                newTable.Columns["ADate"].ColumnName = "Admission Date";
+            }
+
+            if (newTable.Columns.Contains("EndDate"))
+            {
+                newTable.Columns["EndDate"].ColumnName = "Discharge Date";
+            }
+
+            return newTable;
+ 
+        }
         protected void btnStatistical_Click(object sender, EventArgs e)
         {
             try
@@ -3558,14 +3634,39 @@ namespace ClientDB.Reports
         {
             try
             {
-                RVClientReport.Visible = true;
-                RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["DischargeDateReport"];
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[1];
-                parm[0] = new ReportParameter("Status", "D");//rbtnDischargeStatus.SelectedValue.ToString());
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (checkHighcharts.Checked)
+                {
+                    RVClientReport.Visible = false;
+                    string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " +
+                    " ,PL.EndDate AS PLDischargeDate,CONVERT(VARCHAR(20),PL.EndDate,101) EndDate FROM Placement PL INNER JOIN StudentPersonal PA ON PL.StudentPersonalId=PA.StudentPersonalId INNER JOIN Class CLS ON PL.Location = CLS.ClassId WHERE  " +
+                    " PA.PlacementStatus = 'D' and CLS.ClassCd = 'DSCH' " +
+                    " AND PA.ClientId<>'' AND PL.Status=1 AND CONVERT(INT,PA.ClientId)>0  ORDER BY PL.EndDate ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(dischargeQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsDischargeDate(dt);
+                    if (dt.Rows.Count > 0)
+                        dt = dt.AsEnumerable().OrderBy(row => DateTime.ParseExact(row.Field<string>("Discharge Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+
+                }
+                else
+                {
+                    RVClientReport.Visible = true;
+                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["DischargeDateReport"];
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[1];
+                    parm[0] = new ReportParameter("Status", "D");//rbtnDischargeStatus.SelectedValue.ToString());
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
             }
             catch (Exception ex)
             {
