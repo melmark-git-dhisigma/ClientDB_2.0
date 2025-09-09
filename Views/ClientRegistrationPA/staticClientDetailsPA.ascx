@@ -75,7 +75,16 @@
 </style>
 
 <script type="text/javascript">
-function DischargeClient() {
+    function DischargeClientCheck() {
+        var count = parseInt('<%= Model.hdnPlacementCount %>', 10) || 0;
+        if (count <= 0) {
+            alert("Cannot discharge: no active placements.");
+            return false;
+        } else {
+            return true;
+        }
+    }
+    function DischargeClient() {
     	document.getElementById('popup').style.display = 'none';
         $.ajax( 
             {
@@ -281,6 +290,8 @@ function DischargeClient() {
     <input id="btnDischarge" type="submit" value="Discharge Client" onClick="document.getElementById('popup').style.display = 'block';"style="display:<%=DischBtnStatus %>;float:right;border:none;width:120px !important; height:43px;font-weight:bold;font-size:small;background-repeat:no-repeat;background-position:top left;margin-top:5px; margin-right: 5px; margin-bottom: 5px;background:red !important;"/>
     <input id="btnActivate" type="submit" value="Activate Client" onClick="document.getElementById('popup2').style.display = 'block';" style="display:<%=ActivateBtnStatus %>;float:right;border:none;width:120px !important; height:43px;font-weight:bold;font-size:small;background-repeat:no-repeat;background-position:top left;margin-top:5px; margin-right: 5px; margin-bottom: 5px;"/>
     </div>
+    <input type="hidden" id="hdnPlacementCount" runat="server" value="<%= Model.hdnPlacementCount %>" 
+/>
 </div>
 <div id="popup"  class="white_content">
     <table>

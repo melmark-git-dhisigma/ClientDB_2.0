@@ -23,6 +23,7 @@ namespace ClientDB.Models
         public virtual IEnumerable<SelectListItem> HomeCountryList { get; set; }
         public virtual int HomeCountry { get; set; }
         private  List<SelectListItem> _PrefixList = new List<SelectListItem>();
+        public int hdnPlacementCount { get; set; }
         public virtual List<SelectListItem> PrefixList
         {
             get

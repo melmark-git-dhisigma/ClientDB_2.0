@@ -363,6 +363,13 @@ namespace ClientDB.AppFunctions
             return state;
         }
 
+        public int getPlacementCount(int StudentId)
+        {
+            dbobj = new BiWeeklyRCPNewEntities();
+            int placementCount = dbobj.Placements.Count(p => p.Status == 1 && p.StudentPersonalId == StudentId);
+            return placementCount;
+        }
+
         /// <summary>
         /// Function To Get Dates to bind medical details calender
         /// </summary>
