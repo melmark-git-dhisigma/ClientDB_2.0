@@ -290,7 +290,7 @@
                 alert("Please select Enddate");
                 return false;
             }            
-                return true;
+            return handleClientClick();
         }
 
         function resetVal() {
@@ -1971,6 +1971,111 @@
             paginationContainer.appendChild(exportButton);
         }
 
+
+        //Changes Reports
+        function LoadDataFromServerChanges(data) {
+            fullData = data;
+            rowsPerPage = 15;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            document.getElementById("buttonContainer").style.display = "none";
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                document.getElementById("paginationControls").innerHTML = '';
+                hideLoader();
+                return;
+            } else {
+                tableHeader.style.removeProperty("display");
+            }
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear and build headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+            columns.forEach(function (col, index) {
+                var th = document.createElement('th');
+                th.textContent = col + " ⬍"; // Add default sort icon
+                var headerId = "Changes_header_" + index;
+                th.id = headerId;
+
+                // Add click event to enable sorting
+                th.style.cursor = "pointer";
+                th.onclick = function () {
+                    SortColumns("table", index, headerId, fullData, LoadDataFromServerChanges);
+                };
+
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table rows
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Create pagination controls
+            createPaginationControlsChanges(data.length, data);
+
+            hideLoader();
+        }
+
+        function createPaginationControlsChanges(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    LoadDataFromServerChanges(data);
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    LoadDataFromServerChanges(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelWithImages();
+                LoadDataFromServerChanges(data);
+            };
+            paginationContainer.appendChild(exportButton);
+        }
     </script>
     <script>
         //Export Feature
