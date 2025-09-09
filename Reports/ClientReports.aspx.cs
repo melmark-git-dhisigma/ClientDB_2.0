@@ -4090,31 +4090,356 @@ namespace ClientDB.Reports
                 RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
                 if (hdnMenu.Value == "btnFundChange")
                 {
-                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FundingChangesReport"];
+                    if (checkHighcharts.Checked)
+                    {
+                        RVClientReport.Visible = false;
+
+                        string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                                                " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                                                " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL " + 
+                                                " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                                                " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                                                " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                                                " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " + 
+		                                        " and PLC.Status=1 AND LKP.LookupType = 'Department'  and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+          		                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
+          		                                " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+          		                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+          		                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                                                " and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client'))) FUND WHERE ObjectType='Funder' " +
+                                                " AND CONVERT(DATE,EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') " + 
+                                                " ORDER BY EventLogId DESC ";
+
+                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand(fundingChngQry, con);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                        dt = GetSelectedColumnFundingChanges(dt);
+                        var jsonData = JsonConvert.SerializeObject(dt);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                    }
+                    else
+                        RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FundingChangesReport"];
                 }
                 else if (hdnMenu.Value == "btnPlcChange")
                 {
+                    if (checkHighcharts.Checked)
+                    {
+                        RVClientReport.Visible = false;
+
+                        string placementChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                                                  " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                                                  " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
+                                                  " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                  " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
+                                                  " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                  " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+                                                  " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                                                  " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client') " + 
+                                                  " and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                  " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+                                                  " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
+
+                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand(placementChngQry, con);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                        dt = GetSelectedColumnFundingChanges(dt);
+                        var jsonData = JsonConvert.SerializeObject(dt);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                    }
+                    else
                     RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementChangesReport"];
                 }
                 else if (hdnMenu.Value == "btnGuardianChanges")
                 {
+                    if (checkHighcharts.Checked)
+                    {
+                        RVClientReport.Visible = false;
+
+                        string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                                                     " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                                                     " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " + 
+                                                     " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " + 
+                                                     " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
+                                                     " WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
+                                                     " WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL " + 
+                                                     " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                                                     " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                                                     " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                                                     " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
+                                                     " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                     " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+                                                     " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
+                                                     " and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                     " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+                                                     " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
+
+                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand(guardianshipChngQry, con);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                        dt = GetSelectedColumnGuardianChanges(dt);
+                        var jsonData = JsonConvert.SerializeObject(dt);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                    }
+                    else
                     RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["GuardianshipChangesReport"];
                 }
                 else if (hdnMenu.Value == "btnContactChanges")
                 {
+                    if (checkHighcharts.Checked)
+                    {
+                        RVClientReport.Visible = false;
+
+                        string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " + 
+                                                " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                                                " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
+                                                " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                                                " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                                                " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                                                " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " + 
+                                                " and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
+                                                " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+                                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
+                                                " and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+                                                " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC";
+
+                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand(contactChngQry, con);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                        dt = GetSelectedColumnContactChanges(dt);
+                        var jsonData = JsonConvert.SerializeObject(dt);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                    }
+                    else
                     RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["ContactChangesReport"];
                 }
-                RVClientReport.ShowParameterPrompts = false;
-                ReportParameter[] parm = new ReportParameter[2];
-                parm[0] = new ReportParameter("StartDate", NewStartDate);
-                parm[1] = new ReportParameter("EndDate", NewEndDate);
-                this.RVClientReport.ServerReport.SetParameters(parm);
-                RVClientReport.ServerReport.Refresh();
+                if (!checkHighcharts.Checked)
+                {
+                    RVClientReport.ShowParameterPrompts = false;
+                    ReportParameter[] parm = new ReportParameter[2];
+                    parm[0] = new ReportParameter("StartDate", NewStartDate);
+                    parm[1] = new ReportParameter("EndDate", NewEndDate);
+                    this.RVClientReport.ServerReport.SetParameters(parm);
+                    RVClientReport.ServerReport.Refresh();
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        public DataTable GetSelectedColumnFundingChanges(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns;
+            if(hdnMenu.Value == "btnPlcChange")
+                selectedColumns = new string[] { "ClientId", "ClientName", "ObjectField", "PreviousValue", "NewValue", "EventDate"};
+            else
+                selectedColumns = new string[] { "ClientId", "ClientName", "ObjectField", "Status", "PreviousValue", "NewValue", "EventDate" };
+
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client ID";
+            }
+
+            if (newTable.Columns.Contains("ClientName"))
+            {
+                newTable.Columns["ClientName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("ObjectField"))
+            {
+                newTable.Columns["ObjectField"].ColumnName = "Change Made to";
+            }
+            if (hdnMenu.Value == "btnFundChange")
+            {
+                if (newTable.Columns.Contains("Status"))
+                {
+                    newTable.Columns["Status"].ColumnName = "Update/Add";
+                }
+            }
+
+            if (newTable.Columns.Contains("PreviousValue"))
+            {
+                newTable.Columns["PreviousValue"].ColumnName = "Old Value";
+            }
+
+            if (newTable.Columns.Contains("NewValue"))
+            {
+                newTable.Columns["NewValue"].ColumnName = "New Value";
+            }
+
+            if (newTable.Columns.Contains("EventDate"))
+            {
+                newTable.Columns["EventDate"].ColumnName = "Date of Change";
+            }
+
+            return newTable;
+        }
+
+        public DataTable GetSelectedColumnGuardianChanges(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = new string[] { "ClientId", "ClientName", "Selfguard", "Oldguard", "Newguard", "EventDate" };
+
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client ID";
+            }
+
+            if (newTable.Columns.Contains("ClientName"))
+            {
+                newTable.Columns["ClientName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("Selfguard"))
+            {
+                newTable.Columns["Selfguard"].ColumnName = "Self Guardian";
+            }
+
+            if (newTable.Columns.Contains("Oldguard"))
+            {
+                newTable.Columns["Oldguard"].ColumnName = "Old Guardian";
+            }
+            
+            if (newTable.Columns.Contains("Newguard"))
+            {
+                newTable.Columns["Newguard"].ColumnName = "New Guardian";
+            }
+
+            if (newTable.Columns.Contains("EventDate"))
+            {
+                newTable.Columns["EventDate"].ColumnName = "Date of Change";
+            }
+
+            return newTable;
+        }
+
+        public DataTable GetSelectedColumnContactChanges(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = new string[] { "ClientId", "ClientName", "ContactName", "ObjectField", "PreviousValue", "NewValue", "EventDate" };
+
+
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClientId"))
+            {
+                newTable.Columns["ClientId"].ColumnName = "Client ID";
+            }
+
+            if (newTable.Columns.Contains("ClientName"))
+            {
+                newTable.Columns["ClientName"].ColumnName = "Client Name";
+            }
+
+            if (newTable.Columns.Contains("ContactName"))
+            {
+                newTable.Columns["ContactName"].ColumnName = "Contact Name";
+            }
+
+            if (newTable.Columns.Contains("ObjectField"))
+            {
+                newTable.Columns["ObjectField"].ColumnName = "Change Made to";
+            }
+
+            if (newTable.Columns.Contains("PreviousValue"))
+            {
+                newTable.Columns["PreviousValue"].ColumnName = "Old Value";
+            }
+
+            if (newTable.Columns.Contains("NewValue"))
+            {
+                newTable.Columns["NewValue"].ColumnName = "New Value";
+            }
+
+            if (newTable.Columns.Contains("EventDate"))
+            {
+                newTable.Columns["EventDate"].ColumnName = "Date of Change";
+            }
+
+            return newTable;
         }
 
         protected void btnShowStatistical2_Click(object sender, EventArgs e)
