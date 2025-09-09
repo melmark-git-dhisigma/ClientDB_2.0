@@ -157,9 +157,13 @@
                 writeToTickerBox(Arr_Ticker);
             }
         }).attr('readonly', 'true');
-
+		$("#ddlLoc option").each(function () {
+            if ($(this).text().trim().toLowerCase() === "Discharged".toLowerCase()) {
+                $(this).prop("disabled", true);
+            }
+        });
         $("#ddlPlcreason option").each(function () {
-            if ($(this).text().trim() === "Discharge") {
+            if ($(this).text().trim().toLowerCase() === "Discharge".toLowerCase()) {
                 $(this).prop("disabled", true);
             }
         });
