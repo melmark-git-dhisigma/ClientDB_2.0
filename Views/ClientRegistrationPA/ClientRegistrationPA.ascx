@@ -1392,7 +1392,7 @@
             <tr>
                 <td colspan="1">
                     <label class="lblSpan">Discharge Date</label><span class="nospan-align">*</span><br />
-                    <%=Html.TextBoxFor(m => m.DischargeDate, Model.DischargeDate, new {  @class="datepicker", ID = "DischargeDate"  })%></td>
+                    <%=Html.TextBoxFor(m => m.DischargeDate, Model.DischargeDate, new {  @class="datepicker", ID = "DischargeDate", @disabled="disabled" })%></td>
                 <td colspan="1">
                     <label class="lblSpan">Location After Discharge</label><span class="nospan-align">*</span><br />
                     <%=Html.TextBoxFor(m => m.LocationAfterDischarge, Model.LocationAfterDischarge, new {  @class="sd",maxlength=50 })%></td>
