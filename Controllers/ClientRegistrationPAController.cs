@@ -493,7 +493,7 @@ namespace ClientDB.Controllers
             x = new List<SelectListItem>();
             x.Add(new SelectListItem { Text = ""+country, Value = "1" });
             model.CountryOfBirthList = x;
-
+            model.hdnPlacementCount = objFuns.getPlacementCount(Convert.ToInt32(sess.StudentId));
             //model.CountryList = objFuns.getCountryList();
             // model.CountryOfBirthList = objFuns.getCountryList();
 
@@ -774,7 +774,7 @@ namespace ClientDB.Controllers
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
             //var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
             var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
-            var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && (x.Location != DischargeClass.ClassId && x.PlacementReason != placementRsn.LookupId)).OrderByDescending(x => x.StartDate).FirstOrDefault();
+            var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).OrderByDescending(x => x.StartDate).FirstOrDefault();
                 try
                 {
                     if (placements != null)
