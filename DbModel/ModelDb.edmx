@@ -7132,8 +7132,7 @@
           <Parameter Name="ActiveInd" Type="varchar" Mode="In" />
         </Function>
         <Function Name="Update_StudentStatus_Automatically" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="StudId" Type="int" Mode="In" />
-          <Parameter Name="UsrId" Type="int" Mode="In" />
+          <Parameter Name="StudentId" Type="int" Mode="In" />
         </Function>
         <Function Name="ValidateAsmnt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="SchoolId" Type="int" Mode="In" />
@@ -9013,8 +9012,7 @@
             <Parameter Name="ActiveInd" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="Update_StudentStatus_Automatically">
-            <Parameter Name="StudId" Mode="In" Type="Int32" />
-            <Parameter Name="UsrId" Mode="In" Type="Int32" />
+            <Parameter Name="StudentId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="ValidateAsmnt" ReturnType="Collection(String)">
             <Parameter Name="SchoolId" Mode="In" Type="Int32" />

@@ -776,7 +776,7 @@ namespace ClientDB.Controllers
             //StdtClass stdc = dbobj.StdtClasses.Where(x => x.StdtId == ClientID && x.ClassId == currLocation && x.ActiveInd == "A").SingleOrDefault();
             Class DischargeClass = dbobj.Classes.Where(x => x.ClassCd == "DSCH" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
-            //var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
+            var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
             var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             var mostRecentPlacement = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID).OrderByDescending(x => x.StartDate).FirstOrDefault();
                 try
@@ -842,8 +842,12 @@ namespace ClientDB.Controllers
                     //{
                     //    studentPersonals.PlacementStatus = "D";
                     //}
+                    if (studentPersonals != null)
+                    {
+                        studentPersonals.ModifiedBy = sess.LoginId;
+                    }
                     dbobj.SaveChanges();
-                    var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId,sess.LoginId);
+                    var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
                     var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
                     if (StudStatus != null)
                     {
@@ -851,7 +855,7 @@ namespace ClientDB.Controllers
                     }
                     return "Success";
                 }
-                catch
+                catch (Exception ex)
                 {
                     return "Failed";
                 }
@@ -868,7 +872,7 @@ namespace ClientDB.Controllers
             int DischargeClassId = Convert.ToInt32(DischargeClass.ClassId);
             //StdtClass stdc = dbobj.StdtClasses.Where(x => x.StdtId == ClientID && x.ClassId == DischargeClassId && x.ActiveInd == "A").SingleOrDefault();
             var placements = dbobj.Placements.Where(x => x.StudentPersonalId == ClientID && x.Status == 1).ToList();
-            //var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
+            var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == ClientID && x.SchoolId == SchoolId).SingleOrDefault();
             var placementRsn = dbobj.LookUps.Where(x => x.LookupCode == "Discharge" && x.LookupType == "Placement Reason" && x.SchoolId == SchoolId && x.ActiveInd == "A").SingleOrDefault();
             try
             {
@@ -901,8 +905,12 @@ namespace ClientDB.Controllers
                     //else
                     //    studentPersonals.PlacementStatus = "I";
                 //}
+                if (studentPersonals != null)
+                {
+                    studentPersonals.ModifiedBy = sess.LoginId;
+                }
                 dbobj.SaveChanges();
-                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId, sess.LoginId);
+                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
                 var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
                 if (StudStatus != null)
                 {
