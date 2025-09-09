@@ -601,7 +601,7 @@
         function toggleColumnVisibility(columnName, checkbox) {
             var table = document.getElementById("table");
             var columnIndex = Array.from(table.rows[0].cells).findIndex(function (cell) {
-                return cell.textContent === columnName;
+                return cell.textContent.replace(" ⬍", "") === columnName;
             });
 
             Array.from(table.rows).forEach(function (row) {
@@ -1857,6 +1857,120 @@
             reloadFunction(fullDataArray);  
         }
 
+        //Statistical Report
+        function LoadDataFromServerStatistical(data) {
+            fullData = data;
+            rowsPerPage = 15;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            document.getElementById("buttonContainer").style.display = "none";
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                document.getElementById("noOfClients").textContent = "Total No. of Clients : 0";
+                document.getElementById("paginationControls").innerHTML = '';
+                hideLoader();
+                return;
+            } else {
+                tableHeader.style.removeProperty("display");
+            }
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear and build headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+            columns.forEach(function (col, index) {
+                var th = document.createElement('th');
+                th.textContent = col + " ⬍"; // Add default sort icon
+                var headerId = "Statistical_header_" + index;
+                th.id = headerId;
+
+                // Add click event to enable sorting
+                th.style.cursor = "pointer";
+                th.onclick = function () {
+                    SortColumns("table", index, headerId, fullData, LoadDataFromServerStatistical);
+                };
+
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table rows
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            createColumnVisibilityCheckboxes(columns);
+
+            // Create pagination controls
+            createPaginationControlsStatistical(data.length, data);
+
+            var totalStudents = data.reduce(function (sum, row) {
+                var val = parseInt(row["Total Students"]);
+                return sum + (isNaN(val) ? 0 : val);
+            }, 0);
+            document.getElementById("noOfClients").textContent = "Total number of clients : " + totalStudents;
+
+            hideLoader();
+        }
+
+        function createPaginationControlsStatistical(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    LoadDataFromServerStatistical(data);
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    LoadDataFromServerStatistical(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelWithImages();
+                LoadDataFromServerStatistical(data);
+            };
+            paginationContainer.appendChild(exportButton);
+        }
+
     </script>
     <script>
         //Export Feature
@@ -1877,7 +1991,32 @@
             worksheet.columns = columns.map(function (col) {
                 return { header: col, key: col, width: 25 };
             });
-            var headerRow = worksheet.getRow(1);
+            if (headingDiv === "Statistical Report" || headingDiv === "All Clients Info") {
+                var totalStudents;
+                if (headingDiv === "Statistical Report" ) {
+                    totalStudents = fullData.reduce(function (sum, row) {
+                        var val = parseInt(row["Total Students"]);
+                        return sum + (isNaN(val) ? 0 : val);
+                    }, 0);
+                } else if(headingDiv === "All Clients Info") {
+                    totalStudents = fullData.length;
+                }
+                worksheet.insertRow(1, ["Total number of clients : ", totalStudents]);
+
+                // Optional: format the cells
+                var totalRow = worksheet.getRow(1);
+                totalRow.eachCell(function (cell, colNumber) {
+                    cell.font = { bold: true };
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                });
+            }
+            var headerRow = worksheet.getRow(headingDiv === "Statistical Report" || headingDiv === "All Clients Info" ? 2 : 1);
             headerRow.eachCell(function (cell) {
                 cell.font = { 
                     bold: true,
@@ -1899,10 +2038,11 @@
                 cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
             });
             var imageCounter = 1;
+            var rowOffset = (headingDiv === "Statistical Report" || headingDiv === "All Clients Info" ) ? 2 : 0;
 
             for (var i = 0; i < fullData.length; i++) {
                 var row = fullData[i];
-                var excelRow = worksheet.addRow([]); 
+                var excelRow = worksheet.getRow(i + rowOffset + 1);
 
                 for (var j = 0; j < columns.length; j++) {
                     var col = columns[j];
@@ -1924,11 +2064,10 @@
                         });
 
                         worksheet.addImage(imageId, {
-                            tl: { col: j, row: i + 1 },
+                            tl: { col: j, row: i + rowOffset + 1 },
                             ext: { width: 100, height: 80 }
                         });
-                        cell.value = "";
-                        worksheet.getRow(i + 2).height = 80;
+                        worksheet.getRow(i + rowOffset + 1).height = 80;
                     } else {
                         cell.value = value;
                     }
@@ -1965,7 +2104,6 @@
 
             columns.forEach(function(colName, index) {
                 var colmn = worksheet.getColumn(index + 1);
-                console.log(colName.length);
                 colmn.width = colName.length + 1;
         });
 
@@ -2054,7 +2192,6 @@
 
             columns.forEach(function (colName, index) {
                 var colmn = worksheet.getColumn(index + 1);
-                console.log(colName.length);
                 colmn.width = colName.length + 2;
             });
 
@@ -2544,7 +2681,6 @@
 
                     selectedValues[column].push(value);
                 }
-                console.log("In getSelectedValuesAndSend" + JSON.stringify(selectedValues));
 
                 $.ajax({
                     type: "POST",
@@ -2692,7 +2828,7 @@
                         <asp:Button ID="btnAllBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate" ToolTip="All Clients by Birthdate" OnClientClick="return handleClientClick();" OnClick="btnAllBirthdate_Click"></asp:Button>
                         <asp:Button ID="btnAllAdmissionDate" runat="server" CssClass="leftMenu" Text="All Clients by Admission date" ToolTip="All Clients by Admission date" OnClientClick="return handleClientClick();" OnClick="btnAllAdmissionDate_Click"></asp:Button>
                         <asp:Button ID="btnAllDischargedate" runat="server" CssClass="leftMenu" Text="All Clients by Discharge date" ToolTip="All Clients by Discharge date" OnClientClick="return handleClientClick();" OnClick="btnAllDischargedate_Click"></asp:Button>
-                        <asp:Button ID="btnStatistical" runat="server" CssClass="leftMenu" Text="Statistical Report" ToolTip="Statistical Report" OnClick="btnStatistical_Click"></asp:Button>
+                        <asp:Button ID="btnStatistical" runat="server" CssClass="leftMenu" Text="Statistical Report" ToolTip="Statistical Report" OnClientClick="return handleClientClick();" OnClick="btnStatistical_Click"></asp:Button>
                         <asp:Button ID="btnFundChange" runat="server" CssClass="leftMenu" Text="Funding Changes" ToolTip="Funding Changes" OnClick="btnFundChange_Click" OnClientClick="resetVal();"></asp:Button>
                         <asp:Button ID="btnPlcChange" runat="server" CssClass="leftMenu" Text="Placement Changes" ToolTip="Placement Changes" OnClick="btnPlcChange_Click" OnClientClick="resetVal();"></asp:Button>
                         <asp:Button ID="btnGuardianChanges" runat="server" CssClass="leftMenu" Text="Guardianship Changes" ToolTip="Guardianship Changes" OnClick="btnGuardianChanges_Click" OnClientClick="resetVal();"></asp:Button>

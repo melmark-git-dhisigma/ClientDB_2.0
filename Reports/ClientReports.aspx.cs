@@ -3389,29 +3389,66 @@ namespace ClientDB.Reports
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "Statistical Report";
                 divbirthdate.Visible = false;
-                var selected = ChkStatisticalList.Items.Cast<ListItem>().Where(li => li.Selected).Count();
-                if (selected != 0)
+                if (checkHighcharts.Checked)
                 {
-                    List<ListItem> selectedItemList = ChkStatisticalList.Items.Cast<ListItem>().Where(li => li.Selected).ToList();
-                    RVClientReport.Visible = true;
-                    RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
-                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["StatisticalReport"];
-                    RVClientReport.ShowParameterPrompts = false;
-                    ReportParameter[] parm = new ReportParameter[8];
-                    parm[0] = new ReportParameter("Totalnumberofclient", ContainsLoop("Total number of client", selectedItemList));
-                    parm[1] = new ReportParameter("Gender", ContainsLoop("Gender", selectedItemList));
-                    parm[2] = new ReportParameter("Department", ContainsLoop("Department", selectedItemList));
-                    parm[3] = new ReportParameter("PlacementType", ContainsLoop("Placement Type", selectedItemList));
-                    parm[4] = new ReportParameter("Program", ContainsLoop("Program", selectedItemList));
-                    parm[5] = new ReportParameter("Location", ContainsLoop("Location", selectedItemList));
-                    parm[6] = new ReportParameter("Race", ContainsLoop("Race", selectedItemList));
-                    parm[7] = new ReportParameter("Maximumclientoccupancy", ContainsLoop("Maximum client occupancy", selectedItemList));
-                    this.RVClientReport.ServerReport.SetParameters(parm);
-                    RVClientReport.ServerReport.Refresh();
+                    divStatistical.Visible = false;
+                    string statisticalQuery = "SELECT Location,(SELECT ClassName FROM Class WHERE ClassId=Location) ClassName,MaxStudents,COUNT( CASE WHEN Gender='Male' " + 
+                   " THEN 1 END ) AS Male,COUNT( CASE WHEN Gender='Female' " + 
+                   " THEN 1 END ) AS Female,COUNT(StudentPersonalId) AS TotalStudents,Pgm,(SELECT LookupName FROM LookUp WHERE LookupId=Pgm) Program, " + 
+				   " PlacementType AS PlacementTypeId,(SELECT LookupName FROM LookUp WHERE LookupId=PlacementType) Placement_Type " + 
+				   " ,Departmt,(SELECT LookupName FROM LookUp WHERE LookupId=Departmt) AS DepartmentName,RaceId, " + 
+				   " (SELECT LookupName FROM LookUp WHERE LookupId=RaceId) RaceName FROM (SELECT SL.StudentPersonalId,CASE WHEN SL.Gender=1 THEN 'Male' ELSE 'Female' END Gender,PT.Location,(SELECT MaxStudents FROM Class  " +
+                   " WHERE ClassId=PT.Location) MaxStudents,PT.Department AS Pgm,PT.PlacementType,PT.PlacementDepartment AS Departmt,SL.RaceId " +
+                   " FROM Placement PT INNER JOIN " +
+                   " StudentPersonal SL ON PT.StudentPersonalId=SL.StudentPersonalId INNER JOIN LookUp LKP ON LKP.LookupId = PT.Department WHERE PT.Status=1 AND SL.StudentType='Client' and (PT.EndDate is null or PT.EndDate >= cast (GETDATE() as DATE)) and PT.Status=1  " +
+                   " and SL.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                   " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                   " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                   " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                   " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client') " +
+                   " and ST.StudentPersonalId not in (SELECT Distinct " +
+                   " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SL.ClientId)>0) SLPT  " +
+                   " WHERE Location IS NOT NULL " +
+                   " GROUP BY Location,MaxStudents,Pgm,PlacementType,Departmt,RaceId  ORDER BY Location ";
+                    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(statisticalQuery, con);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    dt = GetSelectedColumnsStatistical(dt);
+
+                    string jsonData = ConvertDataTableToJson(dt);
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerStatistical(" + jsonData + ");", true);
+
                 }
                 else
                 {
-                    tdMsg.InnerHtml = "<div class='warning_box'>Please select report items</div>";
+                    var selected = ChkStatisticalList.Items.Cast<ListItem>().Where(li => li.Selected).Count();
+                    if (selected != 0)
+                    {
+                        List<ListItem> selectedItemList = ChkStatisticalList.Items.Cast<ListItem>().Where(li => li.Selected).ToList();
+                        RVClientReport.Visible = true;
+                        RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
+                        RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["StatisticalReport"];
+                        RVClientReport.ShowParameterPrompts = false;
+                        ReportParameter[] parm = new ReportParameter[8];
+                        parm[0] = new ReportParameter("Totalnumberofclient", ContainsLoop("Total number of client", selectedItemList));
+                        parm[1] = new ReportParameter("Gender", ContainsLoop("Gender", selectedItemList));
+                        parm[2] = new ReportParameter("Department", ContainsLoop("Department", selectedItemList));
+                        parm[3] = new ReportParameter("PlacementType", ContainsLoop("Placement Type", selectedItemList));
+                        parm[4] = new ReportParameter("Program", ContainsLoop("Program", selectedItemList));
+                        parm[5] = new ReportParameter("Location", ContainsLoop("Location", selectedItemList));
+                        parm[6] = new ReportParameter("Race", ContainsLoop("Race", selectedItemList));
+                        parm[7] = new ReportParameter("Maximumclientoccupancy", ContainsLoop("Maximum client occupancy", selectedItemList));
+                        this.RVClientReport.ServerReport.SetParameters(parm);
+                        RVClientReport.ServerReport.Refresh();
+                    }
+                    else
+                    {
+                        tdMsg.InnerHtml = "<div class='warning_box'>Please select report items</div>";
+                    }
                 }
             }
             catch (Exception ex)
@@ -3419,7 +3456,74 @@ namespace ClientDB.Reports
                 throw ex;
             }
         }
+        protected DataTable GetSelectedColumnsStatistical(DataTable originalTable)
+        {
+            DataTable newTable = new DataTable();
+            string[] selectedColumns = { "ClassName", "MaxStudents", "RaceName", "Placement_Type", "DepartmentName", "Program", "TotalStudents", "Male", "Female"};
 
+            foreach (var columnName in selectedColumns)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    newTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+            }
+
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = newTable.NewRow();
+
+                foreach (var columnName in selectedColumns)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+
+                newTable.Rows.Add(newRow);
+            }
+
+            if (newTable.Columns.Contains("ClassName"))
+            {
+                newTable.Columns["ClassName"].ColumnName = "Location";
+            }
+
+            if (newTable.Columns.Contains("MaxStudents"))
+            {
+                newTable.Columns["MaxStudents"].ColumnName = "Maximum Client Occupancy";
+            }
+
+            if (newTable.Columns.Contains("DepartmentName"))
+            {
+                newTable.Columns["DepartmentName"].ColumnName = "Department";
+            }
+
+            if (newTable.Columns.Contains("TotalStudents"))
+            {
+                newTable.Columns["TotalStudents"].ColumnName = "Total Students";
+            }
+
+            if (newTable.Columns.Contains("Placement_Type"))
+            {
+                newTable.Columns["Placement_Type"].ColumnName = "Placement Type";
+            }
+
+            if (newTable.Columns.Contains("RaceName"))
+            {
+                newTable.Columns["RaceName"].ColumnName = "Race";
+            }
+
+            if (newTable.Columns.Contains("Male"))
+            {
+                newTable.Columns["Male"].ColumnName = "Male Count";
+            }
+
+            if (newTable.Columns.Contains("Female"))
+            {
+                newTable.Columns["Female"].ColumnName = "Female Count";
+            }
+
+            return newTable;
+
+        }
         protected void btnShowBirthdate_Click(object sender, EventArgs e)
         {
             try
