@@ -678,6 +678,10 @@ namespace ClientDB.Controllers
                 var fileName = "images.png";
                 objFile = (HttpPostedFileBase)new MemoryPostedFile(new MemoryStream(bytes), contentTypeFile, fileName);
             }
+                // Normalize names
+                model.FirstName = NormalizeName(model.FirstName);
+                model.MiddleName = NormalizeName(model.MiddleName);
+                model.LastName = NormalizeName(model.LastName);
             result = objFuns.SaveData(model, objFile);
             //Image Crop and Upload - Dev 2 [23-jun-2020] - End
 
@@ -911,6 +915,15 @@ namespace ClientDB.Controllers
             {
                 return "Failed";
             }
+        }
+        private string NormalizeName(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            // Trim and normalize spaces (one space between words)
+            var parts = input.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return string.Join(" ", parts);
         }
     }
 }
