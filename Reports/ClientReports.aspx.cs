@@ -2721,7 +2721,7 @@ namespace ClientDB.Reports
                         Schoolid = 2;
                     divbirthdate.Visible = false;
                     string funderQuery = "SELECT SPA.FundingSource,SP.LastName+','+SP.FirstName AS ClientName,SP.ClientId,SP.SchoolId FROM StudentPersonal SP INNER JOIN StudentPersonalPA SPA ON SP.StudentPersonalId=SPA.StudentPersonalId " +
-                                         " WHERE SPA.FundingSource IS NOT NULL AND SPA.FundingSource<>'' AND SP.StudentType='Client' AND SP.PlacementStatus<>'I' AND CONVERT(INT,SP.ClientId)>0  ORDER BY SPA.FundingSource,SP.ClientId";
+                                         " WHERE SPA.FundingSource IS NOT NULL AND SPA.FundingSource<>'' AND SP.StudentType='Client' AND CONVERT(INT,SP.ClientId)>0  ORDER BY SPA.FundingSource,SP.ClientId";
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
                     SqlCommand cmd = new SqlCommand(funderQuery, con);
