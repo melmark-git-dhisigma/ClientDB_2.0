@@ -844,19 +844,23 @@ namespace ClientDB.Reports
                     }
                     else
                     {
+                        foreach (string value in sortedValues)
+                        {
+                            string[] parts = value.Split(new[] { '~' }, 2);
+                            string firstPortion = parts.Length > 0 ? parts[0].Trim() : "";
+                            string secondPortion = parts.Length > 1 ? parts[1].Trim() : "";
+                            htmlBuilder.Append("<label><input type='checkbox' value='" + firstPortion + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + secondPortion + "</label><br>");
+                        }
+                        if (column.ColumnName == "Student Name")
+                         {
                         DataTable studname = FillStudNameIDsNew();
                         foreach (DataRow row in studname.Rows)
                         {
                             htmlBuilder.Append("<label><input type='checkbox' value='" + Convert.ToInt32(row["StudentId"]) + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + row["StudentName"] + "</label><br>");
 
                         }
-                        //foreach (string value in sortedValues)
-                        //{
-                        //    string[] parts = value.Split(new[] { '~' }, 2);
-                        //    string firstPortion = parts.Length > 0 ? parts[0].Trim() : "";
-                        //    string secondPortion = parts.Length > 1 ? parts[1].Trim() : "";
-                        //    htmlBuilder.Append("<label><input type='checkbox' value='" + firstPortion + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + secondPortion + "</label><br>");
-                        //}
+                    }
+                        
                     }
 
                     htmlBuilder.Append("</div>");
