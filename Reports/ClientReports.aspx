@@ -46,6 +46,7 @@
         }
     </style>
     <script type="text/javascript">
+        var columndata={};
 
         $(document).ready(function () {
 
@@ -443,6 +444,7 @@
         function handleClientClick() {
             var checkbox = document.getElementById('<%= checkHighcharts.ClientID %>');
             if (checkbox && checkbox.checked) {
+                columndata={};
                 showLoader();
             }
             return true;
@@ -451,7 +453,7 @@
         var currentPage = 1;
         var rowsPerPage = 10;
         var fullData = [];
-        function loadDataFromServer(data) {
+        function loadDataFromServer(data,checkstat) {
             fullData = data;
             var tableBody = document.getElementById("tableBody");
             var tableHeader = document.getElementById("tableHeader");
@@ -471,7 +473,7 @@
 
             // Get column headers
             var columns = Object.keys(data[0]);
-
+            var headingDiv = document.getElementById("HeadingDiv").textContent.trim();
             // Clear any existing headers
             tableHeader.innerHTML = '';
             var headerRow = document.createElement('tr');
@@ -504,7 +506,11 @@
             });
 
             // Create column visibility checkboxes
+            
+            if(checkstat===true)
+            {
             createColumnVisibilityCheckboxes(columns);
+            }
 
             // Create pagination controls
             createPaginationControls(data.length, data);
@@ -520,14 +526,31 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type = 'button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServer(data,false);
+                    hideandshowcolumn();
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type = 'button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
                     currentPage--;
-                    loadDataFromServer(data); // Re-load the table data for the new page
+                    loadDataFromServer(data,false); // Re-load the table data for the new page
+                    hideandshowcolumn();
                 }
             };
             paginationContainer.appendChild(prevButton);
@@ -538,26 +561,68 @@
 
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type = 'button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
                     currentPage++;
-                    loadDataFromServer(data);
+                    loadDataFromServer(data,false);
+                    hideandshowcolumn();
                 }
             };
             paginationContainer.appendChild(nextButton);
+
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type = 'button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServer(data, false);
+                    hideandshowcolumn();
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type = 'button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelWithImages();
-                loadDataFromServer(data);loadDataFromServer(data);
+                //loadDataFromServer(data);
                 document.getElementById("filterDiv").style.display = 'block';
                 document.getElementById("buttonContainer").style.display = 'block';
                 document.getElementById("btnShowReport").style.display = 'inline-block';
                 document.getElementById("btnResetAllClient").style.display = 'inline-block';
             };
             paginationContainer.appendChild(exportButton);
+        }
+        function hideandshowcolumn()
+        {
+            var newcol=[];
+            for (var key in columndata) {
+                if(columndata[key]==false){
+                    newcol.push(key);
+                }
+            }
+            newcol.forEach(function(columnName) {
+                var table = document.getElementById("table");
+                var columnIndex = Array.from(table.rows[0].cells).findIndex(function (cell) {
+                    return cell.textContent.replace(" ⬍", "") === columnName;
+                });
+                var checkbox=columndata[columnName];
+                Array.from(table.rows).forEach(function (row) {
+                    if (checkbox.checked) {
+                        row.cells[columnIndex].style.display = '';
+                    } else {
+                        row.cells[columnIndex].style.display = 'none';
+                    }
+                });
+            });
+        
         }
 
 
@@ -593,6 +658,10 @@
 
                 checkboxLabel.appendChild(checkbox);
                 checkboxLabel.appendChild(document.createTextNode(col));
+                
+                columndata[col] = true;
+
+               
                 filterDiv.appendChild(checkboxLabel);
             });
         }
@@ -603,7 +672,7 @@
             var columnIndex = Array.from(table.rows[0].cells).findIndex(function (cell) {
                 return cell.textContent.replace(" ⬍", "") === columnName;
             });
-
+            columndata[columnName] = checkbox.checked;
             Array.from(table.rows).forEach(function (row) {
                 if (checkbox.checked) {
                     row.cells[columnIndex].style.display = '';
@@ -756,9 +825,24 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type = 'button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServerEmergency(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type = 'button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -782,8 +866,23 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type = 'button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServerEmergency(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type = 'button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelEmergency();
@@ -892,6 +991,19 @@
 
             paginationContainer.innerHTML = '';
 
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServerProgramRoster(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
@@ -918,6 +1030,19 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServerProgramRoster(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
             exportButton.textContent = 'Export';
@@ -951,8 +1076,9 @@
 
             // Get column headers
             var columns = Object.keys(data[0]);
-
-            // Clear any existing headers
+            columns = columns.filter(function(item) {
+                return item !== "ID";
+            });            // Clear any existing headers
             tableHeader.innerHTML = '';
             var headerRow = document.createElement('tr');
 
@@ -987,7 +1113,7 @@
             // Calculate row spans for each Client Name
             var rowSpanMap = {};
             for (var i = 0; i < pageData.length; i++) {
-                var key = pageData[i]["Client Last"]; // Grouping key
+                var key = pageData[i]["ID"]; // Grouping key
                 if (rowSpanMap[key]) {
                     rowSpanMap[key] += 1;
                 } else {
@@ -999,7 +1125,7 @@
             var seen = {}; // Track seen Client Name values to prevent duplicate cells
             for (var i = 0; i < pageData.length; i++) {
                 var tr = document.createElement('tr');
-                var key = pageData[i]["Client Last"]; // Grouping key
+                var key = pageData[i]["ID"]; // Grouping key
 
                 for (var index = 0; index < columns.length; index++) {
                     var columnName = columns[index];
@@ -1009,8 +1135,13 @@
                     if (columnName === "Client Last") {
                         if (!seen[key]) { // Only add merged cell if not already seen
                             seen[key] = true; // Mark as seen
+                            //td.textContent = pageData[i]["ID"];
+                            //td.setAttribute("rowspan", rowSpanMap[key]); // Set rowspan for correct merging
+                            //tr.appendChild(td);
+
+                            //var tdClientlast = document.createElement("td");
                             td.textContent = pageData[i]["Client Last"];
-                            td.setAttribute("rowspan", rowSpanMap[key]); // Set rowspan for correct merging
+                            td.setAttribute("rowspan", rowSpanMap[key]);
                             tr.appendChild(td);
 
                             var tdClientFirst = document.createElement("td");
@@ -1037,7 +1168,7 @@
                             tr.appendChild(tdPrgmPlc);
                         }
                     }
-                    else if (columnName !== "Client First" && columnName !== "Date of Birth" && columnName !== "Admission Date" && columnName !== "Program and Active Placement(s)" && columnName !== "Status") {
+                    else if ( columnName !== "Client First" && columnName !== "Date of Birth" && columnName !== "Admission Date" && columnName !== "Program and Active Placement(s)" && columnName !== "Status") {
                         // Normal columns without merging
                         td.textContent = pageData[i][columnName];
                         tr.appendChild(td);
@@ -1058,9 +1189,24 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type='button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServerVendor(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type='button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -1076,6 +1222,7 @@
 
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type='button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
@@ -1084,8 +1231,22 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+
+
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type='button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServerVendor(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type='button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelClientContactVendor();
@@ -1194,9 +1355,25 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type='button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServerQuarter(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type='button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -1212,6 +1389,7 @@
 
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type='button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
@@ -1220,8 +1398,22 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
+
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type='button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServerQuarter(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type='button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelWithImages();
@@ -1348,8 +1540,23 @@
             var paginationContainer = document.getElementById("paginationControls");
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type='button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServerFunder(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type='button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -1365,6 +1572,7 @@
 
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type='button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
@@ -1373,9 +1581,21 @@
                 }
             };
             paginationContainer.appendChild(nextButton);
-
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type='button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServerFunder(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type='button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportFunderTableToExcel(); // or your export logic
@@ -1662,9 +1882,24 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type='button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    loadDataFromServerPlacement(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type='button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -1682,6 +1917,7 @@
             // Next button
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type='button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
@@ -1691,8 +1927,23 @@
             };
             paginationContainer.appendChild(nextButton);
 
+
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type='button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    loadDataFromServerPlacement(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type='button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelPlacement();
@@ -1770,9 +2021,24 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type='button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    LoadDataFromServerBirthdate(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             // Previous button
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type='button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -1790,6 +2056,7 @@
             // Next button
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type='button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
@@ -1799,8 +2066,22 @@
             };
             paginationContainer.appendChild(nextButton);
 
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type='button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    LoadDataFromServerBirthdate(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type='button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelWithImages();
@@ -1858,7 +2139,7 @@
         }
 
         //Statistical Report
-        function LoadDataFromServerStatistical(data) {
+        function LoadDataFromServerStatistical(data,checkstat) {
             fullData = data;
             rowsPerPage = 15;
             var tableBody = document.getElementById("tableBody");
@@ -1914,8 +2195,10 @@
                 });
                 tableBody.appendChild(tr);
             });
-
+            if(checkstat===true)
+            {
             createColumnVisibilityCheckboxes(columns);
+            }
 
             // Create pagination controls
             createPaginationControlsStatistical(data.length, data);
@@ -1935,13 +2218,29 @@
 
             paginationContainer.innerHTML = '';
 
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type = 'button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    LoadDataFromServerStatistical(data,false);
+                    hideandshowcolumn();
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type = 'button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
                     currentPage--;
-                    LoadDataFromServerStatistical(data);
+                    LoadDataFromServerStatistical(data,false);
+                    hideandshowcolumn();
+
                 }
             };
             paginationContainer.appendChild(prevButton);
@@ -1952,21 +2251,40 @@
 
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type = 'button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
                     currentPage++;
-                    LoadDataFromServerStatistical(data);
+                    LoadDataFromServerStatistical(data,false);
+                    hideandshowcolumn();
+
                 }
             };
             paginationContainer.appendChild(nextButton);
 
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type = 'button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    LoadDataFromServerStatistical(data,false);
+                    hideandshowcolumn();
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
             exportButton.textContent = 'Export';
+            exportButton.type = 'button';
             exportButton.onclick = function () {
                 exportToExcelWithImages();
-                LoadDataFromServerStatistical(data);
+                //LoadDataFromServerStatistical(data);
+
             };
             paginationContainer.appendChild(exportButton);
         }
@@ -2041,8 +2359,23 @@
 
             paginationContainer.innerHTML = '';
 
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type='button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    LoadDataFromServerChanges(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
             var prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
+            prevButton.type='button';
             prevButton.disabled = currentPage === 1;
             prevButton.onclick = function () {
                 if (currentPage > 1) {
@@ -2058,6 +2391,7 @@
 
             var nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
+            nextButton.type='button';
             nextButton.disabled = currentPage === totalPages;
             nextButton.onclick = function () {
                 if (currentPage < totalPages) {
@@ -2067,12 +2401,26 @@
             };
             paginationContainer.appendChild(nextButton);
 
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type='button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    LoadDataFromServerChanges(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
             var exportButton = document.createElement('button');
             exportButton.id = 'BtnExport';
+            exportButton.type='button';
             exportButton.textContent = 'Export';
             exportButton.onclick = function () {
                 exportToExcelWithImages();
-                LoadDataFromServerChanges(data);
+                //LoadDataFromServerStatistical(data);
             };
             paginationContainer.appendChild(exportButton);
         }
@@ -2092,6 +2440,21 @@
             var worksheet = workbook.addWorksheet(formattedDateTime);
 
             var columns = Object.keys(fullData[0]);
+
+
+            if (headingDiv === "Statistical Report" || headingDiv === "All Clients Info") {
+                if((Object.keys(columndata).length)>0)
+                {
+                    var newcol=[];
+                    for (var key in columndata) {
+                        if(columndata[key]==true){
+                            newcol.push(key);
+                        }
+                    }
+                    columns=newcol;
+                }
+            }
+
 
             worksheet.columns = columns.map(function (col) {
                 return { header: col, key: col, width: 25 };
@@ -2143,7 +2506,7 @@
                 cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
             });
             var imageCounter = 1;
-            var rowOffset = (headingDiv === "Statistical Report" || headingDiv === "All Clients Info" ) ? 2 : 0;
+            var rowOffset = (headingDiv === "Statistical Report" || headingDiv === "All Clients Info" ) ? 2 : 1;
 
             for (var i = 0; i < fullData.length; i++) {
                 var row = fullData[i];
@@ -2428,7 +2791,9 @@
             }
 
             var columns = Object.keys(fullData[0]);
-
+            columns = columns.filter(function(item) {
+                return item !== "ID" && item !== "Status";
+            });
             // Set header row
             worksheet.columns = columns.map(function (col) {
                 return { header: col, key: col, width: 25 };
@@ -2454,7 +2819,7 @@
             // Group rows by Client Last
             var rowSpanMap = {};
             for (var i = 0; i < fullData.length; i++) {
-                var key = fullData[i]["Client Last"];
+                var key = fullData[i]["ID"];
                 if (rowSpanMap[key]) {
                     rowSpanMap[key] += 1;
                 } else {
@@ -2467,7 +2832,7 @@
 
             for (var i = 0; i < fullData.length; i++) {
                 var row = fullData[i];
-                var key = row["Client Last"];
+                var key = row["ID"];
                 var excelRow = worksheet.getRow(currentRowIndex);
                 var colIndex = 1;
 
@@ -2786,7 +3151,12 @@
 
                     selectedValues[column].push(value);
                 }
-
+                if (!selectedValues["Status"])
+                {
+                    selectedValues["Status"] = [];
+                    selectedValues["Status"].push("Active");
+                    selectedValues["Status"].push("Discharged");
+                }
                 $.ajax({
                     type: "POST",
                     url: "../Report/GetFilteredReport",
@@ -3445,6 +3815,7 @@
                                     <%--<asp:Button ID="btnOldReport" CssClass="button-style" runat="server" Visible="false" Text="Old Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClick="btnOldReport_Click" />--%>
 
                                 </div>
+                                <asp:Label ID="showlab" runat="server" Text="" style=" font-size:14px; color:black;"></asp:Label>
                                 <div id="filterDiv"></div>
                                 <asp:Label ID="noOfClients" runat="server" Text="" style="font-weight: bold; font-size:18px; color:black;"></asp:Label>
                                 <div id="paginationControls" class="pagination-container"></div>

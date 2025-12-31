@@ -434,15 +434,17 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 if (!checkHighcharts.Checked)
                 {
                     btnOldReport_Click(sender, e);
                 }
                 else
                 {
+                    showlab.Text = "<Br/><Br/>Show Labels:";
                     divContact.Visible = false;
                     divnodata.Visible = false;
-                    FillStudNameIDs();
+                    //FillStudNameIDs();
                     FillStudLocationIDs();
                     FillStudRaceIDs();
                     FillStudStatusIDs();
@@ -538,9 +540,9 @@ namespace ClientDB.Reports
                         sda.Fill(ClassTbl);
                         PopulateDropdown(dtFinalCopy,ClassTbl);
                         dtFinal = RemoveIdColumns(dtFinalCopy);
-                        var jsonData = ConvertDataTableToJson(dtFinal);
+                        var jsonData = JsonConvert.SerializeObject(dtFinal);
                         //noOfClients.Text = "Total No. of Clients : " + dtFinal.Rows.Count.ToString();
-                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServer(" + jsonData + ");", true);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServer(" + jsonData + ", true);", true);
                     }
                     else
                     {
@@ -775,7 +777,7 @@ namespace ClientDB.Reports
                 DataTable dtFinal = clientReportsInstance.getAllClientReport(dt);
                 dtFinal.DefaultView.Sort = dtFinal.Columns[0].ColumnName + " ASC";
                 dtFinal = dtFinal.DefaultView.ToTable();
-                string jsonData = clientReportsInstance.ConvertDataTableToJson(dtFinal);
+                string jsonData = JsonConvert.SerializeObject(dt);
                 Console.WriteLine(jsonData);
                 return jsonData;
             }
@@ -842,13 +844,19 @@ namespace ClientDB.Reports
                     }
                     else
                     {
-                        foreach (string value in sortedValues)
+                        DataTable studname = FillStudNameIDsNew();
+                        foreach (DataRow row in studname.Rows)
                         {
-                            string[] parts = value.Split(new[] { '~' }, 2);
-                            string firstPortion = parts.Length > 0 ? parts[0].Trim() : "";
-                            string secondPortion = parts.Length > 1 ? parts[1].Trim() : "";
-                            htmlBuilder.Append("<label><input type='checkbox' value='" + firstPortion + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + secondPortion + "</label><br>");
+                            htmlBuilder.Append("<label><input type='checkbox' value='" + Convert.ToInt32(row["StudentId"]) + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + row["StudentName"] + "</label><br>");
+
                         }
+                        //foreach (string value in sortedValues)
+                        //{
+                        //    string[] parts = value.Split(new[] { '~' }, 2);
+                        //    string firstPortion = parts.Length > 0 ? parts[0].Trim() : "";
+                        //    string secondPortion = parts.Length > 1 ? parts[1].Trim() : "";
+                        //    htmlBuilder.Append("<label><input type='checkbox' value='" + firstPortion + "' class='filter-checkbox' data-column='" + column.ColumnName + "'> " + secondPortion + "</label><br>");
+                        //}
                     }
 
                     htmlBuilder.Append("</div>");
@@ -1233,6 +1241,7 @@ namespace ClientDB.Reports
         {   
             try
             {
+                showlab.Text = "";
                 if (!checkHighcharts.Checked)
                 {
                     btnOldClienContact_Click(sender, e);
@@ -1325,8 +1334,8 @@ namespace ClientDB.Reports
                     dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
 
-                    
-                    string jsonData = ConvertDataTableToJson(dt);
+
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerEmergency(" + jsonData + ");", true);
                 }
             }
@@ -1462,6 +1471,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 if (!checkHighcharts.Checked)
                 {
                     btnOldPgmRoster_Click(sender, e);
@@ -1523,7 +1533,7 @@ namespace ClientDB.Reports
                     da.Fill(dt);
                     dt = GetSelectedColumnsProgramRoster(dt);
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerProgramRoster(" + jsonData + ");", true);
                 }
             }
@@ -1699,6 +1709,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 if (!checkHighcharts.Checked)
                 {
                     btnOldVendor_Click(sender, e);
@@ -1749,12 +1760,13 @@ namespace ClientDB.Reports
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
                     dtFinal = GetSelectedColumnsVendor(dt);
+                    PopulateDropdownVendor(dtFinal);
                     DataTable dtActive = new DataTable();
                     dtActive.Columns.Add("Status");
                     dtActive.Rows.Add("1");
                     dtFinal = filterDataTableVendor(dtFinal, dtActive);
-                    PopulateDropdownVendor(dtFinal);
-                    var jsonData = ConvertDataTableToJson(dtFinal);
+                    //PopulateDropdownVendor(dtFinal);
+                    var jsonData = JsonConvert.SerializeObject(dtFinal);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerVendor(" + jsonData + ");", true);
                 }
             }
@@ -1769,7 +1781,7 @@ namespace ClientDB.Reports
             //To return only required columns for the table.
             DataTable newTable = new DataTable();
 
-            string[] selectedColumns = { "CLIENTLAST", "CLIENTFIRST", "DOB", "ADMISSIONDATE", "PROGRAM", "RELATIONSHIP", "CONTACTLAST", "CONTACTFIRST", "TYPE", "STREETNAME", "PHONE", "MOBILE", "ORGANIZATION", "OCCUPATION", "EMAIL", "EMERGENCY", "STATUS" };
+            string[] selectedColumns = { "STUDENTPERSONALID", "CLIENTLAST", "CLIENTFIRST", "DOB", "ADMISSIONDATE", "PROGRAM", "RELATIONSHIP", "CONTACTLAST", "CONTACTFIRST", "TYPE", "STREETNAME", "PHONE", "MOBILE", "ORGANIZATION", "OCCUPATION", "EMAIL", "EMERGENCY", "STATUS" };
 
             foreach (var columnName in selectedColumns)
             {
@@ -1823,7 +1835,10 @@ namespace ClientDB.Reports
 
                 newTable.Rows.Add(newRow);
             }
-
+            if (newTable.Columns.Contains("STUDENTPERSONALID"))
+            {
+                newTable.Columns["STUDENTPERSONALID"].ColumnName = "ID";
+            }
             if (newTable.Columns.Contains("CLIENTLAST"))
             {
                 newTable.Columns["CLIENTLAST"].ColumnName = "Client Last";
@@ -1961,10 +1976,12 @@ namespace ClientDB.Reports
                         else if (dt.Columns[i].ColumnName == "Relationship")
                             htmlBuilder.Append("<label><input type='checkbox' value='" + value + "' class='filter-checkbox' data-column='Relationship'> " + value + "</label><br>");
                     }
+                    bool activeChecked = true;
                     if (dt.Columns[i].ColumnName == "Status")
                     {
-                        htmlBuilder.Append("<label><input type='checkbox' value='1' class='filter-checkbox' data-column='Status'>Active</label><br>");
-                        htmlBuilder.Append("<label><input type='checkbox' value='2' class='filter-checkbox' data-column='Status'>Discharged</label><br>");
+                        htmlBuilder.Append("<label><input type='checkbox' value='1' class='filter-checkbox' data-column='Status'"
+                            + (activeChecked ? " checked" : "")
+                            + ">Active</label><br>"); htmlBuilder.Append("<label><input type='checkbox' value='2' class='filter-checkbox' data-column='Status'>Discharged</label><br>");
                     }
                     htmlBuilder.Append("</div>");
                     htmlBuilder.Append("</div>");
@@ -2097,7 +2114,7 @@ namespace ClientDB.Reports
                 }
                 ClientReports clientReportsInstance = new ClientReports();
                 DataTable dtFinal = clientReportsInstance.getVendorReport(dt);
-                string jsonData = clientReportsInstance.ConvertDataTableToJson(dtFinal);
+                string jsonData = JsonConvert.SerializeObject(dtFinal);
                 return jsonData;
             }
             catch (Exception ex)
@@ -2242,6 +2259,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -2321,6 +2339,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 if (!checkHighcharts.Checked)
                 {
                     btnOldResRoster_Click(sender, e);
@@ -2459,6 +2478,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 divContact.Visible = false;
                 FillDept(ddlDeptLocDept);
                 FillDept(ddlDeptPlctypeDept);
@@ -2685,6 +2705,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 if (!checkHighcharts.Checked)
                 {
                     btnOldAllFunder_Click(sender, e);
@@ -3000,6 +3021,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 //FillMonth();
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3055,7 +3077,7 @@ namespace ClientDB.Reports
                     dt = dt.DefaultView.ToTable();
 
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
                 }
                 else
@@ -3132,6 +3154,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text="";
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -3175,7 +3198,7 @@ namespace ClientDB.Reports
                     if (dt.Rows.Count > 0)
                     dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Admission Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
                 }
                 else
@@ -3253,6 +3276,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -3290,7 +3314,7 @@ namespace ClientDB.Reports
                     if (dt.Rows.Count > 0)
                         dt = dt.AsEnumerable().OrderBy(row => DateTime.ParseExact(row.Field<string>("Discharge Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
 
                 }
@@ -3369,6 +3393,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -3391,6 +3416,7 @@ namespace ClientDB.Reports
                 divbirthdate.Visible = false;
                 if (checkHighcharts.Checked)
                 {
+                    showlab.Text = "Show Labels:";
                     divStatistical.Visible = false;
                     string statisticalQuery = "SELECT Location,(SELECT ClassName FROM Class WHERE ClassId=Location) ClassName,MaxStudents,COUNT( CASE WHEN Gender='Male' " + 
                    " THEN 1 END ) AS Male,COUNT( CASE WHEN Gender='Female' " + 
@@ -3419,9 +3445,13 @@ namespace ClientDB.Reports
                     da.Fill(dt);
                     dt = GetSelectedColumnsStatistical(dt);
 
-                    string jsonData = ConvertDataTableToJson(dt);
-                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerStatistical(" + jsonData + ");", true);
-
+                    string jsonData = JsonConvert.SerializeObject(dt);
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "LoadData",
+                        "LoadDataFromServerStatistical(" + jsonData + ", true);",
+                        true
+                    );
                 }
                 else
                 {
@@ -3562,7 +3592,7 @@ namespace ClientDB.Reports
                     dt = dt.DefaultView.ToTable();
 
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
                 }
                 else
@@ -3668,7 +3698,7 @@ namespace ClientDB.Reports
                     if(dt.Rows.Count>0)
                     dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Admission Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
                 }
                 else
@@ -3756,7 +3786,7 @@ namespace ClientDB.Reports
                     if (dt.Rows.Count > 0)
                         dt = dt.AsEnumerable().OrderBy(row => DateTime.ParseExact(row.Field<string>("Discharge Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
-                    string jsonData = ConvertDataTableToJson(dt);
+                    string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
 
                 }
@@ -3986,6 +4016,7 @@ namespace ClientDB.Reports
 
         protected void btnContactChanges_Click(object sender, EventArgs e)
         {
+            showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
             divStatisticalNew.Visible = false;
@@ -4010,6 +4041,7 @@ namespace ClientDB.Reports
 
         protected void btnGuardianChanges_Click(object sender, EventArgs e)
         {
+            showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
             divStatisticalNew.Visible = false;
@@ -4034,6 +4066,7 @@ namespace ClientDB.Reports
 
         protected void btnPlcChange_Click(object sender, EventArgs e)
         {
+            showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
             divStatisticalNew.Visible = false;
@@ -4058,6 +4091,7 @@ namespace ClientDB.Reports
 
         protected void btnFundChange_Click(object sender, EventArgs e)
         {
+            showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
             divStatisticalNew.Visible = false;
@@ -4631,6 +4665,39 @@ namespace ClientDB.Reports
             catch (Exception e)
             {
                 e.ToString();
+            }
+        }
+        private DataTable  FillStudNameIDsNew()
+        {
+            try
+            {
+                BiWeeklyRCPNewEntities Objdata = new BiWeeklyRCPNewEntities();
+                var Funding = (from objPA in Objdata.StudentPersonals
+                               where objPA.StudentPersonalId != null && objPA.StudentPersonalId != 0 && objPA.StudentType == "Client" && objPA.ClientId > 0
+                               select new
+                               {
+                                   StudentIDs = objPA.StudentPersonalId,
+                                   StudentNames = objPA.LastName + " " + objPA.FirstName,
+                                   TestName = objPA.LastName
+                               }).Distinct().OrderBy(x => x.TestName).ToList();
+                DataTable Dtstudname = new DataTable();
+                Dtstudname.Columns.Add("StudentName", typeof(String));
+                Dtstudname.Columns.Add("StudentId", typeof(String));
+                string[] row = new string[2];
+                foreach (var studname in Funding)
+                {
+                    row[0] = studname.StudentNames.ToString();
+                    row[1] = studname.StudentIDs.ToString();
+                    Dtstudname.Rows.Add(row);
+                    //hfstudname.Value += studname.StudentIDs.ToString() + ", ";
+                }
+                return Dtstudname;
+                
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+                return null;
             }
         }
         private void FillStudLocationIDs()
