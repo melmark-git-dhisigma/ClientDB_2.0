@@ -1325,16 +1325,27 @@ namespace ClientDB.DbModel
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("TemplateStudentLevel_Create", schoolIdParameter, studentIdParameter, lessonPlanIdParameter, lessonNameParameter, createdByParameter);
         }
-    
-        public virtual int Update_StudentStatus_Automatically(Nullable<int> studentId)
+
+        public virtual int Update_StudentStatus_Automatically(Nullable<int> studentId, Nullable<int> usrId)
         {
-            var studentIdParameter = studentId.HasValue ?
-                new ObjectParameter("StudentId", studentId) :
-                new ObjectParameter("StudentId", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Update_StudentStatus_Automatically", studentIdParameter);
+            var studentIdParameter = studentId.HasValue
+                ? new ObjectParameter("StudId", studentId)
+                : new ObjectParameter("StudId", typeof(int));
+
+            var usrIdParameter = usrId.HasValue
+                ? new ObjectParameter("UsrId", usrId)
+                : new ObjectParameter("UsrId", typeof(int));
+
+            return ((IObjectContextAdapter)this)
+                .ObjectContext
+                .ExecuteFunction(
+                    "Update_StudentStatus_Automatically",
+                    studentIdParameter,
+                    usrIdParameter
+                );
         }
-    
+
+
         public virtual int UpdateLessonOrder()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("UpdateLessonOrder");

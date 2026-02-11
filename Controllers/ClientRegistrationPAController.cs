@@ -842,12 +842,12 @@ namespace ClientDB.Controllers
                     //{
                     //    studentPersonals.PlacementStatus = "D";
                     //}
-                    if (studentPersonals != null)
-                    {
-                        studentPersonals.ModifiedBy = sess.LoginId;
-                    }
+                    //if (studentPersonals != null)
+                    //{
+                    //    studentPersonals.ModifiedBy = sess.LoginId;
+                    //}
                     dbobj.SaveChanges();
-                    var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
+                    var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId, sess.LoginId);
                     var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
                     if (StudStatus != null)
                     {
@@ -905,12 +905,12 @@ namespace ClientDB.Controllers
                     //else
                     //    studentPersonals.PlacementStatus = "I";
                 //}
-                if (studentPersonals != null)
-                {
-                    studentPersonals.ModifiedBy = sess.LoginId;
-                }
+                //if (studentPersonals != null)
+                //{
+                //    studentPersonals.ModifiedBy = sess.LoginId;
+                //}
                 dbobj.SaveChanges();
-                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
+                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId, sess.LoginId);
                 var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
                 if (StudStatus != null)
                 {

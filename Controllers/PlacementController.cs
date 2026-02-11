@@ -147,7 +147,7 @@ namespace ClientDB.Controllers
             {
                 TempData["notice"] = "No Client Selected";
             }
-            var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
+            var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId,sess.LoginId);
             var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
             if (StudStatus != null)
             {
@@ -172,7 +172,7 @@ namespace ClientDB.Controllers
             sess = (clsSession)Session["UserSessionClient"];
             Other_Functions objFuns = new Other_Functions();
             objFuns.deletePlacement(sess.StudentId, id);
-            var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId);
+            var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId,sess.LoginId);
             var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
             if (StudStatus != null)
             {
