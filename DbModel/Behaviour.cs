@@ -32,5 +32,6 @@ namespace ClientDB.DbModel
         public Nullable<System.DateTime> TimeOfEvent { get; set; }
         public Nullable<bool> YesOrNo { get; set; }
         public Nullable<System.DateTime> ToE { get; set; }
+        public Nullable<int> ClassId { get; set; }
     }
 }

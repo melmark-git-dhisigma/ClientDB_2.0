@@ -98,5 +98,10 @@ namespace ClientDB.DbModel
         public Nullable<int> CrntStep { get; set; }
         public Nullable<int> CrntPrompt { get; set; }
         public Nullable<int> NextSetNo { get; set; }
+        public Nullable<System.DateTime> LessonSDate { get; set; }
+        public Nullable<System.DateTime> LessonEDate { get; set; }
+        public string LessonStatusforBanner { get; set; }
+        public Nullable<int> Bannerstatus { get; set; }
+        public string NoofTimesTriedPer { get; set; }
     }
 }

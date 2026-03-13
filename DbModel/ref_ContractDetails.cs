@@ -32,5 +32,7 @@ namespace ClientDB.DbModel
         public System.DateTime CreatedOn { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
+        public string noOfHours { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
     }
 }

@@ -25,5 +25,10 @@ namespace ClientDB.DbModel
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
+        public string followstatus { get; set; }
+        public string AgendaItem { get; set; }
+        public string StaffInitials { get; set; }
+        public string AgendaAddedDate { get; set; }
+        public string DoneCarryOver { get; set; }
     }
 }

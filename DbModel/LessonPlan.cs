@@ -36,5 +36,7 @@ namespace ClientDB.DbModel
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public string Baseline { get; set; }
         public string Objective { get; set; }
+        public Nullable<System.DateTime> LessonSDate { get; set; }
+        public Nullable<System.DateTime> LessonEDate { get; set; }
     }
 }

@@ -46,5 +46,6 @@ namespace ClientDB.DbModel
         public Nullable<System.DateTime> TimeStampForReport { get; set; }
         public Nullable<System.DateTime> CheckinTime { get; set; }
         public Nullable<System.DateTime> CheckoutTime { get; set; }
+        public string CheckUp_Down { get; set; }
     }
 }

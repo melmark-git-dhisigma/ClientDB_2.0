@@ -38,5 +38,6 @@ namespace ClientDB.DbModel
         public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public bool IsNA { get; set; }
+        public Nullable<bool> ConsequetiveAvgInd { get; set; }
     }
 }

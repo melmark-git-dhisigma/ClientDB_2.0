@@ -13,7 +13,30 @@ namespace ClientDB.DbModel
     
     public partial class StudentMoreDetailsNE_Result
     {
-        public string FullName { get; set; }
-        public string Phone { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string NickName { get; set; }
+        public string CountryOfCitizenship { get; set; }
+        public string BirthDate { get; set; }
+        public Nullable<decimal> Height { get; set; }
+        public Nullable<decimal> Weight { get; set; }
+        public string HairColor { get; set; }
+        public string EyeColor { get; set; }
+        public string PrimaryLanguage { get; set; }
+        public string DistingushingMarks { get; set; }
+        public string MaritalStatusofBothParents { get; set; }
+        public string Gender { get; set; }
+        public string AdmissionDate { get; set; }
+        public string Updated { get; set; }
+        public string PlaceOfBirth { get; set; }
+        public string ImageUrl { get; set; }
+        public string LegalCompetencyStatus { get; set; }
+        public string GuardianShip { get; set; }
+        public string OtherStateAgenciesInvolvedWithStudent { get; set; }
+        public string CaseManagerResidential { get; set; }
+        public string CaseManagerEducational { get; set; }
+        public string Race { get; set; }
+        public string Photodate { get; set; }
+        public string EducationalSurrogate { get; set; }
     }
 }

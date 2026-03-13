@@ -36,5 +36,7 @@ namespace ClientDB.DbModel
         public string Program { get; set; }
         public string IepYear { get; set; }
         public string PeriodOfAssmt { get; set; }
+        public Nullable<System.DateTime> ClinicalBehIEPSDate { get; set; }
+        public Nullable<System.DateTime> ClinicalBehIEPEDate { get; set; }
     }
 }

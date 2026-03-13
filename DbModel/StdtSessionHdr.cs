@@ -43,5 +43,8 @@ namespace ClientDB.DbModel
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public Nullable<bool> IsMaintanace { get; set; }
         public string IsTrial { get; set; }
+        public string SessMissTrailRsn { get; set; }
+        public string StepOrder { get; set; }
+        public string SampleOrder { get; set; }
     }
 }

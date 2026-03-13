@@ -78,5 +78,19 @@ namespace ClientDB.DbModel
         public string Proposal { get; set; }
         public string Person { get; set; }
         public string Deadline { get; set; }
+        public string Attendees { get; set; }
+        public string IEPYear { get; set; }
+        public string IEPSigDate { get; set; }
+        public string Reviewed { get; set; }
+        public Nullable<int> MetObjective { get; set; }
+        public Nullable<int> MetGoal { get; set; }
+        public Nullable<int> NotMaintaining { get; set; }
+        public string Progressing1 { get; set; }
+        public string Progressing2 { get; set; }
+        public string Progressing3 { get; set; }
+        public string Progressing4 { get; set; }
+        public string Progressing5 { get; set; }
+        public string Progressing6 { get; set; }
+        public string Progressing7 { get; set; }
     }
 }

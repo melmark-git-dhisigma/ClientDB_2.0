@@ -51,6 +51,6 @@ namespace ClientDB.DbModel
         public Nullable<int> PlacementDepartment { get; set; }
         public Nullable<int> PlacementReason { get; set; }
         public Nullable<int> Discharge { get; set; }
-		public Nullable<int> PrevClassId { get; set; }
+        public Nullable<int> PrevClassId { get; set; }
     }
 }

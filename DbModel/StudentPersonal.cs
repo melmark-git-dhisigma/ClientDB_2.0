@@ -67,7 +67,6 @@ namespace ClientDB.DbModel
         public string GuardianShip { get; set; }
         public string CaseManagerEducational { get; set; }
         public string CaseManagerResidential { get; set; }
-        public string EducationalSurrogate { get; set; }
         public Nullable<System.DateTime> GraduationDate { get; set; }
         public string MostRecentSchoolLocalId { get; set; }
         public string MostRecentHomeroomLocalId { get; set; }
@@ -144,16 +143,17 @@ namespace ClientDB.DbModel
         public Nullable<int> Classification4 { get; set; }
         public Nullable<int> Classification5 { get; set; }
         public string PlacementStatus { get; set; }
-        public string PositionStaff1 { get; set; } // List 6 Task 2
-        public string PositionStaff2 { get; set; } // List 6 Task 2
-        public string PositionStaff3 { get; set; } // List 6 Task 2
-        public string PositionStaff4 { get; set; } // List 6 Task 2
-        public string PositionStaff5 { get; set; } // List 6 Task 2
-        public string PositionStaff6 { get; set; } // List 6 Task 2
-        public string PositionStaff7 { get; set; } // List 6 Task 2
-        public string PositionStaff8 { get; set; } // List 6 Task 2
-        public string PositionStaff9 { get; set; } // List 6 Task 2
-        public string PositionStaff10 { get; set; }// List 6 Task 2
+        public Nullable<int> FundingSource { get; set; }
+        public string PositionStaff1 { get; set; }
+        public string PositionStaff2 { get; set; }
+        public string PositionStaff3 { get; set; }
+        public string PositionStaff4 { get; set; }
+        public string PositionStaff5 { get; set; }
+        public string PositionStaff6 { get; set; }
+        public string PositionStaff7 { get; set; }
+        public string PositionStaff8 { get; set; }
+        public string PositionStaff9 { get; set; }
+        public string PositionStaff10 { get; set; }
         public Nullable<System.DateTime> Photodate { get; set; }
     }
 }

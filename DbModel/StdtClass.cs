@@ -26,5 +26,6 @@ namespace ClientDB.DbModel
         public System.DateTime CreatedOn { get; set; }
         public string ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public string PrevClassId { get; set; }
     }
 }

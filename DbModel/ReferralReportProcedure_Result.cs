@@ -29,10 +29,12 @@ namespace ClientDB.DbModel
         public string ImageUrl { get; set; }
         public string Gender { get; set; }
         public string BirthDate { get; set; }
+        public string DateOfReferral { get; set; }
         public string AddressLine1 { get; set; }
         public string StreetName { get; set; }
         public string City { get; set; }
         public Nullable<int> StateProvince { get; set; }
+        public string State { get; set; }
         public int mMonth { get; set; }
         public Nullable<int> Age { get; set; }
         public string PlaceOfBirth { get; set; }

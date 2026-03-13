@@ -45,5 +45,11 @@ namespace ClientDB.DbModel
         public string GoalDesc { get; set; }
         public Nullable<bool> Rate { get; set; }
         public Nullable<bool> IfPerInterval { get; set; }
+        public Nullable<System.DateTime> BehaviorIEPSDate { get; set; }
+        public Nullable<System.DateTime> BehaviorIEPEDate { get; set; }
+        public string BehaviorIEPObjctve { get; set; }
+        public string BehaviorBasPerfLvl { get; set; }
+        public Nullable<System.DateTime> InactiveEvent { get; set; }
+        public Nullable<bool> Opportunities { get; set; }
     }
 }

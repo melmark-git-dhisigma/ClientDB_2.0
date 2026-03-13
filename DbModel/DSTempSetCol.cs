@@ -35,5 +35,6 @@ namespace ClientDB.DbModel
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public string CalcuData { get; set; }
         public Nullable<int> CalcuType { get; set; }
+        public Nullable<int> MoveUpstat { get; set; }
     }
 }

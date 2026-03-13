@@ -31,8 +31,6 @@ namespace ClientDB.DbModel
         public Nullable<bool> YesOrNo { get; set; }
         public Nullable<int> ObserverId { get; set; }
         public Nullable<System.DateTime> TimeOfEvent { get; set; }
-    
-        public virtual BehaviorIOADetail BehaviorIOADetails1 { get; set; }
-        public virtual BehaviorIOADetail BehaviorIOADetail1 { get; set; }
+        public Nullable<int> ClassId { get; set; }
     }
 }
