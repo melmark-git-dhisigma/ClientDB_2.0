@@ -3663,8 +3663,8 @@
                                                     <asp:ListItem Value="I">Inactive</asp:ListItem>
                                                 </asp:RadioButtonList></td>--%>
                                             <td>&nbsp;</td>
-                                            <td>
-                                                <asp:Button ID="btnShowDischarge" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowDischarge_Click" /></td>
+                                          <%--  <td>
+                                                <asp:Button ID="btnShowDischarge" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowDischarge_Click" /></td>--%>
                                         </tr>
                                     </table>
                                 </div>
