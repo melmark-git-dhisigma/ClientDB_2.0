@@ -155,5 +155,6 @@ namespace ClientDB.DbModel
         public string PositionStaff9 { get; set; }
         public string PositionStaff10 { get; set; }
         public Nullable<System.DateTime> Photodate { get; set; }
+        public string FundingCode { get; set; }
     }
 }

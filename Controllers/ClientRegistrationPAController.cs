@@ -41,6 +41,9 @@ namespace ClientDB.Controllers
                 ViewBag.Param = sess.StudentId;  
             }
 
+            sess = (clsSession)Session["UserSessionClient"];
+            ViewBag.SchoolId = sess.SchoolId;
+
             var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
             if (StudStatus != null)
             {
@@ -222,6 +225,7 @@ namespace ClientDB.Controllers
             x.Add(new SelectListItem { Text = "Other", Value = "9999" });
             model.CitizenshipList = x;
 
+            model.SchoolId = sess.SchoolId;
 
             if (Convert.ToInt32(Param[0]) > 0 && Param[1] == "Fill")
             {
@@ -682,6 +686,9 @@ namespace ClientDB.Controllers
                 model.FirstName = NormalizeName(model.FirstName);
                 model.MiddleName = NormalizeName(model.MiddleName);
                 model.LastName = NormalizeName(model.LastName);
+                if (string.IsNullOrWhiteSpace(model.FundingCode))
+                    model.FundingCode = Request["FundingCode"];
+
             result = objFuns.SaveData(model, objFile);
             //Image Crop and Upload - Dev 2 [23-jun-2020] - End
 

@@ -781,6 +781,10 @@
                     <label class="lblSpan">Funding Source</label><span class="nospan-align">*</span><br />
                     <%=Html.TextBoxFor(m => m.Funding, Model.Funding, new {  @class="sd newClass" })%>
                 </td>
+                <td>
+                    <label class="lblSpan">Funding Code</label><span class="nospan-align">*</span><br />
+                    <%=Html.TextBoxFor(m => m.FundingCode, Model.FundingCode, new {  @class="sd newClass" })%>
+                </td>
             </tr>
         </table>
         <table>

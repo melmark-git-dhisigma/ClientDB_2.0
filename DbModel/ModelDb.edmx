@@ -4498,6 +4498,7 @@
           <Property Name="PositionStaff9" Type="varchar" MaxLength="500" />
           <Property Name="PositionStaff10" Type="varchar" MaxLength="500" />
           <Property Name="Photodate" Type="date" />
+          <Property Name="FundingCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="StudentPersonalPA">
           <Key>
@@ -4546,6 +4547,7 @@
           <Property Name="CreatedOn" Type="date" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedOn" Type="date" />
+          <Property Name="FundingCode" Type="varchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="TabDefinition">
           <Key>
@@ -13235,6 +13237,7 @@
           <Property Name="PositionStaff9" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
           <Property Name="PositionStaff10" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
           <Property Name="Photodate" Type="DateTime" Precision="0" />
+          <Property Type="String" Name="FundingCode" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="StudentPersonalPA">
           <Key>
@@ -13283,6 +13286,7 @@
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ModifiedBy" Type="Int32" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="0" />
+          <Property Name="FundingCode" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
         </EntityType>
         <EntityType Name="TabDefinition">
           <Key>
@@ -19604,6 +19608,7 @@
           <EntitySetMapping Name="StudentPersonals">
             <EntityTypeMapping TypeName="MelmarkNE1NewModel.StudentPersonal">
               <MappingFragment StoreEntitySet="StudentPersonal">
+                <ScalarProperty Name="FundingCode" ColumnName="FundingCode" />
                 <ScalarProperty Name="StudentPersonalId" ColumnName="StudentPersonalId" />
                 <ScalarProperty Name="SchoolId" ColumnName="SchoolId" />
                 <ScalarProperty Name="LocalId" ColumnName="LocalId" />
@@ -19794,6 +19799,7 @@
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="FundingCode" ColumnName="FundingCode" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -35,11 +35,11 @@ namespace ClientDB.Models
             int page = Convert.ToInt32(datasplit[0]);
             string dirpath = System.Web.Configuration.WebConfigurationManager.AppSettings["ImagessLocation"].ToString();
             Database objData = new Database();
-            IList<StudentPersonal> result = new List<StudentPersonal>();
-            IList<StudentPersonal> result1 = new List<StudentPersonal>();
-            IList<StudentPersonal> result2 = new List<StudentPersonal>();
-            IList<StudentPersonal> result4 = new List<StudentPersonal>();     
-            IList<StudentPersonal> result5 = new List<StudentPersonal>();
+            IList<ClientDB.DbModel.StudentPersonal> result = new List<ClientDB.DbModel.StudentPersonal>();
+            IList<ClientDB.DbModel.StudentPersonal> result1 = new List<ClientDB.DbModel.StudentPersonal>();
+            IList<ClientDB.DbModel.StudentPersonal> result2 = new List<ClientDB.DbModel.StudentPersonal>();
+            IList<ClientDB.DbModel.StudentPersonal> result4 = new List<ClientDB.DbModel.StudentPersonal>();
+            IList<ClientDB.DbModel.StudentPersonal> result5 = new List<ClientDB.DbModel.StudentPersonal>();
             int tempId = 0;
             
             
