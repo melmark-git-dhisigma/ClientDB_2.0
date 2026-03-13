@@ -2071,6 +2071,7 @@ namespace ClientDB.AppFunctions
                        // studentPA.Seizures = model.Seizures;
                        // studentPA.Other = model.Other;
                         studentPA.FundingSource = model.Funding;
+                        studentPA.FundingCode = model.FundingCode;
                         studentPA.CreatedBy = sess.LoginId;
                         studentPA.CreatedOn = DateTime.Now;
                         dbobj.StudentPersonalPAs.Add(studentPA);
@@ -2671,6 +2672,7 @@ namespace ClientDB.AppFunctions
                        // studentPA.Seizures = model.Seizures;
                        // studentPA.Other = model.Other;
                         studentPA.FundingSource = model.Funding;
+                        studentPA.FundingCode = model.FundingCode;
                         studentPA.ModifiedBy = sess.LoginId;
                         studentPA.ModifiedOn = DateTime.Now;
 
@@ -4397,6 +4399,18 @@ namespace ClientDB.AppFunctions
                         }
                     }
                 }
+
+                if (fundingSource != null)
+                {
+                    if (fundingSource.FundingCode != null)
+                    {
+                        if (fundingSource.FundingCode != "")
+                        {
+                            regModel.FundingCode = fundingSource.FundingCode + ";";
+                        }
+                    }
+                }
+
                 if (clntFunder.Count > 0)
                 {
                     foreach (var item in clntFunder)
@@ -5188,6 +5202,7 @@ namespace ClientDB.AppFunctions
                     regModel.WalkingResponse = studentPA.WalkingResponses;
                     regModel.WhenTranspoting = studentPA.WhenTranspoting;
                     regModel.Funding = studentPA.FundingSource;
+                    regModel.FundingCode = studentPA.FundingCode;
                 }
                 if (basicbehav.Count > 0)
                 {
@@ -5783,6 +5798,7 @@ namespace ClientDB.AppFunctions
                     regModel.WalkingResponse = studentPA.WalkingResponses;
                     regModel.WhenTranspoting = studentPA.WhenTranspoting;
                     regModel.Funding = studentPA.FundingSource;
+                    regModel.FundingCode = studentPA.FundingCode;
                 }
                 if (basicbehav.Count > 0)
                 {

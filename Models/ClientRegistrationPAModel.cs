@@ -52,7 +52,7 @@ namespace ClientDB.Models
             }
         }
         public virtual string LastNameSuffix { get; set; }
-
+               
         public virtual bool? Ambulatory { get; set; }
         private List<SelectListItem> _YesNo = new List<SelectListItem>();
         public virtual List<SelectListItem> YesNo
@@ -496,6 +496,7 @@ namespace ClientDB.Models
         public virtual string StrState { get; set; }
         public virtual string City { get; set; }
         public virtual string Funding { get; set; }
+        public virtual string FundingCode { get; set; }
         public virtual IEnumerable<SelectListItem> ZipList { get; set; }
         public virtual int Zip { get; set; }
         public virtual string ZipCode { get; set; }
@@ -575,6 +576,7 @@ namespace ClientDB.Models
         public virtual IList<AdaptiveEquipmentz> Adapt{get;set;}
         public virtual IList<BasicBehavior> BasicBehave { get; set; }
         public virtual IList<Diagnosis> Diagnosis { get; set; }
+        public int SchoolId { get; set; }
        
         public ClientRegistrationPAModel()
         {
