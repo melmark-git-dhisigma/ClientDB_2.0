@@ -237,12 +237,12 @@ namespace ClientDB.Reports
                                " INNER JOIN LookUp LKP on LKP.LookupId = PL.Department " + 
                                " WHERE        (SD.StudentType = 'Client ')  and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department' " + 
                                " and SD.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                               " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
-                               " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                               " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
-                               " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
-                               " and ST.StudentPersonalId not in (SELECT Distinct " + 
-                               " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SD.ClientId)>0"; 
+                               " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                               " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                               " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                               " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                               " and ST.StudentPersonalId not in (SELECT Distinct " +
+                               " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND CONVERT(INT,SD.ClientId)>0"; 
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                         con.Open();
                         SqlCommand cmd = new SqlCommand(quarterQuery, con);
@@ -1297,11 +1297,11 @@ namespace ClientDB.Reports
         " WHERE LP.LookupName='Emergency Contact' AND SAR.ContactSequence=1 AND CP.Status=1) EMERGENCYCONT ON SP.StudentPersonalId=EMERGENCYCONT.StudentPersonalId " +
         "  WHERE SP.StudentType='Client' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
         " 							FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-        " 							WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+        " 							WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
         " 							ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')" +
+        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)" +
         "   and ST.StudentPersonalId not in (SELECT Distinct " +
-        "   ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SP.ClientId)>0 " +
+        "   ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 )) AND CONVERT(INT,SP.ClientId)>0 " +
         "  UNION " +
         " (SELECT SP.StudentPersonalId,PLC.EndDate, SP.SchoolId,SP.LastName + ',' + SP.FirstName AS studentPersonalName,CONVERT(VARCHAR(10), SP.BirthDate, 101) AS BirthDate, " +
         " DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) >  GETDATE() THEN 1 ELSE 0 END) AS Age, " +
@@ -1319,11 +1319,11 @@ namespace ClientDB.Reports
         " WHERE (SP.StudentType = 'Client') and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 " +
         " and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
         " 							FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-        " 							WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+        " 							WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
         " 							ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LOOKUPTYPE= 'Department'  and ST.StudentType='Client') " +
+        " 							WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LOOKUPTYPE= 'Department'  and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
         "  and ST.StudentPersonalId not in (SELECT Distinct " +
-        "  ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+        "  ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
         "  AND CONVERT(INT,SP.ClientId)>0 AND CP.IsEmergency='true' AND CP.Status=1) ";
 
 
@@ -1522,11 +1522,11 @@ namespace ClientDB.Reports
                                    "INNER JOIN LookUp LKP ON LKP.LookupId = PL.Department " +
                                    " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType ='Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                                    "FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                                   "WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                                   "WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                                    "ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                                   "WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                                   "WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                                    "and ST.StudentPersonalId not in (SELECT Distinct " +
-                                   "ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND PL.Status=1 AND CONVERT(INT,SP.ClientId)>0";
+                                   "ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND PL.Status=1 AND CONVERT(INT,SP.ClientId)>0";
                     
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
@@ -2393,12 +2393,12 @@ namespace ClientDB.Reports
                                     " INNER JOIN LookUp LP ON LP.LookupId=PL.PlacementType " +
                                     " INNER JOIN (SELECT * FROM Class WHERE ResidenceInd = 1) CL ON	CL.ClassId = PL.Location " +
 		                            " WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate >= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
-                                    " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
-                                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
-                                    " and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SP.ClientId)>0";
+                                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                    " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                                    " and ST.StudentPersonalId not in (SELECT Distinct " +
+                                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND CONVERT(INT,SP.ClientId)>0";
 
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
@@ -2542,6 +2542,7 @@ namespace ClientDB.Reports
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
                     SqlCommand cmd = new SqlCommand(placementQuery, con);
+                    cmd.CommandTimeout = 120;
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
@@ -3063,11 +3064,11 @@ namespace ClientDB.Reports
                     " LKP.LookupType = 'Department' AND " +
                     " ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                    " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                    " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                     " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                     " and ST.StudentPersonalId not in (SELECT Distinct " +
-                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND ClientId IS NOT NULL AND ClientId<>'' AND CONVERT(INT,ClientId)>0  ORDER BY Lastname";
+                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND ClientId IS NOT NULL AND ClientId<>'' AND CONVERT(INT,ClientId)>0  ORDER BY Lastname";
 
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
@@ -3186,11 +3187,11 @@ namespace ClientDB.Reports
                             " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1  " +
                             " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
                             " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                            " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                             " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' and CONVERT(INT,ST.ClientId)>0) " +
                             " and ST.StudentPersonalId not in (SELECT Distinct " +
-                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,ClientId)>0 ORDER BY AdmissionDate DESC ";
+                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' and CONVERT(INT,ST.ClientId)>0)) AND CONVERT(INT,ClientId)>0 ORDER BY AdmissionDate DESC ";
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
                     SqlCommand cmd = new SqlCommand(admissionQuery, con);
@@ -3433,11 +3434,11 @@ namespace ClientDB.Reports
                    " StudentPersonal SL ON PT.StudentPersonalId=SL.StudentPersonalId INNER JOIN LookUp LKP ON LKP.LookupId = PT.Department WHERE PT.Status=1 AND SL.StudentType='Client' and (PT.EndDate is null or PT.EndDate >= cast (GETDATE() as DATE)) and PT.Status=1  " +
                    " and SL.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                   " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                   " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                   " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client') " +
+                   " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                    " and ST.StudentPersonalId not in (SELECT Distinct " +
-                   " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SL.ClientId)>0) SLPT  " +
+                   " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND CONVERT(INT,SL.ClientId)>0) SLPT  " +
                    " WHERE Location IS NOT NULL " +
                    " GROUP BY Location,MaxStudents,Pgm,PlacementType,Departmt,RaceId  ORDER BY Location ";
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
@@ -3576,11 +3577,11 @@ namespace ClientDB.Reports
                     " LKP.LookupType = 'Department' AND " +
                     " ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                    " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                    " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                     " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                     " and ST.StudentPersonalId not in (SELECT Distinct " +
-                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND ClientId IS NOT NULL AND ClientId<>'' AND CONVERT(INT,ClientId)>0  ORDER BY Lastname";
+                    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND ClientId IS NOT NULL AND ClientId<>'' AND CONVERT(INT,ClientId)>0  ORDER BY Lastname";
 
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
@@ -3685,11 +3686,11 @@ namespace ClientDB.Reports
                             " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1  " +
                             " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                             " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                            " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
                             " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                             " and ST.StudentPersonalId not in (SELECT Distinct " +
-                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,ClientId)>0 ORDER BY AdmissionDate DESC ";
+                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) AND CONVERT(INT,ClientId)>0 ORDER BY AdmissionDate DESC ";
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
                     SqlCommand cmd = new SqlCommand(admissionQuery, con);
@@ -3903,6 +3904,7 @@ namespace ClientDB.Reports
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                     con.Open();
                     SqlCommand cmd = new SqlCommand(placementQuery, con);
+                    cmd.CommandTimeout = 120;
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
@@ -4138,14 +4140,14 @@ namespace ClientDB.Reports
                                                 " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
                                                 " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
                                                 " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                                                " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " + 
-		                                        " and PLC.Status=1 AND LKP.LookupType = 'Department'  and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-          		                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
-          		                                " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-          		                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
-          		                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " +
+                                                " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " +
+                                                " and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+          		                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                                " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+          		                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                                                 " and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client'))) FUND WHERE ObjectType='Funder' " +
+                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0))) FUND WHERE ObjectType='Funder' " +
                                                 " AND CONVERT(DATE,EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') " + 
                                                 " ORDER BY EventLogId DESC ";
 
@@ -4171,15 +4173,15 @@ namespace ClientDB.Reports
 
                         string placementChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
                                                   " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                                                  " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
-                                                  " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                                                  " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
-                                                  " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                  " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
+                                                  " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                  " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                                  " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
                                                   " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
-                                                  " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                                                  " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client') " + 
-                                                  " and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                  " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+                                                  " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                                                  " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                                                  " and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                  " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
                                                   " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
 
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
@@ -4211,14 +4213,14 @@ namespace ClientDB.Reports
                                                      " WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL " + 
                                                      " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
                                                      " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                                                     " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                                                     " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                                                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
-                                                     " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                     " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
-                                                     " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
-                                                     " and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                     " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+                                                     " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                                                     " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                                     " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                     " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                                                     " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                                                     " and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                     " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
                                                      " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
 
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
@@ -4247,14 +4249,14 @@ namespace ClientDB.Reports
                                                 " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
                                                 " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
                                                 " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                                                " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " + 
-                                                " and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " + 
-                                                " WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
-                                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client') " + 
+                                                " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
+                                                "   and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                                " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
                                                 " and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) " +
+                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
                                                 " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC";
 
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
