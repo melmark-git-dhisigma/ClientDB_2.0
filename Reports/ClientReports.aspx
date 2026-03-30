@@ -318,21 +318,87 @@
             }
         });
 
-        function ValidateChanges() {
-            if ($('#txtchangeSdate').val() == "") {
+        function parseDateMMDDYYYY(dateStr) {
+            var parts = dateStr.split('/');
+            return new Date(parts[2], parts[0] - 1, parts[1]); 
+        }
+
+        function birthdateValidation() {
+            var sDateVal = $('#txtBithdateStart').val();
+            var eDateVal = $('#txtBirthdateEnd').val();
+            var ageFrom = $('#txtAgeFrom').val();
+            var ageTo = $('#txtAgeTo').val();
+
+            var minAge = parseInt(ageFrom);
+            var maxAge = parseInt(ageTo);
+
+            if (!isNaN(minAge) && !isNaN(maxAge)) {
+                if (maxAge < minAge) {
+                    alert("Minimum age cannot be greater than maximum age.");
+                    return false;
+                }
+            }
+
+            if (sDateVal != "" && eDateVal != "") {
+                var startDate = parseDateMMDDYYYY(sDateVal);
+                var endDate = parseDateMMDDYYYY(eDateVal);
+                if (startDate > endDate) {
+                    alert("Start date should be less than End date");
+                    return false;
+                }
+            }
+            return handleClientClick();
+        }
+
+        function AdmDateValidation() {
+            var sDateVal = $('#txtAdmissionFrom').val();
+            var eDateVal = $('#txtAdmissionTo').val();
+            if (sDateVal == "") {
                 alert("Please select Startdate");
                 return false;
             }
-            else if ($('#txtchangeEdate').val() == "") {
+            else if (eDateVal == "") {
                 alert("Please select Enddate");
                 return false;
-            }            
+            }
+            else {
+                var startDate = parseDateMMDDYYYY(sDateVal);
+                var endDate = parseDateMMDDYYYY(eDateVal);
+                if (startDate >= endDate) {
+
+                    alert("Start date should be less than End date");
+                    return false;
+                }
+                return handleClientClick();
+            }
+        }
+
+        function ValidateChanges() {
+            var sDateVal = $('#txtchangeSdate').val();
+            var eDateVal = $('#txtchangeEdate').val();
+            if (sDateVal == "") {
+                alert("Please select Startdate");
+                return false;
+            }
+            else if (eDateVal == "") {
+                alert("Please select Enddate");
+                return false;
+            }
+            else {
+                var startDate = parseDateMMDDYYYY(sDateVal);
+                var endDate = parseDateMMDDYYYY(eDateVal);
+                if (startDate >= endDate) {
+                    alert("Start date should be less than End date");
+                    return false;
+                }
             return handleClientClick();
+        }
         }
 
         function resetVal() {
             $('#txtchangeSdate').val("") ;
             $('#txtchangeEdate').val("") ;
+            return handleClientClick();
         }
 
     </script>
@@ -572,6 +638,10 @@
 
             //Display count of clients
             document.getElementById("noOfClients").textContent = "Total No. of Clients : " + data.length;
+
+            //Show only selected columns after "Show Report" click
+            hideandshowcolumn();
+
             hideLoader();
         }
 
@@ -655,14 +725,14 @@
             };
             paginationContainer.appendChild(exportButton);
 
-            var exportPdfBtn = document.createElement('button');
-            exportPdfBtn.type = 'button';
-            exportPdfBtn.textContent = 'Export PDF';
-            exportPdfBtn.onclick = function () {
-                // call the fit export
-                exportPlacementWithSvgLabelsAndPdf();
-            };
-            paginationContainer.appendChild(exportPdfBtn);
+        //    var exportPdfBtn = document.createElement('button');
+        //    exportPdfBtn.type = 'button';
+        //    exportPdfBtn.textContent = 'Export PDF';
+        //    exportPdfBtn.onclick = function () {
+        //        // call the fit export
+        //        exportPlacementWithSvgLabelsAndPdf();
+        //    };
+        //    paginationContainer.appendChild(exportPdfBtn);
         }
         function hideandshowcolumn()
         {
@@ -2032,6 +2102,7 @@
                 hideLoader();
                 return;
             } else {
+                hideLoader();
                 tableHeader.style.removeProperty("display");
             }
 
@@ -3084,6 +3155,7 @@
             try {
                 renderPlacementChart(data || []);
             } catch (e) {
+                hideLoader();
                 console.error('renderAggregatedPlacementChart wrapper error', e);
             }
         }
@@ -3393,17 +3465,18 @@
 
         function exportChartToPDF() {
             // Get Highcharts chart object
-            var chart = Highcharts.charts[0];  // If only one chart. If multiple, pass ID.
+            document.getElementById("loaderOverlay").classList.add("visible");
+            var chart = Highcharts.charts[0]; 
 
             if (!chart) {
                 alert("Chart not found!");
+                hideLoader();
                 return;
             }
 
-            // STEP 1: Get SVG from Highcharts
-            var svg = chart.getSVG({
+           var svg = chart.getSVG({
                 exporting: {
-                    scale: 2    // higher quality output
+                    scale: 2    
                 }
             });
 
@@ -3441,6 +3514,7 @@
             pdf.save("chart.pdf");
 
             URL.revokeObjectURL(url);
+                hideLoader();
         };
 
         img.src = url;
@@ -5586,6 +5660,7 @@
         }
 
         function applyAgeAndPostback() {
+            showLoader();
             var errEl = document.getElementById('ageFilterError');
             errEl.style.display = 'none';
             errEl.textContent = '';
@@ -5600,18 +5675,21 @@
                 errEl.style.display = 'inline';
                 errEl.textContent = 'Please enter a valid minimum age (0–150).';
                 fromEl.focus();
+                hideLoader();
                 return false;
             }
             if (toVal !== null && (isNaN(toVal) || toVal < 0 || toVal > 150)) {
                 errEl.style.display = 'inline';
                 errEl.textContent = 'Please enter a valid maximum age (0–150).';
                 toEl.focus();
+                hideLoader();
                 return false;
             }
             if (fromVal !== null && toVal !== null && fromVal > toVal) {
                 errEl.style.display = 'inline';
                 errEl.textContent = 'Minimum age cannot be greater than maximum age.';
                 fromEl.focus();
+                hideLoader();
                 return false;
             }
 
@@ -5694,7 +5772,7 @@
 
                         <%--<asp:Button ID="btnVenderDischarged" runat="server" CssClass="leftMenu" Text="Client/Contact/Vendor – Discharged" ToolTip="Client/Contact/Vendor – Discharged"   ></asp:Button>--%>
 
-                        <asp:Button ID="btnBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate Quarter" ToolTip="All Clients by Birthdate Quarter" OnClick="btnBirthdate_Click"></asp:Button>
+                        <asp:Button ID="btnBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate Quarter" ToolTip="All Clients by Birthdate Quarter" OnClick="btnBirthdate_Click" OnClientClick="return handleClientClick();"></asp:Button>
                         <asp:Button ID="btnPlacementPlanning" runat="server" CssClass="leftMenu" Text="Placement Planning" ToolTip="Placement Planning Chart" OnClientClick="return handleClientClick1();" OnClick="btnPlacementPlanning_Click"></asp:Button>
                         <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClientClick="return handleClientClick();" OnClick="btnResRoster_Click"></asp:Button>
                         <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
@@ -5798,7 +5876,7 @@
                                 </div>
                                 <asp:HiddenField ID="hfAgeFrom" runat="server" runat="server" />
                                 <asp:HiddenField ID="hfAgeTo" runat="server" />
-                                <asp:Button ID="btnApplyAgeServer" runat="server" OnClick="btnPlacementPlanning_Click" Style="display:none;" />
+                                <asp:Button ID="btnApplyAgeServer" runat="server" OnClick="btnPlacementPlanning_Click" OnClientClick="return handleClientClick();" Style="display:none;" />
                                 <div id="divPlacementPlanning" runat="server">
                                     <div id="placementExportBar" style="margin-bottom:6px; padding:4px 0;">
                                         <div class="age-filter" role="group" aria-label="Age filter" id="agefilter" runat="server" style="display:none;">
@@ -5837,7 +5915,12 @@
                                         </div>
                                         <div style="clear:both;"></div>
                                     </div>
+                                    <asp:UpdatePanel ID="upPlacementChart" runat="server" UpdateMode="Conditional">
+    <ContentTemplate>
                                   <div id="placementChartContainer" style="width:100%; height:1000px; overflow: auto;"></div>
+         </ContentTemplate>
+    
+</asp:UpdatePanel>
                                 </div>
                                 <div id="divPlacement" runat="server" visible="false">
                                     <table style="width: 100%">
@@ -5935,7 +6018,7 @@
                                                             <td>Start Date</td>
                                                             <td>
 
-                                                                <asp:TextBox ID="txtActiveStartDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"></asp:TextBox>
+                                                                <asp:TextBox ID="txtActiveStartDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -5943,7 +6026,7 @@
                                                             <td>End Date</td>
                                                             <td>
 
-                                                                <asp:TextBox ID="txtActiveEndDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"></asp:TextBox>
+                                                                <asp:TextBox ID="txtActiveEndDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"   onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -5961,7 +6044,7 @@
                                                             <td>Start Date</td>
                                                             <td>
 
-                                                                <asp:TextBox ID="txtDischrStartDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"></asp:TextBox>
+                                                                <asp:TextBox ID="txtDischrStartDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -5969,7 +6052,7 @@
                                                             <td>End Date</td>
                                                             <td>
 
-                                                                <asp:TextBox ID="txtDischrEndDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"></asp:TextBox>
+                                                                <asp:TextBox ID="txtDischrEndDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -5987,7 +6070,7 @@
                                                             <td>Start Date</td>
                                                             <td>
 
-                                                                <asp:TextBox ID="txtNewStartDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"></asp:TextBox>
+                                                                <asp:TextBox ID="txtNewStartDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -5995,7 +6078,7 @@
                                                             <td>End Date</td>
                                                             <td>
 
-                                                                <asp:TextBox ID="txtNewEndDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"></asp:TextBox>
+                                                                <asp:TextBox ID="txtNewEndDate" runat="server" Width="120px" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox>
 
                                                             </td>
                                                         </tr>
@@ -6061,15 +6144,15 @@
                                         <tr>
                                             <td>Start Date</td>
                                             <td>
-                                                <asp:TextBox ID="txtBithdateStart" runat="server" CssClass="datepicker" onkeypress="return false"></asp:TextBox></td>
+                                                <asp:TextBox ID="txtBithdateStart" runat="server" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox></td>
                                             <td></td>
                                             <td>End Date</td>
                                             <td>
-                                                <asp:TextBox ID="txtBirthdateEnd" runat="server" CssClass="datepicker" onkeypress="return false"></asp:TextBox></td>
+                                                <asp:TextBox ID="txtBirthdateEnd" runat="server" CssClass="datepicker" onkeypress="return false"   onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox></td>
                                             <td></td>
                                             <td></td>
                                             <td>
-                                                <asp:Button ID="btnShowBirthdate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowBirthdate_Click" />
+                                                <asp:Button ID="btnShowBirthdate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return birthdateValidation();" OnClick="btnShowBirthdate_Click" />
                                             </td>
                                         </tr>
                                     </table>
@@ -6080,11 +6163,11 @@
                                         <tr>
                                             <td>Admission Date From</td>
                                             <td>
-                                                <asp:TextBox ID="txtAdmissionFrom" runat="server" CssClass="datepicker" onkeypress="return false"></asp:TextBox></td>
+                                                <asp:TextBox ID="txtAdmissionFrom" runat="server" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox></td>
                                             <td></td>
                                             <td>To</td>
                                             <td>
-                                                <asp:TextBox ID="txtAdmissionTo" runat="server" CssClass="datepicker" onkeypress="return false"></asp:TextBox></td>
+                                                <asp:TextBox ID="txtAdmissionTo" runat="server" CssClass="datepicker" onkeypress="return false"   onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox></td>
                                             <td></td>
                                             <td>Number of Admissions</td>
                                             <td>
@@ -6092,7 +6175,7 @@
                                             </td>
                                             <td></td>
                                             <td>
-                                                <asp:Button ID="btnShowAdmissionDate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowAdmissionDate_Click" /></td>
+                                                <asp:Button ID="btnShowAdmissionDate" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return AdmDateValidation();" OnClick="btnShowAdmissionDate_Click" /></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -6223,11 +6306,11 @@
                                           <tr>
                                             <td>Start Date</td>
                                             <td>
-                                                <asp:TextBox ID="txtchangeSdate" runat="server" CssClass="datepicker" onkeypress="return false"></asp:TextBox></td>
+                                                <asp:TextBox ID="txtchangeSdate" runat="server" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox></td>
                                             <td></td>
                                             <td>End Date</td>
                                             <td>
-                                                <asp:TextBox ID="txtchangeEdate" runat="server" CssClass="datepicker" onkeypress="return false"></asp:TextBox></td>
+                                                <asp:TextBox ID="txtchangeEdate" runat="server" CssClass="datepicker" onkeypress="return false"  onkeydown="if(event.key === 'Backspace'){ this.value=''; return false; }"></asp:TextBox></td>
                                             <td></td>
                                             <td></td>
                                             <td>

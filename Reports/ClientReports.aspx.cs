@@ -2310,9 +2310,11 @@ namespace ClientDB.Reports
                 HeadingDiv.InnerHtml = "All Clients by Birthdate Quarter";
                 divbirthdate.Visible = true;
                 RVClientReport.Visible = false;
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
@@ -2333,6 +2335,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divbirthdate.Visible = false;
                 divPlacementPlanning.Visible = true;
                 //exportChartBtn.Visible = true;
 
@@ -2436,8 +2439,12 @@ namespace ClientDB.Reports
                 if (studentsList.Count == 0)
                 {
                     string emptyScript = "console.log('Placement aggregated JSON: empty'); renderAggregatedPlacementChart([]);";
-                    ClientScript.RegisterStartupScript(this.GetType(), "LoadPlacementData", emptyScript, true);
-                    return;
+                    ScriptManager.RegisterStartupScript(
+                        upPlacementChart,
+                        upPlacementChart.GetType(),
+                        "LoadPlacementData",
+                        emptyScript,
+                        true); return;
                 }
 
                 // ---------------------------
@@ -2753,10 +2760,12 @@ namespace ClientDB.Reports
                 string encoded = System.Web.HttpUtility.JavaScriptStringEncode(jsonData);
                 string script = "console.log('Placement aggregated JSON (len=" + aggregatedPayload.Count + ")'); renderAggregatedPlacementChart(" + jsonData + ");";
                 ClientScript.RegisterStartupScript(this.GetType(), "LoadPlacementData", script, true);
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
             }
             catch (Exception ex)
             {
                 // for debugging bubble up or log as appropriate
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw;
             }
         }
@@ -4536,6 +4545,7 @@ namespace ClientDB.Reports
             HeadingDiv.Visible = true;
             HeadingDiv.InnerHtml = "Contact Changes";
             divbirthdate.Visible = false;
+            ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
         }
 
         protected void btnGuardianChanges_Click(object sender, EventArgs e)
@@ -4563,6 +4573,7 @@ namespace ClientDB.Reports
             HeadingDiv.Visible = true;
             HeadingDiv.InnerHtml = "Guardianship Changes";
             divbirthdate.Visible = false;
+            ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
         }
 
         protected void btnPlcChange_Click(object sender, EventArgs e)
@@ -4590,6 +4601,7 @@ namespace ClientDB.Reports
             HeadingDiv.Visible = true;
             HeadingDiv.InnerHtml = "Placement Changes";
             divbirthdate.Visible = false;
+            ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
         }
 
         protected void btnFundChange_Click(object sender, EventArgs e)
@@ -4617,6 +4629,7 @@ namespace ClientDB.Reports
             HeadingDiv.Visible = true;
             HeadingDiv.InnerHtml = "Funding Changes";
             divbirthdate.Visible = false;
+            ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
         }
 
         protected void btnChangeResult_Click(object sender, EventArgs e)
@@ -4785,6 +4798,7 @@ namespace ClientDB.Reports
             }
             catch (Exception ex)
             {
+                ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw ex;
             }
         }
