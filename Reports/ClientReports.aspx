@@ -4894,7 +4894,7 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div id="divPlacementPlanning">
+                                <div id="divPlacementPlanning" runat="server">
                                     <div id="placementExportBar" style="overflow:hidden; margin-bottom:6px; padding:4px 0;">
                                         <div style="float:right;">
                                             <button id="exportChartBtn" type="button" runat="server" visible="false"
