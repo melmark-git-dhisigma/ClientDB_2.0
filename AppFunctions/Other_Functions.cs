@@ -37,6 +37,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.IO;
 using System.Net;
 using DocumentFormat.OpenXml;
+using System.Transactions;
 
 
 namespace ClientDB.AppFunctions
@@ -6617,6 +6618,51 @@ namespace ClientDB.AppFunctions
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        /// 
+
+        public void SaveNewEventDataPlc(BiWeeklyRCPNewEntities dbobj, string strNewEvent, int placementId)
+        {
+            try
+            {                
+                ClientDB.DbModel.EventLog eventObj = new ClientDB.DbModel.EventLog();
+                if (strNewEvent != null && strNewEvent != "")
+                {
+                    string[] arrEvents = strNewEvent.Split(new string[] { ">>>" }, StringSplitOptions.None);
+                    foreach (string x in arrEvents)
+                    {
+                        if (x != "")
+                        {
+                            string[] subEvent = x.Split(new string[] { "|||" }, StringSplitOptions.None);
+                            string objT = subEvent[0];
+                            string objFT = subEvent[1];
+                            string objF = subEvent[2];
+                            string preV = subEvent[3];
+                            string newV = subEvent[4];
+
+                            eventObj.StudentPersonalId = sess.StudentId;
+                            eventObj.ObjectTypeId = placementId;
+                            eventObj.ObjectType = objT;
+                            eventObj.ObjectFieldType = objFT;
+                            eventObj.ObjectField = objF;
+                            eventObj.PreviousValue = preV;
+                            eventObj.NewValue = newV;
+                            //eventObj.EventDate = DateTime.Now.ToString("MM/dd/yyyy").Replace("-", "/");
+                            eventObj.EventDate = DateTime.Now;
+                            eventObj.CreatedBy = 1;
+                            eventObj.CreatedOn = DateTime.Now;
+
+                            dbobj.EventLogs.Add(eventObj);
+                            dbobj.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ClsErrorLog error = new ClsErrorLog();
+                error.WriteToLog("Error:" + e);
+            }
+        }
 
         public string SaveEventData(AddEventModel model, bool IsSysEvent = false)
         {
@@ -8113,117 +8159,32 @@ namespace ClientDB.AppFunctions
         /// Function to Save / Update Placement Data
         /// </summary>
         /// <param name="model"></param>
-        /// <returns></returns>
+        /// <returns></returns>               
 
-        public string SavePlacementData(AddPlacementModel model)
+        public string SavePlacementData(BiWeeklyRCPNewEntities dbobj,AddPlacementModel model)
         {
             sess = (clsSession)HttpContext.Current.Session["UserSessionClient"];
-            dbobj = new BiWeeklyRCPNewEntities();
             int ClientID = sess.StudentId, SchoolId = sess.SchoolId;
 
             Placement placement = new Placement();
-            if (model.Id > 0)
-            {
-                try
-                {
-                    placement = dbobj.Placements.Where(objPlacement => objPlacement.PlacementId == model.Id && objPlacement.StudentPersonalId == ClientID).SingleOrDefault();
-                    placement.PlacementType = model.PlacementType;
-                    placement.BehaviorAnalyst = model.BehaviorAnalyst;
-                    placement.UnitClerk = model.UnitClerk;
-                    placement.PrimaryNurse = model.PrimaryNurse;
-                    placement.Department = model.Department;
-                    placement.Status = 1;
-                    placement.StartDate = DateTime.ParseExact(model.StartDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                    if (model.EndDateDate != null)
-                        placement.EndDate = DateTime.ParseExact(model.EndDateDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                    else
-                        placement.EndDate = null;
-                    placement.ModifiedBy = 1;
-                    placement.ModifiedOn = DateTime.Now;
-
-                    placement.Reason = model.Reason;
-                    placement.AssociatedPersonnel = model.AssociatedPersonnel;
-                    placement.Location = model.LocationId;
-                    placement.PlacementDepartment = model.PlacementDepartmentId;
-                    placement.PlacementReason = model.PlacementReason;
-
-                    placement.IsMonday = model.IsMonday;
-                    placement.IsTuesday = model.IsTuesday;
-                    placement.IsWednesday = model.IsWednesday;
-                    placement.IsThursday = model.IsThursday;
-                    placement.IsFriday = model.IsFriday;
-                    placement.IsSaturday = model.IsSaturday;
-                    placement.IsSunday = model.IsSunday;
-
-                    placement.MondayNote = model.MondayNote;
-                    placement.TuesdayNote = model.TuesdayNote;
-                    placement.WednesdayNote = model.WednesdayNote;
-                    placement.ThursdayNote = model.ThursdayNote;
-                    placement.FridayNote = model.FridayNote;
-                    placement.SaturdayNote = model.SaturdayNote;
-                    placement.SundayNote = model.SundayNote;
-
-
-
-                    Other_Functions of = new Other_Functions();
-                    of.RemoveFromClass(ClientID, Convert.ToInt32(model.LocationId), model.Id);
-
-                    dbobj.SaveChanges();
-
-                    string PlacementName = "";
-                    if (placement.Department != null && placement.Department > 0)
-                    {
-                        var Plcname = dbobj.LookUps.Where(x => x.LookupId == placement.Department).ToList();
-                        if (Plcname.Count > 0) PlacementName = Plcname[0].LookupName;
-                    }
-                    SaveNewEventData(model.newEventLog, model.Id);
-                    if (model.EndDateDate != null && model.EndDateDate != "")
-                    {
-                        if (model.placemntLogText != "")
-                        {
-                            // AddEventModel.CreateSystemEvent("Placement " + PlacementName + " Discharged on :" + model.EndDateDate, "Discharged", model.placemntLogText);
-                            AddEventModel.CreateSystemEvent("Placement [" + PlacementName + "] was Updated", "Placement Updated", model.placemntLogText);
-                        }
-                    }
-                    else
-                    {
-                        if (model.placemntLogText != "")
-                        {
-                            AddEventModel.CreateSystemEvent("Placement [" + PlacementName + "] was Updated", "Placement Updated", model.placemntLogText);
-                        }
-                        //AddEventModel.CreateSystemEvent("Placement  " + PlacementName + " Changed", "Moved", model.placemntLogText);
-                    }
-                    //DisplayStatus();
-                    return "Sucess";
-                }
-                catch
-                {
-                    return "Failed";
-                }
-            }
-            else
-            {
-                if (ClientID == 0)
-                {
-                    return "No Client Selected";
-                }
-                else
+                if (model.Id > 0)
                 {
                     try
                     {
-                        placement.SchoolId = SchoolId;
+                        placement = dbobj.Placements.Where(objPlacement => objPlacement.PlacementId == model.Id && objPlacement.StudentPersonalId == ClientID).SingleOrDefault();
                         placement.PlacementType = model.PlacementType;
                         placement.BehaviorAnalyst = model.BehaviorAnalyst;
                         placement.UnitClerk = model.UnitClerk;
                         placement.PrimaryNurse = model.PrimaryNurse;
                         placement.Department = model.Department;
                         placement.Status = 1;
-                        placement.StudentPersonalId = ClientID;
                         placement.StartDate = DateTime.ParseExact(model.StartDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
                         if (model.EndDateDate != null)
                             placement.EndDate = DateTime.ParseExact(model.EndDateDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                        placement.CreatedBy = 1;
-                        placement.CreatedOn = DateTime.Now;
+                        else
+                            placement.EndDate = null;
+                        placement.ModifiedBy = 1;
+                        placement.ModifiedOn = DateTime.Now;
 
                         placement.Reason = model.Reason;
                         placement.AssociatedPersonnel = model.AssociatedPersonnel;
@@ -8247,30 +8208,119 @@ namespace ClientDB.AppFunctions
                         placement.SaturdayNote = model.SaturdayNote;
                         placement.SundayNote = model.SundayNote;
 
-                        dbobj.Placements.Add(placement);
-                        dbobj.SaveChanges();
 
 
                         Other_Functions of = new Other_Functions();
-                        of.AssignToClass(ClientID, Convert.ToInt32(model.LocationId));
+                        of.RemoveFromClass(dbobj,ClientID, Convert.ToInt32(model.LocationId), model.Id);
 
+                        dbobj.SaveChanges();
 
-                        string PlacementName = "";
+                    string PlacementName = "";
                         if (placement.Department != null && placement.Department > 0)
                         {
                             var Plcname = dbobj.LookUps.Where(x => x.LookupId == placement.Department).ToList();
                             if (Plcname.Count > 0) PlacementName = Plcname[0].LookupName;
                         }
+                        SaveNewEventDataPlc(dbobj,model.newEventLog, model.Id);
+                        if (model.EndDateDate != null && model.EndDateDate != "")
+                        {
+                            if (model.placemntLogText != "")
+                            {
+                                // AddEventModel.CreateSystemEvent("Placement " + PlacementName + " Discharged on :" + model.EndDateDate, "Discharged", model.placemntLogText);
+                                AddEventModel.CreateSystemEvent("Placement [" + PlacementName + "] was Updated", "Placement Updated", model.placemntLogText);
+                            }
+                        }
+                        else
+                        {
+                            if (model.placemntLogText != "")
+                            {
+                                AddEventModel.CreateSystemEvent("Placement [" + PlacementName + "] was Updated", "Placement Updated", model.placemntLogText);
+                            }
+                            //AddEventModel.CreateSystemEvent("Placement  " + PlacementName + " Changed", "Moved", model.placemntLogText);
+                        }
                         //DisplayStatus();
-                        AddEventModel.CreateSystemEvent("New Placement " + PlacementName + " Added", "Placement Added", "Placement " + PlacementName + " Added");
-                        return "Sucess";
+                    return "Sucess";
                     }
-                    catch
+                    catch (Exception exp)
                     {
+                        errorLog errlog = new errorLog();
+                        errlog.WriteToLog(exp.ToString());
                         return "Failed";
                     }
                 }
-            }
+                else
+                {
+                    if (ClientID == 0)
+                    {
+                        return "No Client Selected";
+                    }
+                    else
+                    {
+                        try
+                        {
+                            placement.SchoolId = SchoolId;
+                            placement.PlacementType = model.PlacementType;
+                            placement.BehaviorAnalyst = model.BehaviorAnalyst;
+                            placement.UnitClerk = model.UnitClerk;
+                            placement.PrimaryNurse = model.PrimaryNurse;
+                            placement.Department = model.Department;
+                            placement.Status = 1;
+                            placement.StudentPersonalId = ClientID;
+                            placement.StartDate = DateTime.ParseExact(model.StartDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                            if (model.EndDateDate != null)
+                                placement.EndDate = DateTime.ParseExact(model.EndDateDate, "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                            placement.CreatedBy = 1;
+                            placement.CreatedOn = DateTime.Now;
+
+                            placement.Reason = model.Reason;
+                            placement.AssociatedPersonnel = model.AssociatedPersonnel;
+                            placement.Location = model.LocationId;
+                            placement.PlacementDepartment = model.PlacementDepartmentId;
+                            placement.PlacementReason = model.PlacementReason;
+
+                            placement.IsMonday = model.IsMonday;
+                            placement.IsTuesday = model.IsTuesday;
+                            placement.IsWednesday = model.IsWednesday;
+                            placement.IsThursday = model.IsThursday;
+                            placement.IsFriday = model.IsFriday;
+                            placement.IsSaturday = model.IsSaturday;
+                            placement.IsSunday = model.IsSunday;
+
+                            placement.MondayNote = model.MondayNote;
+                            placement.TuesdayNote = model.TuesdayNote;
+                            placement.WednesdayNote = model.WednesdayNote;
+                            placement.ThursdayNote = model.ThursdayNote;
+                            placement.FridayNote = model.FridayNote;
+                            placement.SaturdayNote = model.SaturdayNote;
+                            placement.SundayNote = model.SundayNote;
+
+                            dbobj.Placements.Add(placement);
+                            dbobj.SaveChanges();
+                            
+
+
+                            Other_Functions of = new Other_Functions();
+                            of.AssignToClass(dbobj, ClientID, Convert.ToInt32(model.LocationId));
+
+
+                            string PlacementName = "";
+                            if (placement.Department != null && placement.Department > 0)
+                            {
+                                var Plcname = dbobj.LookUps.Where(x => x.LookupId == placement.Department).ToList();
+                                if (Plcname.Count > 0) PlacementName = Plcname[0].LookupName;
+                            }
+                            //DisplayStatus();
+                            AddEventModel.CreateSystemEvent("New Placement " + PlacementName + " Added", "Placement Added", "Placement " + PlacementName + " Added");
+                             return "Sucess";
+                    }
+                        catch (Exception exp)
+                        {
+                            errorLog errlog = new errorLog();
+                            errlog.WriteToLog(exp.ToString());
+                            return "Failed";
+                        }
+                    }
+                }
 
 
 
@@ -9174,26 +9224,25 @@ namespace ClientDB.AppFunctions
         /// <param name="ClientId"></param>
         /// <param name="itemId"></param>
 
-        public void deletePlacement(int ClientId, int itemId)
+        public void deletePlacement(BiWeeklyRCPNewEntities dbobj,int ClientId, int itemId)
         {
-            dbobj = new BiWeeklyRCPNewEntities();
             PlacementModel PlacementModel = new PlacementModel();
             Placement placement = new Placement();
-            placement = dbobj.Placements.Where(objPlacement => objPlacement.StudentPersonalId == ClientId && objPlacement.PlacementId == itemId).SingleOrDefault();
-            placement.Status = 0;
+                placement = dbobj.Placements.Where(objPlacement => objPlacement.StudentPersonalId == ClientId && objPlacement.PlacementId == itemId).SingleOrDefault();
+                placement.Status = 0;
 
-            if (placement.Location != null)
-            {
-                DeleteFromClass(ClientId, (int)placement.Location, itemId);
-            }
-            string PlacementName = "";
-            if (placement.Department != null && placement.Department > 0)
-            {
-                var Plcname = dbobj.LookUps.Where(x => x.LookupId == placement.Department).ToList();
-                if (Plcname.Count > 0) PlacementName = Plcname[0].LookupName;
-            }
-            AddEventModel.CreateSystemEvent("Placement [" + PlacementName + "] was Deleted", "Placement Deleted", "Placement  " + PlacementName + "was Deleted");
-            dbobj.SaveChanges();
+                if (placement.Location != null)
+                {
+                    DeleteFromClass(dbobj,ClientId, (int)placement.Location, itemId);
+                }
+                string PlacementName = "";
+                if (placement.Department != null && placement.Department > 0)
+                {
+                    var Plcname = dbobj.LookUps.Where(x => x.LookupId == placement.Department).ToList();
+                    if (Plcname.Count > 0) PlacementName = Plcname[0].LookupName;
+                }
+                AddEventModel.CreateSystemEvent("Placement [" + PlacementName + "] was Deleted", "Placement Deleted", "Placement  " + PlacementName + "was Deleted");
+                dbobj.SaveChanges();
         }
 
         public string SaveMedicalDatas(MedicalModel model)
@@ -10594,9 +10643,8 @@ namespace ClientDB.AppFunctions
             return (h.ToString() + ":" + m.ToString());
         }
 
-        public int RemoveFromClass(int StudentId, int ClassId, int placementId)
+        public int RemoveFromClass(BiWeeklyRCPNewEntities objData,int StudentId, int ClassId, int placementId)
         {
-            BiWeeklyRCPNewEntities objData = new BiWeeklyRCPNewEntities();
             IList<ContactNameSearchDetails> val = null;
             IList<GridListPlacement> retunmodel = new List<GridListPlacement>();
             session = (clsSession)HttpContext.Current.Session["UserSessionClient"];
@@ -10623,9 +10671,10 @@ namespace ClientDB.AppFunctions
 
                                   }).ToList();
                 }
-                catch
+                catch (Exception exp)
                 {
-
+                    errorLog errlog = new errorLog();
+                    errlog.WriteToLog(exp.ToString());
                 }
 
                 if (retunmodel.Count > 0)
@@ -10642,16 +10691,15 @@ namespace ClientDB.AppFunctions
                         result[0].ActiveInd = "D";
                         objData.SaveChanges();
                     }
-                    AssignToClass(StudentId, ClassId);
+                    AssignToClass(objData,StudentId, ClassId);
 
                     return 1;
                 }
             }
             return 0;
         }
-        public int DeleteFromClass(int StudentId, int ClassId, int placementId)
+        public int DeleteFromClass(BiWeeklyRCPNewEntities objData,int StudentId, int ClassId, int placementId)
         {
-            BiWeeklyRCPNewEntities objData = new BiWeeklyRCPNewEntities();
             IList<ContactNameSearchDetails> val = null;
             IList<GridListPlacement> retunmodel = new List<GridListPlacement>();
             session = (clsSession)HttpContext.Current.Session["UserSessionClient"];
@@ -10678,9 +10726,10 @@ namespace ClientDB.AppFunctions
 
                               }).ToList();
             }
-            catch
+            catch (Exception exp)
             {
-
+                errorLog errlog = new errorLog();
+                errlog.WriteToLog(exp.ToString());
             }
 
             if (retunmodel.Count > 0)
@@ -10705,9 +10754,8 @@ namespace ClientDB.AppFunctions
             return 0;
         }
 
-        public int AssignToClass(int StudentId, int ClassId)
+        public int AssignToClass(BiWeeklyRCPNewEntities objData,int StudentId, int ClassId)
         {
-            BiWeeklyRCPNewEntities objData = new BiWeeklyRCPNewEntities();
             IList<ContactNameSearchDetails> val = null;
             IList<GridListPlacement> retunmodel = new List<GridListPlacement>();
             session = (clsSession)HttpContext.Current.Session["UserSessionClient"];
@@ -10735,8 +10783,10 @@ namespace ClientDB.AppFunctions
                     objData.StdtClasses.Add(stdc);
                     objData.SaveChanges();
                 }
-                catch
+                catch (Exception exp)
                 {
+                    errorLog errlog = new errorLog();
+                    errlog.WriteToLog(exp.ToString());
 
                 }
 

@@ -7,6 +7,7 @@ using ClientDB.DbModel;
 using ClientDB.Models;
 using ClientDB.AppFunctions;
 using System.Web.Configuration;
+using System.Transactions;
 
 namespace ClientDB.Controllers
 {
@@ -93,33 +94,48 @@ namespace ClientDB.Controllers
             Other_Functions objFuns = new Other_Functions();
             sess = (clsSession)Session["UserSessionClient"];
             int ClientID = sess.StudentId;
-
-            int classId = Convert.ToInt32(model.LocationId);
-            var stMaxCount = dbobj.Classes.Where(x => x.ClassId == classId && x.ActiveInd == "A").SingleOrDefault();
-
-            if (stMaxCount.MaxStudents == null || stMaxCount.MaxStudents.ToString() == "0")
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                result = objFuns.SavePlacementData(model);
-                
-            }
-            else
-            {
-                
-                var nofStudents = dbobj.StdtClasses.Where(x => x.ClassId == classId && x.ActiveInd == "A").Count();
-                if (model.Id != 0)
+                int classId = Convert.ToInt32(model.LocationId);
+                var stMaxCount = dbobj.Classes.Where(x => x.ClassId == classId && x.ActiveInd == "A").SingleOrDefault();
+
+                if (stMaxCount.MaxStudents == null || stMaxCount.MaxStudents.ToString() == "0")
+                {
+                    result = objFuns.SavePlacementData(dbobj,model);
+
+                }
+                else
                 {
 
-                    Placement placement = new Placement();
-                    placement = dbobj.Placements.Where(objPlacement => objPlacement.PlacementId == model.Id && objPlacement.StudentPersonalId == ClientID).SingleOrDefault();
-                    if (placement.Location == classId)
+                    var nofStudents = dbobj.StdtClasses.Where(x => x.ClassId == classId && x.ActiveInd == "A").Count();
+                    if (model.Id != 0)
                     {
-                        result = objFuns.SavePlacementData(model);
+
+                        Placement placement = new Placement();
+                        placement = dbobj.Placements.Where(objPlacement => objPlacement.PlacementId == model.Id && objPlacement.StudentPersonalId == ClientID).SingleOrDefault();
+                        if (placement.Location == classId)
+                        {
+                            result = objFuns.SavePlacementData(dbobj,model);
+                        }
+                        else
+                        {
+                            if (stMaxCount.MaxStudents > nofStudents)
+                            {
+                                result = objFuns.SavePlacementData(dbobj,model);
+                            }
+                            else
+                            {
+                                // TempData["noticeLimit"] = "Student Limit Exceed for the class";
+                                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new { logicError = true, id = model.Id, ErrorMsg = "This Location is Full" }));
+                            }
+                        }
                     }
                     else
                     {
+
                         if (stMaxCount.MaxStudents > nofStudents)
                         {
-                            result = objFuns.SavePlacementData(model);
+                            result = objFuns.SavePlacementData(dbobj,model);
                         }
                         else
                         {
@@ -128,33 +144,22 @@ namespace ClientDB.Controllers
                         }
                     }
                 }
-                else
-                {
 
-                    if (stMaxCount.MaxStudents > nofStudents)
-                    {
-                        result = objFuns.SavePlacementData(model);
-                    }
-                    else
-                    {
-                        // TempData["noticeLimit"] = "Student Limit Exceed for the class";
-                        return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new { logicError = true, id = model.Id, ErrorMsg = "This Location is Full" }));
-                    }
+                if (result == "No Client Selected")
+                {
+                    TempData["notice"] = "No Client Selected";
                 }
+                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId, sess.LoginId);
+                var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
+                if (StudStatus != null)
+                {
+                    Session["PlacementStat"] = (StudStatus.PlacementStatus == null) ? "A" : StudStatus.PlacementStatus;
+                }
+                scope.Complete();  // Commit transaction
+                //return RedirectToAction("Placement");
+                return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new { logicError = false, id = model.Id }));
+                
             }
-           
-            if (result == "No Client Selected")
-            {
-                TempData["notice"] = "No Client Selected";
-            }
-            var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId,sess.LoginId);
-            var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
-            if (StudStatus != null)
-            {
-                Session["PlacementStat"] = (StudStatus.PlacementStatus == null) ? "A" : StudStatus.PlacementStatus;
-            }
-            //return RedirectToAction("Placement");
-            return Content(Newtonsoft.Json.JsonConvert.SerializeObject(new { logicError = false, id = model.Id }));
 
         }
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.None)]
@@ -171,12 +176,16 @@ namespace ClientDB.Controllers
             BiWeeklyRCPNewEntities dbobj = new BiWeeklyRCPNewEntities();
             sess = (clsSession)Session["UserSessionClient"];
             Other_Functions objFuns = new Other_Functions();
-            objFuns.deletePlacement(sess.StudentId, id);
-            var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId,sess.LoginId);
-            var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
-            if (StudStatus != null)
+            using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required))
             {
-                Session["PlacementStat"] = (StudStatus.PlacementStatus == null) ? "A" : StudStatus.PlacementStatus;
+                objFuns.deletePlacement(dbobj,sess.StudentId, id);
+                var res = dbobj.Update_StudentStatus_Automatically(sess.StudentId, sess.LoginId);
+                var StudStatus = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == sess.StudentId && x.SchoolId == sess.SchoolId).SingleOrDefault();
+                if (StudStatus != null)
+                {
+                    Session["PlacementStat"] = (StudStatus.PlacementStatus == null) ? "A" : StudStatus.PlacementStatus;
+                }
+                scope.Complete();  // Commit transaction
             }
             return RedirectToAction("Placement");
 
