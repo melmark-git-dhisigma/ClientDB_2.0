@@ -103,6 +103,15 @@ namespace ClientDB.Reports {
         protected global::System.Web.UI.WebControls.Button btnBirthdate;
         
         /// <summary>
+        /// btnPlacementPlanning control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnPlacementPlanning;
+        
+        /// <summary>
         /// btnResRoster control.
         /// </summary>
         /// <remarks>
@@ -362,6 +371,15 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnquarter;
+        
+        /// <summary>
+        /// exportChartBtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlButton exportChartBtn;
         
         /// <summary>
         /// divPlacement control.

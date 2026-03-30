@@ -124,6 +124,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -180,6 +181,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -327,6 +329,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 FillStudNameIDs();
@@ -441,6 +444,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    exportChartBtn.Visible = false;
                     showlab.Text = "<Br/><Br/>Show Labels:";
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -1199,6 +1203,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -1252,7 +1257,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    
+                    exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -1429,6 +1434,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -1482,6 +1488,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -1653,7 +1660,7 @@ namespace ClientDB.Reports
         {
             try
             {
-
+                exportChartBtn.Visible = false;
                 FillRelationship();
                 FillConStudNameIDs();
 
@@ -1720,6 +1727,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    exportChartBtn.Visible = false;
                     HContactStudname.Value = "All";
                     HContactstatus.Value = "0,1,2";
                     HContactRelation.Value = "All";
@@ -2169,6 +2177,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 string chkcontact = "";
 
                 foreach (ListItem item in CheckBoxListcontact.Items)
@@ -2263,6 +2272,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -2294,10 +2304,275 @@ namespace ClientDB.Reports
             }
         }
 
+        protected void btnPlacementPlanning_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                tdMsg.InnerHtml = "";
+                showlab.Text = "";
+                divContact.Visible = false;
+                divnodata.Visible = false;
+                divStatisticalNew.Visible = false;
+                divchanges.Visible = false;
+                divStatistical.Visible = false;
+                divDischarge.Visible = false;
+                divAdmission.Visible = false;
+                divbyBirthdate.Visible = false;
+                divFunder.Visible = false;
+                divPlacement.Visible = false;          // hide the generic placement list (if used)
+                exportChartBtn.Visible = true;
+
+                // hide report buttons and reset controls like in other handlers
+                btnShowReport.Visible = false;
+                btnResetAllClient.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
+
+                // indicate current menu/section
+                hdnMenu.Value = "btnPlacementPlanning";
+
+                // report viewer usage (hide by default for Highcharts / custom chart usage)
+                RVClientReport.SizeToReportContent = false;
+                tdMsg.InnerHtml = "";
+                RVClientReport.Visible = false;
+
+                // show heading and set the title
+                HeadingDiv.Visible = true;
+                HeadingDiv.InnerHtml = "Placement Planning";
+
+                string quarterQuery = "SELECT DISTINCT SD.StudentPersonalId," +
+                "       SD.LastName + ',' + SD.FirstName AS studentPersonalName," +
+                "       SD.BirthDate " +
+                "FROM StudentPersonal AS SD " +
+                "LEFT JOIN Placement AS PL ON PL.StudentPersonalId = SD.StudentPersonalId " +
+                "INNER JOIN LookUp LKP on LKP.LookupId = PL.Department " +
+                "WHERE (SD.StudentType = 'Client ') " +
+                "  AND (PL.EndDate IS NULL OR PL.EndDate >= CAST(GETDATE() AS DATE)) " +
+                "  AND PL.Status = 1 " +
+                "  AND LKP.LookupType = 'Department' " +
+                "  AND SD.StudentPersonalId NOT IN (" +
+                "      SELECT DISTINCT ST.StudentPersonalId" +
+                "      FROM StudentPersonal ST" +
+                "      JOIN ContactPersonal cp on cp.StudentPersonalId = ST.StudentPersonalId" +
+                "      WHERE ST.StudentType='Client' AND ST.ClientId>0" +
+                "        AND ST.StudentPersonalId NOT IN (" +
+                "            SELECT DISTINCT ST2.StudentPersonalId" +
+                "            FROM StudentPersonal ST2" +
+                "            JOIN Placement PLC on PLC.StudentPersonalId = ST2.StudentPersonalId" +
+                "            WHERE (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE))" +
+                "              AND PLC.Status=1 AND ST2.StudentType='Client'" +
+                "        )" +
+                "        AND ST.StudentPersonalId NOT IN (" +
+                "            SELECT DISTINCT ST3.StudentPersonalId" +
+                "            FROM StudentPersonal ST3" +
+                "            WHERE ST3.PlacementStatus='D' AND ST3.StudentType='Client'" +
+                "        )" +
+                "  )" +
+                "  AND CONVERT(INT,SD.ClientId) > 0;";
+
+                
+
+                // Use SqlDataReader to stream rows
+                var studentsCount = 0;
+                var studentsList = new List<Tuple<string, DateTime?>>(); // Tuple<Name, BirthDate>
+                using (var con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString()))
+                using (var cmd = new SqlCommand(quarterQuery, con))
+                {
+                    con.Open();
+                    cmd.CommandTimeout = 120;
+                    using (var reader = cmd.ExecuteReader(System.Data.CommandBehavior.SequentialAccess))
+                    {
+                        // Column layout: 0=StudentPersonalId, 1=studentPersonalName, 2=BirthDate
+                        while (reader.Read())
+                        {
+                            studentsCount++;
+                            string name = "Student";
+                            DateTime? bd = null;
+
+                            if (!reader.IsDBNull(1))
+                            {
+                                try { name = reader.GetString(1); }
+                                catch { name = Convert.ToString(reader.GetValue(1)); }
+                                if (string.IsNullOrWhiteSpace(name)) name = "Student";
+                            }
+
+                            if (!reader.IsDBNull(2))
+                            {
+                                try { bd = reader.GetDateTime(2); }
+                                catch
+                                {
+                                    // if DB returned as string, try parse
+                                    try
+                                    {
+                                        var s = Convert.ToString(reader.GetValue(2));
+                                        DateTime tmp;
+                                        if (DateTime.TryParse(s, out tmp)) bd = tmp;
+                                    }
+                                    catch { bd = null; }
+                                }
+                            }
+
+                            studentsList.Add(new Tuple<string, DateTime?>(name, bd));
+                        }
+                    }
+                    con.Close();
+                }
+
+                // If no rows, send empty payload
+                if (studentsList.Count == 0)
+                {
+                    string emptyScript = "console.log('Placement aggregated JSON: empty'); renderAggregatedPlacementChart([]);";
+                    ClientScript.RegisterStartupScript(this.GetType(), "LoadPlacementData", emptyScript, true);
+                    return;
+                }
+
+                // Aggregate into Year-Quarter buckets using dictionaries (no LINQ)
+                // Bucket key: "YYYY - Q#"
+                var bucketCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase); // category -> count
+                var bucketNames = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase); // category -> list of names (limited)
+                const int FIRST_NAMES_LIMIT = 200; // keep only first 200 names per bucket
+                const int NAMES_CHAR_LIMIT = 4000;
+                var bucketDisplay = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                for (int i = 0; i < studentsList.Count; i++)
+                {
+                    var tup = studentsList[i];
+                    string name = tup.Item1 ?? "Student";
+                    DateTime? bd = tup.Item2;
+
+                    string quarter = "Unknown";
+                    string yearLabel = "Unknown";
+                    int age = -1;
+
+                    if (bd.HasValue)
+                    {
+                        int m = bd.Value.Month;
+                        if (m >= 1 && m <= 3) quarter = "Q1";
+                        else if (m >= 4 && m <= 6) quarter = "Q2";
+                        else if (m >= 7 && m <= 9) quarter = "Q3";
+                        else quarter = "Q4";
+
+                        yearLabel = bd.Value.Year.ToString();
+
+                        // compute age (years)
+                        DateTime now = DateTime.Now;
+                        age = now.Year - bd.Value.Year;
+                        if (now < bd.Value.AddYears(age)) age--;
+                    }
+
+                    string ageText = age >= 0 ? (" (" + age.ToString() + "yo)") : "";
+                    // produce flat quarter-first key so JS can always split Quarter / Year
+                    string displayCategory = quarter + " " + yearLabel + ageText;   // what user sees
+                    string sortKey = yearLabel + " - " + quarter;                  // used for correct sorting
+
+                    if (!bucketCounts.ContainsKey(sortKey)) bucketCounts[sortKey] = 0;
+                    bucketCounts[sortKey] = bucketCounts[sortKey] + 1;
+
+                    if (!bucketNames.ContainsKey(sortKey)) bucketNames[sortKey] = new List<string>();
+                    var list = bucketNames[sortKey];
+                    if (list.Count < FIRST_NAMES_LIMIT)
+                    {
+                        list.Add(name);
+                    }
+                    // otherwise we stop adding names for this category to keep payload small
+                    if (!bucketDisplay.ContainsKey(sortKey))
+                    {
+                        bucketDisplay[sortKey] = displayCategory;
+                    }
+                }
+
+
+                // Build ordered list of categories (sort by year asc then quarter 1..4; Unknown goes last)
+                var categoriesOrdered = new List<string>();
+                foreach (var key in bucketCounts.Keys)
+                {
+                    categoriesOrdered.Add(key);
+                }
+
+                // Sorting categories properly:
+                categoriesOrdered.Sort((a, b) =>
+                {
+                    string[] pa = a.Split(new string[] { " - " }, StringSplitOptions.None);
+                    string[] pb = b.Split(new string[] { " - " }, StringSplitOptions.None);
+
+                    int ya = 9999, yb = 9999;
+                    int qa = 99, qb = 99;
+                    int tmp;
+                    if (pa.Length > 0 && int.TryParse(pa[0], out tmp)) ya = tmp;
+                    if (pb.Length > 0 && int.TryParse(pb[0], out tmp)) yb = tmp;
+
+                    if (pa.Length > 1)
+                    {
+                        if (pa[1].Equals("Q1", StringComparison.OrdinalIgnoreCase)) qa = 1;
+                        else if (pa[1].Equals("Q2", StringComparison.OrdinalIgnoreCase)) qa = 2;
+                        else if (pa[1].Equals("Q3", StringComparison.OrdinalIgnoreCase)) qa = 3;
+                        else if (pa[1].Equals("Q4", StringComparison.OrdinalIgnoreCase)) qa = 4;
+                    }
+                    if (pb.Length > 1)
+                    {
+                        if (pb[1].Equals("Q1", StringComparison.OrdinalIgnoreCase)) qb = 1;
+                        else if (pb[1].Equals("Q2", StringComparison.OrdinalIgnoreCase)) qb = 2;
+                        else if (pb[1].Equals("Q3", StringComparison.OrdinalIgnoreCase)) qb = 3;
+                        else if (pb[1].Equals("Q4", StringComparison.OrdinalIgnoreCase)) qb = 4;
+                    }
+
+                    if (ya != yb) return ya.CompareTo(yb);
+                    return qa.CompareTo(qb);
+                });
+
+                // Build aggregated payload list (objects) in the ordered category sequence
+                var aggregatedPayload = new List<Dictionary<string, object>>();
+                for (int i = 0; i < categoriesOrdered.Count; i++)
+                {
+                    string key = categoriesOrdered[i]; // this is the sortKey ("YYYY - QX")
+                    int cnt = bucketCounts.ContainsKey(key) ? bucketCounts[key] : 0;
+
+                    // retrieve names stored under the same sortKey
+                    string namesConcat = "";
+                    if (bucketNames.ContainsKey(key))
+                    {
+                        var nameList = bucketNames[key];
+                        namesConcat = string.Join("; ", nameList);
+                        if (namesConcat.Length > NAMES_CHAR_LIMIT)
+                        {
+                            namesConcat = namesConcat.Substring(0, NAMES_CHAR_LIMIT) + "…";
+                        }
+                    }
+
+                    var obj = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+                    // display Category should be the quarter-first label we saved earlier
+                    string displayLabel = bucketDisplay.ContainsKey(key) ? bucketDisplay[key] : key;
+                    obj["Category"] = displayLabel;
+
+                    // Now set Year and Quarter from the sortKey parts (safe split)
+                    string[] parts = key.Split(new string[] { " - " }, StringSplitOptions.None);
+                    obj["Year"] = (parts.Length > 0) ? parts[0] : "Unknown";
+                    obj["Quarter"] = (parts.Length > 1) ? parts[1] : "Unknown";
+
+                    obj["Count"] = cnt;
+                    obj["SampleNames"] = namesConcat;
+
+                    aggregatedPayload.Add(obj);
+                }
+
+                // Serialize aggregated payload only
+                string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(aggregatedPayload);
+                string encoded = System.Web.HttpUtility.JavaScriptStringEncode(jsonData);
+                string script = "console.log('Placement aggregated JSON (len=" + aggregatedPayload.Count + ")'); renderAggregatedPlacementChart(" + jsonData + ");";
+                ClientScript.RegisterStartupScript(this.GetType(), "LoadPlacementData", script, true);
+            }
+            catch (Exception ex)
+            {
+                // for debugging bubble up or log as appropriate
+                throw;
+            }
+        }
+
         protected void btnOldResRoster_Click(object sender, EventArgs e)
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -2350,6 +2625,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -2482,6 +2758,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 FillDept(ddlDeptLocDept);
@@ -2662,6 +2939,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -2717,6 +2995,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -2961,6 +3240,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -3026,6 +3306,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 showlab.Text = "";
                 //FillMonth();
                 divContact.Visible = false;
@@ -3159,6 +3440,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 showlab.Text="";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3281,6 +3563,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3398,6 +3681,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3563,6 +3847,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 if (checkHighcharts.Checked)
                 {
@@ -3680,6 +3965,7 @@ namespace ClientDB.Reports
             {
                 if (checkHighcharts.Checked)
                 {
+                    exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
                     string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
                             " JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId " +
@@ -3775,6 +4061,7 @@ namespace ClientDB.Reports
             {
                 if (checkHighcharts.Checked)
                 {
+                    exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
                     string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " +
                     " ,PL.EndDate AS PLDischargeDate,CONVERT(VARCHAR(20),PL.EndDate,101) EndDate FROM Placement PL INNER JOIN StudentPersonal PA ON PL.StudentPersonalId=PA.StudentPersonalId INNER JOIN Class CLS ON PL.Location = CLS.ClassId WHERE  " +
@@ -3817,6 +4104,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 var selected = ChkStatisticalList.Items.Cast<ListItem>().Where(li => li.Selected).Count();
                 if (selected != 0)
                 {
@@ -3863,6 +4151,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 RVClientReport.Visible = true;
                 int Schoolid = 0;
                 string schooltype = ConfigurationManager.AppSettings["Server"];
@@ -4022,6 +4311,7 @@ namespace ClientDB.Reports
 
         protected void btnContactChanges_Click(object sender, EventArgs e)
         {
+            exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4047,6 +4337,7 @@ namespace ClientDB.Reports
 
         protected void btnGuardianChanges_Click(object sender, EventArgs e)
         {
+            exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4072,6 +4363,7 @@ namespace ClientDB.Reports
 
         protected void btnPlcChange_Click(object sender, EventArgs e)
         {
+            exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4097,6 +4389,7 @@ namespace ClientDB.Reports
 
         protected void btnFundChange_Click(object sender, EventArgs e)
         {
+            exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4124,6 +4417,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 RVClientReport.Visible = true;
                 string NewStartDate = GetDateFromText(txtchangeSdate.Text);
                 string NewEndDate = GetDateFromText(txtchangeEdate.Text);
@@ -4486,6 +4780,7 @@ namespace ClientDB.Reports
         {
             try
             {
+                exportChartBtn.Visible = false;
                 var selected = ChkStatisticalList2.Items.Cast<ListItem>().Where(li => li.Selected).Count();
                 if (selected != 0)
                 {
@@ -4950,6 +5245,7 @@ namespace ClientDB.Reports
 
         protected void btnReset_Click(object sender, EventArgs e)
         {
+            exportChartBtn.Visible = false;
             hfstudname.Value = "";
             hflocation.Value = "";
             hfrace.Value = "";
@@ -4959,6 +5255,40 @@ namespace ClientDB.Reports
                 ChkStatisticalList2.Items[i].Selected = true;
             }
             btnallClient_Click(sender, e);
+        }
+
+        private DataTable GetPlacementPlanningData()
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+            con.Open();
+
+            string query = @"
+        SELECT 
+            SP.StudentPersonalId,
+            SP.LastName + ', ' + SP.FirstName AS StudentName,
+            CONVERT(VARCHAR(10), SP.BirthDate, 101) AS BirthDate,
+            CASE 
+                WHEN DATEPART(MM, SP.BirthDate) BETWEEN 1 AND 3 THEN 'Q1'
+                WHEN DATEPART(MM, SP.BirthDate) BETWEEN 4 AND 6 THEN 'Q2'
+                WHEN DATEPART(MM, SP.BirthDate) BETWEEN 7 AND 9 THEN 'Q3'
+                ELSE 'Q4'
+            END AS Quarter,
+            YEAR(SP.BirthDate) AS BirthYear
+        FROM StudentPersonal SP
+        INNER JOIN Placement PL ON PL.StudentPersonalId = SP.StudentPersonalId
+        WHERE SP.StudentType = 'Client'
+          AND (PL.EndDate IS NULL OR PL.EndDate >= CAST(GETDATE() AS DATE))
+          AND PL.Status = 1
+          AND SP.BirthDate IS NOT NULL
+        ORDER BY BirthYear, Quarter";
+
+            SqlCommand cmd = new SqlCommand(query, con);
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            con.Close();
+
+            return dt;
         }
     }
 }

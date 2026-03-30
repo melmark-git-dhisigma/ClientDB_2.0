@@ -31,6 +31,15 @@
 <script src="../Documents/JS/jquery.validationEngine.js"></script>
 <script src="../Documents/JS/jquery.unobtrusive-ajax.js"></script>
 
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.10/umd.min.js"></script>
+    <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg2pdf.js/1.4.3/svg2pdf.umd.min.js"></script>
+    <script src="https://unpkg.com/svg2pdf.js/dist/svg2pdf.umd.min.js"></script>
+
 <!-- Local Stylesheets -->
 <link href="../Documents/CSS/validationEngine.jquery.css" rel="stylesheet" />
 <link href="../Documents/CSS/ReportStyle.css" rel="stylesheet" />
@@ -44,6 +53,26 @@
         .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-month {
             width: 50% !important;
         }
+
+
+
+
+        .hc-x-label { display:inline-block; text-align:center; line-height:1; }
+        .hc-x-label .quarter { font-weight:600; font-size:12px; display:block; }
+        .hc-x-label .year    { font-size:11px; color:#666; display:block; margin-top:2px; }
+
+
+        .highcharts-data-labels span,
+		.highcharts-data-labels div {
+		    pointer-events: none !important;
+		}
+
+		.highcharts-tooltip {
+			  z-index: 2147483647 !important;  /* very high so tooltip sits above chart elements */
+			  pointer-events: none;            /* avoid interfering with mouse events */
+		}
+
+
     </style>
     <script type="text/javascript">
         var columndata={};
@@ -210,6 +239,12 @@
                 $('#calender').css("display", "none");
                 $('.imgcontainer').css("display", "block");
                 $('.imgcontainer').load('../Contact/ImageUploadPanel?edit=0');
+            }
+            if (elmId == "btnPlacementPlanning") {
+                $('#calender').css("display", "none");
+                $('.imgcontainer').css("display", "none");
+                $('#chartContainer').css("display", "block");
+                $('#chartContainer').load('../Reports/PlacementPlanningChart'); // your new chart endpoint
             }
             if (elmId == "btnResRoster") {
                 //$('#content').load('../Event/EventsList/');
@@ -3008,6 +3043,1468 @@
         }
 
 
+        function renderAggregatedPlacementChart(data) {
+            // delegate to the new implementation
+            try {
+                renderPlacementChart(data || []);
+            } catch (e) {
+                console.error('renderAggregatedPlacementChart wrapper error', e);
+            }
+        }
+
+        function sortByYearQuarter(data) {
+            return data.sort((a, b) => {
+                const yearA = Number(a.Year || a.year);
+        const yearB = Number(b.Year || b.year);
+
+            // Normalize quarter value Q1/Q2/Q3/Q4
+        const qA = Number((a.Quarter || a.quarter || 'Q0').toString().replace('Q', ''));
+        const qB = Number((b.Quarter || b.quarter || 'Q0').toString().replace('Q', ''));
+
+            // First sort by year
+            if (yearA !== yearB) return yearA - yearB;
+
+            // Then sort Q1 → Q4
+            return qA - qB;
+        });
+        }
+
+        function renderPlacementChart(dataFromServer, opts) {
+            // Full-featured placement chart:
+            // - columns show counts
+            // - scatter overlay places one label per y-slot (0.5,1.5,2.5...) centered vertically
+            // - vertical letters, truncated with ellipsis to fit the slot
+            // - chart height grows according to maxCount * nameLinePx
+            opts = opts || {};
+            var containerId = opts.containerId || 'placementChartContainer';
+            var wrapperId = opts.wrapperId || 'placementChartWrapper';
+            var desiredBarPx = Number(opts.desiredBarPx || 20);
+            var minChartInnerWidth = Number(opts.minChartInnerWidth || 700);
+            var extraPadding = Number(opts.extraPadding || 160);
+            var baseChartHeight = Number(opts.chartHeight || 420);
+            var chartTitle = typeof opts.title === 'string' ? opts.title : 'All Current Students by Birthdate';
+
+            // Tweakables:
+            var nameLinePx = Number(opts.nameLinePx || 100); // vertical pixels per Y-slot (default larger for taller chart)
+            var maxChartHeight = Number(opts.maxChartHeight || 3000);
+            var truncatedFontSize = Number(opts.truncatedFontSize || 10); // fixed font size for names (smaller)
+
+            function escapeHtml(s) {
+                return String(s || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+            function ensureEl(id) { return document.getElementById(id); }
+
+            try {
+                if (!Array.isArray(dataFromServer)) dataFromServer = [];
+
+                var container = ensureEl(containerId);
+                if (!container) { console.error('renderPlacementChart: container not found:', containerId); return; }
+                if (typeof Highcharts === 'undefined') { console.error('renderPlacementChart: Highcharts not loaded'); return; }
+
+                var categories = [];
+                var columnSeriesData = [];
+                var buckets = [];   // for tooltips: { count, names }
+                var scatterData = [];
+                var maxCount = 0;
+
+                dataFromServer = (dataFromServer || []).slice(); // clone to avoid mutating original array
+                //dataFromServer = dataFromServer.sort(function (a, b) {
+                //    var yA = Number(a.Year || a.year || a.BirthYear || a.birthYear) || 0;
+                //    var yB = Number(b.Year || b.year || b.BirthYear || b.birthYear) || 0;
+                //    if (yA !== yB) return yA - yB; // sort by year first
+
+                //    // sort by quarter
+                //    var qA = (a.Quarter || a.quarter || '').toString().trim().toUpperCase();
+                //    var qB = (b.Quarter || b.quarter || '').toString().trim().toUpperCase();
+
+                //    var order = { "Q1": 1, "Q2": 2, "Q3": 3, "Q4": 4 };
+
+                //    return (order[qA] || 0) - (order[qB] || 0);
+                //});
+                dataFromServer = sortByYearQuarter(dataFromServer);
+
+                var yearMap = {}; // year => { 'Q1': {count,namesArr}, ... }
+                var yearsOrder = []; // keep ascending order
+                dataFromServer.forEach(function (r) {
+                    var quarter = (r.Quarter || r.quarter || '').toString().trim().toUpperCase();
+                    var year = (r.Year || r.year || r.BirthYear || r.birthYear || '').toString().trim();
+                    var cat = (r.Category || r.category || '').toString().trim();
+                    var count = Number(r.Count || r.count || 0) || 0;
+                    var samplesRaw = (r.SampleNames || r.SampleNames || r.Names || r.names || '').toString();
+
+                    if (!year) return; // skip malformed rows
+
+                    if (!yearMap[year]) {
+                        yearMap[year] = { 'Q1': null, 'Q2': null, 'Q3': null, 'Q4': null };
+                        yearsOrder.push(year);
+                    }
+
+                    var qKey = quarter || 'Q1';
+                    if (!/^Q[1-4]$/i.test(qKey)) qKey = 'Q1';
+                    qKey = qKey.toUpperCase();
+
+                    // build names array
+                    var namesArr = [];
+
+                    if (samplesRaw) {
+                        var raw = samplesRaw.toString().trim();
+
+                        if (!raw) {
+                            namesArr = [];
+                        }
+                            // 1) semicolon → multiple names
+                        else if (raw.indexOf(';') >= 0) {
+                            namesArr = raw.split(';').map(function (x) {
+                                return x.replace(/<[^>]*>/g, '')     // strip HTML
+                                         .replace(/[\r\n]+/g, ' ')  // remove line breaks
+                                         .replace(/\s+/g, ' ')      // collapse spaces
+                                         .trim();
+                            }).filter(Boolean);
+                        }
+                            // 2) Detect "Last, First" pairs → convert to "First Last"
+                        else if (/^([^,]+),\s*([^,]+)$/.test(raw)) {
+                            var m = raw.split(',');
+                            var last = m[0].trim();
+                            var first = m[1].trim();
+                            namesArr = [ (first + ' ' + last).replace(/\s+/g, ' ').trim() ];
+                        }
+                            // 3) Detect multiple "Last, First" records stuck together with commas
+                        else {
+                            var pairs = raw.match(/[^,;]+,\s*[^,;]+/g); 
+                            if (pairs && pairs.length > 0) {
+                                namesArr = pairs.map(function (p) {
+                                    var s = p.split(',');
+                                    return (s[1].trim() + ' ' + s[0].trim()).replace(/\s+/g,' ').trim();
+                                });
+                            }
+                                // 4) Fallback → treat as ONE single name (prevents accidental split)
+                            else {
+                                namesArr = [
+                                    raw.replace(/<[^>]*>/g, '')    // remove HTML
+                                       .replace(/[\r\n]+/g, ' ')   // remove breaks
+                                       .replace(/\s+/g, ' ')       // collapse spaces
+                                       .trim()
+                                ];
+                            }
+                        }
+                    }
+
+                    yearMap[year][qKey] = { count: count, names: namesArr };
+                });
+
+                // Ensure yearsOrder sorted numerically ascending
+                yearsOrder.sort(function(a,b) { return Number(a) - Number(b); });
+
+                // Build full categories and series with empty quarters filled with zeros
+                categories = [];
+                columnSeriesData = [];
+                buckets = [];
+                scatterData = [];
+                maxCount = 0;
+
+                yearsOrder.forEach(function(yr) {
+                    ['Q1','Q2','Q3','Q4'].forEach(function(q) {
+                        var bucket = yearMap[yr][q];
+                        var age = new Date().getFullYear() - Number(yr);
+                        var displayCategory = q + ' ' + yr + ' (' + age + ')';
+                        categories.push(displayCategory);
+
+                        var count = (bucket && typeof bucket.count === 'number') ? bucket.count : 0;
+                        columnSeriesData.push({ y: count });
+
+                        var namesArr = (bucket && bucket.names) ? bucket.names : [];
+                        buckets.push({ count: count, names: namesArr });
+
+                        var catIndex = categories.length - 1;
+                        for (var i = 0; i < namesArr.length; i++) {
+                            scatterData.push({
+                                x: catIndex,
+                                y: i + 0.5,
+                                name: namesArr[i]
+                            });
+                        }
+
+                        if (count > maxCount) maxCount = count;
+                    });
+                });
+
+                if (!categories.length) {
+                    container.innerHTML = '<div style="padding:12px;color:#666">No placement data to display</div>';
+                    return;
+                }
+
+                var yearGroups = [];
+                for (var yi = 0; yi < yearsOrder.length; yi++) {
+                    var startIndex = yi * 4;          // Q1 of year yi sits at this category index
+                    var endIndex = startIndex + 3;    // Q4 index
+                    yearGroups.push({ year: yearsOrder[yi], startIndex: startIndex, endIndex: endIndex });
+                }
+
+
+                // wrapper for horizontal scrolling
+                var wrapper = document.getElementById('placementChartWrapper');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.id = wrapperId;
+                    wrapper.style.width = "100%";
+                    wrapper.style.overflowX = "auto";
+                    wrapper.style.overflowY = "hidden";
+                    wrapper.style.whiteSpace = "nowrap";
+                    wrapper.style.boxSizing = "border-box";
+
+                    // Insert wrapper *before* container, then move container inside
+                    container.parentNode.insertBefore(wrapper, container);
+                    wrapper.appendChild(container);
+                } else {
+                    wrapper.style.overflowX = "auto";
+                    wrapper.style.overflowY = "hidden";
+                    wrapper.style.whiteSpace = "nowrap";
+                    wrapper.style.boxSizing = "border-box";
+                }
+
+                // width sizing
+                var idealInnerWidth = Math.max(minChartInnerWidth, categories.length * desiredBarPx + extraPadding);
+                container.style.minWidth = idealInnerWidth + 'px';
+                container.style.width = idealInnerWidth + 'px';
+                container.style.boxSizing = 'border-box';
+
+                // compute chart height to allocate nameLinePx per slot, plus margin for axes/title
+                var plotPadding = 140; // room for title/axes (tweakable)
+                var computedChartHeight = Math.max(baseChartHeight, Math.min(maxChartHeight, maxCount * nameLinePx + plotPadding));
+
+                var computedPointWidth = Math.max(8, Math.floor(desiredBarPx * 0.9));
+
+                // Helper: truncate name to fit a single vertical slot
+                function truncateForSlot(name, fontSizePx, slotPx) {
+                    if (!name) return '';
+                    // For vertical writing-mode the limiting factor is number of characters that can be stacked
+                    // approximate one character vertical height ≈ fontSizePx
+                    var maxChars = Math.max(1, Math.floor(slotPx / fontSizePx));
+                    if (name.length <= maxChars) return name;
+                    if (maxChars <= 1) return name.charAt(0) + '…';
+                    return name.substring(0, maxChars - 1) + '…';
+                }
+
+                var chartOptions = {
+                    chart: {
+                        type: 'column',
+                        height: computedChartHeight,
+                        width: idealInnerWidth,
+                        plotBorderWidth: 1,
+                        plotBorderColor: '#000',
+
+                        // make room at the bottom for the quarter/year boxes + axis title
+                        spacingBottom: 120,     // increase if needed (controls internal spacing)
+                        marginBottom: 120,      // gives more stable export results
+
+                        events: {
+                            load: function () { try { drawQuarterAndYearBoxes(this); } catch(e){} },
+                            redraw: function () { try { drawQuarterAndYearBoxes(this); } catch(e){} }
+                        }
+                    },
+                    title: { text: chartTitle },
+                    xAxis: {
+                        categories: categories,
+                        // move 'y' into title — Highcharts reads axis-title offsets here
+                        title: {
+                            text: 'Birthdate',
+                            y: 70           // pushes the title down relative to the axis line. Tweak (40..100) as needed.
+                        },
+
+                        /* hide native labels — you draw Q/Y rows with renderer */
+                        labels: {
+                            useHTML: false,
+                            rotation: 0,
+                            y: 0,
+                            style: { fontSize: '0px', color: 'transparent' },
+                            formatter: function () { return ''; }
+                        },
+                        tickLength: 8
+                    },
+
+                    exporting: {
+                        enabled: false,
+                        allowHTML: true
+                    },
+
+                    yAxis: {
+                        min: 0,
+                        max: Math.max(1, maxCount),
+                        tickInterval: 1,
+                        allowDecimals: false,
+                        title: { text: 'Student Count' },
+                        labels: { formatter: function () { return this.value; } }
+                    },
+
+                    tooltip: {
+                        useHTML: true,
+                        outside: true,         // <- render tooltip outside the chart SVG (prevents clipping)
+                        style: { zIndex: '2147483647', pointerEvents: 'none' },
+                        shared: false, // ensure we show tooltip for the relevant point only
+                        formatter: function () {
+                            try {
+                                // Determine the category index (works for both column and scatter)
+                                var idx = -1;
+                                if (this.point && typeof this.point.x === 'number') {
+                                    // scatter: x is the category index (may be fractional if you offset; round it)
+                                    idx = Math.round(this.point.x);
+                                }
+                                if (idx === -1 && typeof this.point.index === 'number') {
+                                    // fallback: point.index (works for column points)
+                                    idx = this.point.index;
+                                }
+                                // Another fallback: try this.x as a numeric category index
+                                if (idx === -1 && typeof this.x === 'number') {
+                                    idx = Math.round(this.x);
+                                }
+
+                                // now build label safely
+                                var label = (idx >= 0 && categories[idx]) ? categories[idx] : (this.x || this.point && this.point.category) || this.x || '';
+                                var count = (idx >= 0 && buckets[idx] && typeof buckets[idx].count !== 'undefined') ? buckets[idx].count : (this.y || (this.point && this.point.y) || 0);
+                                var namesHtml = '';
+                                if (idx >= 0 && buckets[idx] && buckets[idx].names && buckets[idx].names.length) {
+                                    namesHtml = '<hr/>' + buckets[idx].names.map(escapeHtml).join('<br/>');
+                                } else if (this.point && this.point.name) {
+                                    // if we couldn't find bucket, show this point's name (fallback)
+                                    namesHtml = '<hr/>' + escapeHtml(String(this.point.name || ''));
+                                }
+
+                                return '<b>' + escapeHtml(String(label)) + '</b><br/>Count: ' + escapeHtml(String(count)) + namesHtml;
+                            } catch (e) {
+                                // fallback safe tooltip
+                                return escapeHtml(String(this.x || (this.point && this.point.name) || this.y || ''));
+                            }
+                        }
+                    },
+
+                    plotOptions: {
+                        column: {
+                            pointWidth: computedPointWidth,
+                            pointPadding: 0.02,
+                            groupPadding: 0.04,
+                            borderWidth: 1,
+                            dataLabels: { enabled: false },
+                            states: { inactive: { enabled: false } }   // << add this line
+                        },
+                        scatter: {
+                            marker: { enabled: false },
+                            clip: false,
+                            states: { hover: { enabled: false }, inactive: { enabled: false } },
+                            tooltip: { enabled: false },
+                            zIndex: 5
+                        }
+                    },
+
+                    series: [
+                      {
+                          name: 'Students',
+                          data: columnSeriesData,
+                          zIndex: 1, 
+                          showInLegend: false,
+                          // single uniform color
+                          color: '#C8F7C5'
+                      },
+                      {
+                          type: 'scatter',
+                          name: 'Names',
+                          data: scatterData,
+                          zIndex: 2,
+                          showInLegend: false,
+                          marker: { enabled: false },
+                          dataLabels: {
+                              enabled: true,
+                              useHTML: true,
+                              crop: false,
+                              overflow: 'allow',
+                              allowOverlap: true,
+                              verticalAlign: 'middle',
+                              align: 'center',
+
+                              /* ---- REPLACED FORMATTER: determine underlying bar color and compute contrast color ---- */
+                              formatter: function () {
+                                  try {
+                                      var nm = this.point && this.point.name ? String(this.point.name) : '';
+                                      if (!nm) return '';
+
+                                      var chart = this.series.chart;
+                                      var catIndex = Math.round(this.point.x);
+
+                                      // Get the bar for this index
+                                      var colSeries = chart.series && chart.series[0];
+                                      var colPoint = (colSeries && colSeries.data && colSeries.data[catIndex]) ? colSeries.data[catIndex] : null;
+
+                                      // Hide if outside bar height
+                                      var slotY = this.point.y;
+                                      var barHeight = colPoint && typeof colPoint.y === 'number'
+                                          ? colPoint.y
+                                          : (colPoint && colPoint.options && colPoint.options.y) || 0;
+                                      if (!barHeight || (slotY > barHeight + 0.001)) return '';
+
+                                      if (Math.round(barHeight) <= 1) {
+                                          // show the first portion, truncated if needed
+                                          var fontPx = Math.max(8, Math.min(12, Math.round(truncatedFontSize)));
+
+                                          // allow longer names (20–30 chars depending on font)
+                                          var maxCharsForSingle = Math.max(15, Math.floor(30 * (12 / fontPx))); 
+                                          // Example: if fontPx = 10 → ~36 chars allowed
+
+                                          var singleDisplay =
+                                              nm.length <= maxCharsForSingle
+                                              ? nm
+                                              : nm.substring(0, maxCharsForSingle - 1) + '';
+
+                                          var safeName = escapeHtml(singleDisplay);
+                                      }
+
+                                      // Exact bar pixel width (rendered) and slot height (from outer scope)
+                                      var colPixelWidth =
+                                          (colPoint && colPoint.shapeArgs && colPoint.shapeArgs.width) ||
+                                          (colSeries && colSeries.pointWidth) ||
+                                          computedPointWidth;
+                                      colPixelWidth = Math.max(1, Math.round(colPixelWidth));
+
+                                      var slotPx = Math.max(1, Math.round(nameLinePx));
+
+                                      // Keep bar color and border (border slightly darker)
+                                      var barColor = colPoint && colPoint.color ? colPoint.color : (colSeries && colSeries.color) ? colSeries.color : '#C8F7C5';
+                                      function hexToRgb(h) {
+                                          if (!h) return [44,175,254];
+                                          if (h.indexOf && h.indexOf('rgb') === 0) {
+                                              var nums = h.match(/\d+/g);
+                                              return nums ? [parseInt(nums[0]), parseInt(nums[1]), parseInt(nums[2])] : [44,175,254];
+                                          }
+                                          if (h[0] === '#') {
+                                              var hex = h.slice(1);
+                                              if (hex.length === 3) hex = hex.split('').map(function(c){return c+c;}).join('');
+                                              var int = parseInt(hex,16) || 0;
+                                              return [(int>>16)&255, (int>>8)&255, int&255];
+                                          }
+                                          return [44,175,254];
+                                      }
+                                      function darkenRgbArr(arr, amt) {
+                                          return 'rgb(' + Math.max(0, Math.round(arr[0]*(1-amt))) + ',' + Math.max(0, Math.round(arr[1]*(1-amt))) + ',' + Math.max(0, Math.round(arr[2]*(1-amt))) + ')';
+                                      }
+                                      var rgb = hexToRgb(barColor);
+                                      var borderColor = '#111';//darkenRgbArr(rgb, 0.18);
+
+                                      // Keep text styles exactly as before (do not change color/size/orientation)
+                                      // If you earlier used a specific color variable, preserve it here:
+                                      var textColor = '#111';
+                                      var truncated = truncateLeadingForSlot(nm, truncatedFontSize, nameLinePx, 6);
+                                      var safe = escapeHtml(truncated);
+
+                                      // Build HTML:
+                                      // Outer box = exact width/height + background + border
+                                      // Inner structure uses table/table-cell to vertically center the inner span.
+                                      // The inner span preserves writing-mode / rotation / font-size etc. exactly as before.
+                                      var html = ''
+                                          + '<div style="display:inline-block;'
+                                          +    'width:' + colPixelWidth + 'px;'
+                                          +    'height:' + slotPx + 'px;'
+                                          +    'box-sizing:border-box;'
+                                          +    'padding:0; margin:0;'
+                                          + 'background-color:' + barColor + ';'
+                                          + 'outline:1px solid ' + borderColor + ';'                 // outer border (no offset)
+                                          + 'box-shadow: inset 0 0 0 0 ' + borderColor + ';'       // inner border (always visible)
+                                          +    'overflow:hidden;">'
+                                          // table wrapper to center vertically (no flex)
+                                          +    '<div style="display:table; width:100%; height:100%;">'
+                                          +        '<div style="display:table-cell; vertical-align:bottom; text-align:center;">'
+                                          // keep the original vertical writing mode + rotation and font size intact
+                                          +            '<span style="writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg);'
+                                          +                         'font-size:' + truncatedFontSize + 'px; color:' + textColor + ';'
+                                          +                         'display:inline-block; line-height:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'
+                                          +                safe
+                                          +            '</span>'
+                                          +        '</div>'
+                                          +    '</div>'
+                                          + '</div>';
+
+                                      return html;
+                                  } catch (e) {
+                                      return '';
+                                  }
+                              },
+                              style: { textOutline: 'none' }
+                          }
+                      }
+                    ],
+                    credits: { enabled: false }
+                };
+
+                // create or update chart instance
+                if (window._placementChart && typeof window._placementChart.update === 'function') {
+                    try {
+                        window._placementChart.update(chartOptions, true, true);
+                        if (typeof window._placementChart.setSize === 'function') {
+                            window._placementChart.setSize(idealInnerWidth, window._placementChart.chartHeight || computedChartHeight, false);
+                        }
+                    } catch (e) {
+                        try { window._placementChart.destroy(); } catch (er) {}
+                        window._placementChart = Highcharts.chart(containerId, chartOptions);
+                    }
+                } else {
+                    window._placementChart = Highcharts.chart(containerId, chartOptions);
+                }
+                wirePlacementReportUI(window._placementChart);
+
+                addExportAnnotations(window._placementChart, {
+                    totalText: null,
+                    legendLabel: 'Current Student',
+                    legendColor: '#C8F7C5',
+                    printedPrefix: 'Printed on:'
+                });
+
+                // responsiveness (horizontal scroll)
+                var resizeTimeout = null;
+
+                // helper to resolve wrapper safely (falls back to container)
+                function resolveWrapper() {
+                    var w = null;
+                    try {
+                        w = document.getElementById(wrapperId);
+                    } catch (e) { w = null; }
+                    if (!w) {
+                        // if wrapper not present, fall back to container element
+                        w = container || document.getElementById(containerId) || null;
+                    }
+                    return w;
+                }
+
+                function adjustChartOnResize() {
+                    try {
+                        var w = resolveWrapper();
+                        if (!w) {
+                            // nothing to do if we can't find a usable element
+                            return;
+                        }
+                        var visibleWidth = (typeof w.clientWidth === 'number') ? w.clientWidth : (w.offsetWidth || (container && container.clientWidth) || idealInnerWidth);
+                        var newWidth = Math.max(idealInnerWidth, visibleWidth);
+
+                        if (window._placementChart && typeof window._placementChart.setSize === 'function') {
+                            try {
+                                // only call setSize if chart exists
+                                window._placementChart.setSize(newWidth, window._placementChart.chartHeight || computedChartHeight, false);
+                            } catch (e) {
+                                console.warn('adjustChartOnResize: setSize failed', e);
+                            }
+                        }
+                        // keep container sized to the new inner width
+                        try { container.style.minWidth = newWidth + 'px'; container.style.width = newWidth + 'px'; } catch (e) {}
+                    } catch (err) {
+                        console.warn('adjustChartOnResize error', err);
+                    }
+                }
+
+                function onResize() { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(adjustChartOnResize, 120); }
+
+                // Clean up previous handler safely before adding new one
+                try {
+                    if (window.__placement_onResizeRef && typeof window.removeEventListener === 'function') {
+                        try { window.removeEventListener('resize', window.__placement_onResizeRef); } catch (e) {}
+                    }
+                } catch(e) {}
+
+                window.__placement_onResizeRef = onResize;
+                window.addEventListener('resize', onResize);
+
+                // export a safe cleanup function (destroy chart and remove listener)
+                window._placementChartCleanup = function () {
+                    try { window.removeEventListener('resize', window.__placement_onResizeRef); } catch (e) {}
+                    try { window.__placement_onResizeRef = null; } catch (e) {}
+                    try { if (window._placementChart) { window._placementChart.destroy(); window._placementChart = null; } } catch (e) {}
+                };
+
+                if (window._placementChart && typeof window._placementChart.reflow === 'function') window._placementChart.reflow();
+                adjustChartOnResize();
+
+            } catch (err) {
+                console.error('renderPlacementChart error', err && err.stack ? err.stack : err);
+                try {
+                    container.innerHTML = '<pre style="color:red;white-space:pre-wrap;">Chart error:\\n' + (err && err.stack ? err.stack : String(err)) + '</pre>';
+                } catch (e) {}
+            }
+        }
+
+        // compatibility wrapper for server calls
+        window.renderAggregatedPlacementChart = function(data) {
+            try { renderPlacementChart(data || []); } catch (e) { console.error('renderAggregatedPlacementChart wrapper error', e); }
+        };
+
+
+
+        function wirePlacementReportUI(chart) {
+            document.getElementById('exportChartBtn').onclick = function () {
+                console.log("3726");
+                try {
+                    // find chart (use your existing chart variable)
+                    var foundChart = (typeof chart !== 'undefined' && chart) ? chart : (window.chart || (Highcharts && Highcharts.charts && Highcharts.charts[0]));
+                    if (!foundChart) { alert('Chart not found'); return; }
+
+                    // compute desired rasterScale: try 300 DPI
+                    // we need the final draw width in px that exporter uses (it computes scale to fit page).
+                    // As an approximation call exporter once with rasterScale=1 to compute drawW, or compute from chart width:
+                    var approxSvgW = foundChart.chartWidth || 800;
+                    // desired DPI:
+                    var desiredDPI = 300;
+                    // compute scale factor relative to 96ppi baseline:
+                    var rasterScale = Math.ceil((desiredDPI / 96) * 1); // e.g. 300/96 = 3.125 -> 4
+                    // more conservative: clamp to 1..4 to avoid extremely large PDFs
+                    rasterScale = Math.min(Math.max(1, rasterScale), 4);
+
+                    // call high-res exporter (use rasterScale computed)
+                    exportSvgToPdfRasterHighRes(foundChart, 'placement-chart.pdf', {
+                        page: 'A4',
+                        orientation: 'landscape',
+                        marginMm: 10,
+                        rasterScale: rasterScale
+                    });
+                } catch (e) {
+                    console.error(e);
+                    alert('Export failed — see console');
+                }
+            };
+            var sel = document.getElementById('exportFormatSelect');
+            // prevent server fallback globally
+            if (window.Highcharts && Highcharts.setOptions) {
+                Highcharts.setOptions({ exporting: { fallbackToExportServer: false , url: '' } });
+            }
+        }
+
+        function addExportAnnotations(chart, opts) {
+            opts = opts || {};
+            var totalText = (typeof opts.totalText !== 'undefined') ? opts.totalText : null;
+            var legendLabel = opts.legendLabel || 'Current Student';
+            var legendColor = opts.legendColor || '#C8F7C5';
+            var printedPrefix = opts.printedPrefix || 'Printed on:';
+
+            if (!chart) return;
+            if (!chart._customAnnotations) chart._customAnnotations = {};
+
+            function clear() {
+                var c = chart._customAnnotations;
+                Object.keys(c).forEach(function (k) {
+                    try { c[k].destroy(); } catch (e) {}
+                    delete c[k];
+                });
+            }
+
+            function build() {
+                clear();
+                var c = chart._customAnnotations;
+                var sb = chart.spacingBox;   // ← THIS IS OUTSIDE THE INNER BORDER
+
+                // compute total if required
+                var total = 0;
+                    try {
+                        // prefer explicit column series (assumed index 0)
+                        var colSeries = (chart.series && chart.series[0]) ? chart.series[0] : null;
+                        if (colSeries && Array.isArray(colSeries.data)) {
+                            total = colSeries.data.reduce(function (acc, p) {
+                                var v = 0;
+                                if (typeof p.y === 'number') v = p.y;
+                                else if (p && p.options && typeof p.options.y === 'number') v = p.options.y;
+                                else if (typeof p.options === 'object' && typeof p.options.value === 'number') v = p.options.value;
+                                return acc + (isNaN(v) ? 0 : v);
+                            }, 0);
+                        } else {
+                            // fallback: try summing chart.userBuckets (if you exposed buckets) or other known data
+                            if (chart.userBuckets && Array.isArray(chart.userBuckets)) {
+                                total = chart.userBuckets.reduce(function (s, b) { return s + (b.count || 0); }, 0);
+                            } else {
+                                // worst-case: iterate all series but ignore scatter (type === 'scatter')
+                                (chart.series || []).forEach(function (s) {
+                                    if (s.type && s.type.toLowerCase() === 'scatter') return;
+                                    (s.data || []).forEach(function (p) {
+                                        var v = (typeof p.y === 'number') ? p.y : (p && p.options && typeof p.options.y === 'number' ? p.options.y : 0);
+                                        total += isNaN(v) ? 0 : v;
+                                    });
+                                });
+                            }
+                        }
+                    } catch (eTot) {
+                        console.warn('[anno-v2] compute total failed', eTot);
+                        total = 0;
+                    }
+                if (totalText !== null) total = totalText; // still allow forced override
+                console.log('[anno-v2] computed total =', total);
+
+                // ---- TOP-LEFT: TOTAL ----
+                c.total = chart.renderer.text(
+                    "Total = " + total,
+                    sb.x + 5,
+                    sb.y + 15
+                )
+                .css({ fontSize: "12px", fontWeight: "600", color: "#000" })
+                .add();
+
+                // ---- TOP-RIGHT: LEGEND BOX ----
+                var boxW = 150, boxH = 26;
+                var rightX = sb.x + sb.width - boxW - 5;    // right aligned in outer border
+                var topY = sb.y + 2;
+
+                //c.legendBox = chart.renderer.rect(rightX, topY, boxW, boxH, 4)
+                //    .attr({ fill: "rgba(255,255,255,0.95)", stroke: "#000", "stroke-width": 1 })
+                //    .add();
+
+                c.legendSample = chart.renderer.rect(rightX + 6, topY + 6, 12, 12)
+                    .attr({ fill: legendColor, stroke: "#333" })
+                    .add();
+
+                c.legendText = chart.renderer.text(
+                    legendLabel,
+                    rightX + 6 + 16 + 4,
+                    topY + 18
+                )
+                .css({ fontSize: "11px", color: "#000" })
+                .add();
+
+                // ---- BOTTOM-RIGHT: PRINTED ON ----
+                var printed = printedPrefix + " " + (new Date()).toLocaleDateString();
+                c.printed = chart.renderer.text(
+                    printed,
+                    sb.x + sb.width - 5,
+                    sb.y + sb.height +80
+                )
+                .css({ fontSize: "10px", color: "#000" })
+                .attr({ align: "right" })
+                .add();
+            }
+
+            build();
+
+            // Rebuild after redraw
+            if (!chart._annoHooked) {
+                chart._annoHooked = true;
+                var orig = chart.redraw;
+                chart.redraw = function () {
+                    var r = orig.apply(this, arguments);
+                    build();
+                    return r;
+                };
+            }
+        }
+
+        function computeRasterScaleForDPI(svgDrawWidthPx, desiredDPI) {
+            // convert desired DPI to px per inch used in jsPDF (we used 96 px per inch earlier)
+            var pxPerInch = 96; // our SVG/page pixel mapping
+            // target pixel density = desiredDPI / 96  (i.e. how many screen px per our px)
+            // rasterScale = targetPixelDensity
+            return Math.max(1, Math.ceil((desiredDPI / pxPerInch) * 1)); // integer scale >=1
+        }
+
+        function exportSvgToPdfRasterHighRes(chart, filename, opts) {
+            try {
+                if (!chart) { alert('Chart instance missing'); return; }
+                filename = filename || 'placement-chart.pdf';
+                opts = opts || {};
+                var page = (opts.page || 'A4').toUpperCase();
+                var orientation = (opts.orientation || 'landscape').toLowerCase();
+                var marginMm = (typeof opts.marginMm === 'number') ? opts.marginMm : 10;
+                var rasterScale = (typeof opts.rasterScale === 'number' && opts.rasterScale > 0) ? opts.rasterScale : (window.devicePixelRatio || 2);
+
+                // annotation options
+                var includeAnnotations = (typeof opts.includeAnnotations === 'boolean') ? opts.includeAnnotations : true;
+                var removeAfter = (typeof opts.removeAnnotationsAfter === 'boolean') ? opts.removeAnnotationsAfter : false;
+                var total = 0;
+                    try {
+                        // prefer explicit column series (assumed index 0)
+                        var colSeries = (chart.series && chart.series[0]) ? chart.series[0] : null;
+                        if (colSeries && Array.isArray(colSeries.data)) {
+                            total = colSeries.data.reduce(function (acc, p) {
+                                var v = 0;
+                                if (typeof p.y === 'number') v = p.y;
+                                else if (p && p.options && typeof p.options.y === 'number') v = p.options.y;
+                                else if (typeof p.options === 'object' && typeof p.options.value === 'number') v = p.options.value;
+                                return acc + (isNaN(v) ? 0 : v);
+                            }, 0);
+                        } else {
+                            // fallback: try summing chart.userBuckets (if you exposed buckets) or other known data
+                            if (chart.userBuckets && Array.isArray(chart.userBuckets)) {
+                                total = chart.userBuckets.reduce(function (s, b) { return s + (b.count || 0); }, 0);
+                            } else {
+                                // worst-case: iterate all series but ignore scatter (type === 'scatter')
+                                (chart.series || []).forEach(function (s) {
+                                    if (s.type && s.type.toLowerCase() === 'scatter') return;
+                                    (s.data || []).forEach(function (p) {
+                                        var v = (typeof p.y === 'number') ? p.y : (p && p.options && typeof p.options.y === 'number' ? p.options.y : 0);
+                                        total += isNaN(v) ? 0 : v;
+                                    });
+                                });
+                            }
+                        }
+                    } catch (eTot) {
+                        console.warn('[anno-v2] compute total failed', eTot);
+                        total = 0;
+                    };
+
+                var annotationOptions = opts.annotationOptions || { totalText: total, legendLabel: 'Current Student', legendColor: '#C8F7C5', printedPrefix: 'Printed on:' };
+
+                // try to create renderer annotations (best-effort, harmless if missing)
+                try { if (includeAnnotations && typeof addExportAnnotations_SVG === 'function') { addExportAnnotations_SVG(chart, annotationOptions); if (typeof chart.redraw === 'function') chart.redraw(); } } catch(e){ console.warn('addExportAnnotations_SVG failed', e); }
+
+                // obtain SVG string (fallback if missing we'll still draw)
+                var svgStr;
+                try { svgStr = chart.getSVG(); } catch (getErr) { console.warn('chart.getSVG failed', getErr); svgStr = null; }
+
+                if (!svgStr) {
+                    alert('SVG not available for export, but will attempt raster fallback.');
+                    // continue — we'll still try to build an image from chart by serializing current container via svgStr fallback
+                    // but in this implementation we abort early only if svg missing and we cannot proceed
+                    return;
+                }
+
+                // parse svg size
+                var tmp = document.createElement('div'); tmp.innerHTML = svgStr;
+                var svgEl = tmp.querySelector && tmp.querySelector('svg');
+                var svgW = (svgEl && parseFloat(svgEl.getAttribute('width'))) || chart.chartWidth || 800;
+                var svgH = (svgEl && parseFloat(svgEl.getAttribute('height'))) || chart.chartHeight || 400;
+
+                // page sizes in mm
+                var pageSizes = { 'A4': { w:210, h:297 }, 'LETTER': { w:216, h:279 } };
+                var ps = pageSizes[page] || pageSizes['A4'];
+
+                // convert mm to px (approx 96 DPI)
+                var pxPerMm = 96 / 25.4;
+                var pageWpx = ps.w * pxPerMm;
+                var pageHpx = ps.h * pxPerMm;
+
+                // swap for orientation
+                var pageWidthPx = (orientation === 'landscape') ? pageHpx : pageWpx;
+                var pageHeightPx = (orientation === 'landscape') ? pageWpx : pageHpx;
+
+                var marginPx = marginMm * pxPerMm;
+                var availW = pageWidthPx - 2 * marginPx;
+                var availH = pageHeightPx - 2 * marginPx;
+
+                // compute scale to fit inside available area (document units are px)
+                var scale = Math.min(availW / svgW, availH / svgH, 1.0);
+
+                var drawW = Math.round(svgW * scale);
+                var drawH = Math.round(svgH * scale);
+
+                // High res canvas size
+                var canvasW = Math.round(drawW * rasterScale);
+                var canvasH = Math.round(drawH * rasterScale);
+
+                // create img from svg string
+                var img = new Image();
+                img.onload = function() {
+                    try {
+                        // create hi-res canvas and draw the image scaled up
+                        var canvas = document.createElement('canvas');
+                        canvas.width = canvasW;
+                        canvas.height = canvasH;
+                        var ctx = canvas.getContext('2d');
+
+                        // drawing the SVG into canvas (stretched to canvas size)
+                        try { ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; } catch(e){}
+
+                        ctx.clearRect(0,0,canvasW,canvasH);
+                        ctx.drawImage(img, 0, 0, canvasW, canvasH);
+
+                        // === NEW: draw annotations directly onto the canvas (so they appear in exported PDF) ===
+                        if (includeAnnotations) {
+                            try {
+                                // compute scale from SVG user units -> canvas pixels
+                                var scaleCanvas = canvasW / svgW; // mapping: svg coordinate * scaleCanvas => canvas px
+
+                                // compute spacingBox in svg coords (same approach as injection)
+                                var sb = chart.spacingBox;
+                                if (!sb || typeof sb.x !== 'number') {
+                                    sb = { x: 10, y: 10, width: (chart.chartWidth || svgW) - 20, height: (chart.chartHeight || svgH) - 20 };
+                                }
+
+                                // compute text values
+                                var total = annotationOptions.totalText;
+                                if (typeof total === 'undefined' || total === null) {
+                                    total = 0;
+                                    (chart.series || []).forEach(function (s) {
+                                        (s.data || []).forEach(function (p) {
+                                            var v = (typeof p.y === 'number') ? p.y : (p && p.options && typeof p.options.y === 'number' ? p.options.y : 0);
+                                            total += (isNaN(v) ? 0 : v);
+                                        });
+                                    });
+                                }
+                                var legendLabel = annotationOptions.legendLabel || 'Current Student';
+                                var legendColor = annotationOptions.legendColor || '#C8F7C5';
+                                var printedPrefix = annotationOptions.printedPrefix || 'Printed on:';
+                                var printedText = printedPrefix + ' ' + (new Date()).toLocaleDateString();
+
+                                // coordinates (svg units)
+                                var totalX = sb.x + 5, totalY = sb.y + 14;
+                                var boxW = 150, boxH = 26, boxPad = 6;
+                                var rightX = sb.x + sb.width - boxW - 5;
+                                if (rightX < sb.x) rightX = Math.max(sb.x, (chart.chartWidth || svgW) - boxW - 10);
+                                var topY = sb.y + 2;
+                                var printedX = sb.x + sb.width - 5, printedY = sb.y + sb.height +80;
+
+                                // scale coords to canvas pixels
+                                var cTotalX = Math.round(totalX * scaleCanvas);
+                                var cTotalY = Math.round(totalY * scaleCanvas);
+                                var cRightX = Math.round(rightX * scaleCanvas);
+                                var cTopY = Math.round(topY * scaleCanvas);
+                                var cBoxW  = Math.round(boxW * scaleCanvas);
+                                var cBoxH  = Math.round(boxH * scaleCanvas);
+                                var cBoxPad = Math.round(boxPad * scaleCanvas);
+                                var cPrintedX = Math.round(printedX * scaleCanvas);
+                                var cPrintedY = Math.round(printedY * scaleCanvas);
+
+                                // draw "Total = N" (use fillText)
+                                ctx.save();
+                                // choose font - scale font size consistent with svg units -> choose 12px * scaleCanvas / rasterScale? Better: compute visually
+                                var baseFontPx = Math.round(12 * scaleCanvas);
+                                if (baseFontPx < 8) baseFontPx = 8;
+                                ctx.font = (baseFontPx|0) + 'px sans-serif';
+                                ctx.fillStyle = '#000';
+                                ctx.textBaseline = 'alphabetic';
+                                // note: y in canvas fillText is baseline; adjust a bit to mimic SVG y placement
+                                ctx.fillText('Total = ' + total, cTotalX, cTotalY);
+                                ctx.restore();
+
+                                // draw legend box (background rect)
+                                ctx.save();
+                                ctx.fillStyle = 'rgba(255,255,255,0.95)';
+                                //ctx.strokeStyle = '#000';
+                                //ctx.lineWidth = Math.max(1, Math.round(1 * scaleCanvas));
+                                ctx.fillRect(cRightX, cTopY, cBoxW, cBoxH);
+                                //ctx.strokeRect(cRightX, cTopY, cBoxW, cBoxH);
+
+                                // draw color sample
+                                var cSampleX = cRightX + cBoxPad;
+                                var cSampleY = cTopY + Math.round((cBoxH - Math.round(12*scaleCanvas))/2);
+                                ctx.fillStyle = legendColor;
+                                ctx.fillRect(cSampleX, cSampleY, Math.round(12*scaleCanvas), Math.round(12*scaleCanvas));
+                                ctx.strokeStyle = '#333';
+                                ctx.strokeRect(cSampleX, cSampleY, Math.round(12*scaleCanvas), Math.round(12*scaleCanvas));
+
+                                // draw legend text
+                                var legendFontPx = Math.max(8, Math.round(11 * scaleCanvas));
+                                ctx.font = legendFontPx + 'px sans-serif';
+                                ctx.fillStyle = '#000';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillText(legendLabel, cSampleX + Math.round(12*scaleCanvas) + Math.round(6*scaleCanvas), cTopY + Math.round(cBoxH/2));
+
+                                // draw printed text right aligned
+                                var printedFontPx = Math.max(8, Math.round(10 * scaleCanvas));
+                                ctx.font = printedFontPx + 'px sans-serif';
+                                ctx.fillStyle = '#000';
+                                ctx.textBaseline = 'alphabetic';
+                                var printedTextWidth = ctx.measureText(printedText).width;
+                                ctx.fillText(printedText, cPrintedX - printedTextWidth, cPrintedY);
+
+                                ctx.restore();
+                            } catch (drawAnnErr) {
+                                console.warn('Drawing annotations onto canvas failed', drawAnnErr);
+                            }
+                        }
+
+                        // prepare pdf (page size in px)
+                        var jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF || null);
+                        if (!jsPDFCtor) { alert('jsPDF not found. Include jspdf.umd.min.js'); return; }
+                        var pdf = new jsPDFCtor({ unit: 'px', format: [pageWidthPx, pageHeightPx], orientation: (pageHeightPx >= pageWidthPx ? 'portrait' : 'landscape') });
+
+                        // compute placement (center) in PDF units (drawW, drawH are in PDF px units)
+                        var x = Math.round((pageWidthPx - drawW)/2);
+                        var y = Math.round((pageHeightPx - drawH)/2);
+
+                        // Convert hi-res canvas to data URL (PNG)
+                        var dataUrl = canvas.toDataURL('image/png', 1.0);
+
+                        // add image to PDF at target draw size (not full hi-res pixel size)
+                        pdf.addImage(dataUrl, 'PNG', x, y, drawW, drawH);
+                        pdf.save(filename);
+                    } catch (err) {
+                        console.error('High-res export failed', err);
+                        alert('High-res export failed — see console.');
+                    } finally {
+                        // optionally remove renderer annotations if requested
+                        try {
+                            if (removeAfter && chart._annotationsGroup) {
+                                try { chart._annotationsGroup.destroy(); chart._annotationsGroup = null; if (typeof chart.redraw === 'function') chart.redraw(); } catch(e) {}
+                            }
+                        } catch(e){}
+                    }
+                };
+
+                img.onerror = function(e) {
+                    console.error('Failed to load SVG into Image for high-res render', e);
+                    alert('Failed to render SVG image. See console.');
+                };
+
+                // load image (encoded SVG)
+                try {
+                    var svg64 = btoa(unescape(encodeURIComponent(svgStr)));
+                    img.src = 'data:image/svg+xml;base64,' + svg64;
+                } catch (eBase64) {
+                    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+                }
+
+            } catch (outer) {
+                console.error('exportSvgToPdfRasterHighRes outer error', outer);
+                alert('Export failed. See console for details.');
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        function addExportAnnotations_SVG(chart, opts) {
+            opts = opts || {};
+            var totalText = (typeof opts.totalText !== 'undefined') ? opts.totalText : null;
+            var legendLabel = opts.legendLabel || 'Current Student';
+            var legendColor = opts.legendColor || '#C8F7C5';
+            var printedPrefix = opts.printedPrefix || 'Printed on:';
+
+            if (!chart || !chart.renderer) return;
+
+            // remove existing group if present
+            try {
+                if (chart._annotationsGroup && chart._annotationsGroup.destroy) {
+                    chart._annotationsGroup.destroy();
+                }
+            } catch (e) { /* ignore */ }
+
+            // create a group attached to the renderer root (so it will be serialized in getSVG)
+            var g = chart.renderer.g('customAnnotations').attr({ zIndex: 1000 }).add();
+
+            // compute total if not provided
+            var total = 0;
+            if (totalText !== null) {
+                total = totalText;
+            } else {
+                (chart.series || []).forEach(function (s) {
+                    (s.data || []).forEach(function (p) {
+                        var v = (typeof p.y === 'number') ? p.y : (p && p.options && typeof p.options.y === 'number' ? p.options.y : 0);
+                        total += (isNaN(v) ? 0 : v);
+                    });
+                });
+            }
+
+            // Using spacingBox for positions outside inner plot but within outer chart
+            var sb = chart.spacingBox || { x: chart.chartWidth*0.05||10, y: chart.chartHeight*0.02||10, width: chart.chartWidth-20, height: chart.chartHeight-20 };
+
+            // TOP-LEFT: Total = N (placed relative to spacingBox)
+            var txtTotal = chart.renderer.text('Total = ' + total, sb.x + 5, sb.y + 15)
+                .css({ fontSize: '12px', fontWeight: '600', color: '#000' })
+                .add(g);
+
+            // TOP-RIGHT: Legend box (rect + color sample + label)
+            var boxW = 150, boxH = 26, boxPadding = 6;
+            var rightX = sb.x + sb.width - boxW - 5;
+            if (rightX < sb.x) rightX = Math.max(sb.x, chart.chartWidth - boxW - 10)+2;
+            rightX = rightX + 2;
+            var boxTop = sb.y + 2 + 1;
+
+            //var rect = chart.renderer.rect(rightX, sb.y + 2, boxW, boxH, 4)
+            //    .attr({ fill: 'rgba(255,255,255,0.95)', stroke: '#000', 'stroke-width': 1 })
+            //    .add(g);
+
+            var sw = 12;
+            var sample = chart.renderer.rect(rightX + boxPadding-2, sb.y + 1 + (boxH - sw) / 2, sw, sw, 0)
+                .attr({ fill: legendColor, stroke: '#333' })
+                .add(g);
+
+            var legendTxt = chart.renderer.text(legendLabel, rightX + boxPadding + sw + 6, sb.y + 2 + boxH/2 + 4)
+                .css({ fontSize: '11px', color: '#000' })
+                .attr({ align: 'left' })
+                .add(g);
+
+            // BOTTOM-RIGHT: Printed on
+            var printed = printedPrefix + ' ' + (new Date()).toLocaleDateString();
+            var printedTxt = chart.renderer.text(
+                    printed,
+                    sb.x + sb.width - 5,
+                    sb.y + sb.height + 80   // was -6 → add 10px downward
+                )
+                .css({ fontSize: '10px', color: '#000' })
+                .attr({ align: 'right' })
+                .add(g);
+
+            // Keep the group reference on the chart for cleanup later
+            chart._annotationsGroup = g;
+
+            // return group
+            return g;
+        }
+
+
+        function restoreHtmlLabelsFromExport_v2(created, chart) {
+            try {
+                if (!created) return;
+                if (created.svgEls && created.svgEls.length) {
+                    for (var i = 0; i < created.svgEls.length; i++) {
+                        try { created.svgEls[i].destroy(); } catch (e) {}
+                    }
+                }
+                if (created.hiddenLabels && created.hiddenLabels.length) {
+                    for (var j = 0; j < created.hiddenLabels.length; j++) {
+                        try { created.hiddenLabels[j].style.visibility = ''; } catch (e) {}
+                    }
+                }
+                if (created.group) {
+                    try { created.group.destroy(); } catch (e) {}
+                }
+            } catch (e) {
+                console.warn('restoreHtmlLabelsFromExport_v2 error', e);
+            }
+        }
+
+       
+
+
+        
+
+
+        function exportSvgToPdfRasterRobust(chart, filename) {
+            try {
+                if (!chart) { alert('Chart instance missing'); return; }
+                filename = filename || 'placement-chart.pdf';
+
+                // get SVG string
+                var svgStr = chart.getSVG();
+                if (!svgStr) { alert('SVG not available'); return; }
+
+                // parse svg for width/height fallback
+                var tmp = document.createElement('div'); tmp.innerHTML = svgStr;
+                var svgEl = tmp.querySelector && tmp.querySelector('svg');
+                var w = (svgEl && parseFloat(svgEl.getAttribute('width'))) || chart.chartWidth || 800;
+                var h = (svgEl && parseFloat(svgEl.getAttribute('height'))) || chart.chartHeight || 400;
+
+                // prepare canvas
+                var canvas = document.createElement('canvas');
+                canvas.width = Math.ceil(w);
+                canvas.height = Math.ceil(h);
+                var ctx = canvas.getContext('2d');
+
+                // helper to save canvas as PDF
+                function saveCanvasAsPdf() {
+                    try {
+                        var jsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF || null);
+                        if (!jsPDFCtor) { alert('jsPDF not loaded. Include jspdf.umd.min.js'); return; }
+                        var pdf = new jsPDFCtor({ unit: 'px', format: [canvas.width, canvas.height] });
+                        var dataUrl = canvas.toDataURL('image/png', 1.0);
+                        pdf.addImage(dataUrl, 'PNG', 0, 0, canvas.width, canvas.height);
+                        pdf.save(filename);
+                    } catch (err) {
+                        console.error('saveCanvasAsPdf error', err);
+                        alert('PDF save failed — see console.');
+                    }
+                }
+
+                // Image fallback: draw encoded SVG into an Image and onto canvas
+                function drawViaImage() {
+                    var img = new Image();
+                    img.onload = function () {
+                        try { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height); saveCanvasAsPdf(); }
+                        catch(e){ console.error('drawImage error', e); alert('drawImage failed — see console.'); }
+                    };
+                    img.onerror = function(e){ console.error('Image load error', e); alert('Image fallback failed — see console.'); };
+                    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+                }
+
+                // Try various canvg shapes
+                try {
+                    var CanvgCtor = window.Canvg || window.canvg || (window.canvg && window.canvg.Canvg) || null;
+                    if (CanvgCtor) {
+                        // Modern API: Canvg.from(ctx, svgStr).render()
+                        if (typeof CanvgCtor.from === 'function') {
+                            try {
+                                var maybe = CanvgCtor.from(ctx, svgStr);
+                                // if returns promise-like or object with render()
+                                if (maybe && typeof maybe.then === 'function') {
+                                    maybe.then(function(inst){
+                                        if (inst && typeof inst.render === 'function') {
+                                            inst.render().then(saveCanvasAsPdf).catch(function(e){ console.warn('canvg.render promise failed', e); drawViaImage(); });
+                                        } else {
+                                            // if inst drew directly, try saving
+                                            try { saveCanvasAsPdf(); } catch(e2){ drawViaImage(); }
+                                        }
+                                    }).catch(function(err){ console.warn('Canvg.from promise failed', err); drawViaImage(); });
+                                    return;
+                                } else if (maybe && typeof maybe.render === 'function') {
+                                    var r = maybe.render();
+                                    if (r && typeof r.then === 'function') { r.then(saveCanvasAsPdf).catch(function(e){ console.warn('render promise failed', e); drawViaImage(); }); }
+                                    else { saveCanvasAsPdf(); }
+                                    return;
+                                }
+                            } catch (eFrom) { console.warn('Canvg.from invocation failed', eFrom); }
+                        }
+
+                        // Older API: Canvg(ctx, svgStr)
+                        try {
+                            if (typeof CanvgCtor === 'function') {
+                                var inst = CanvgCtor(ctx, svgStr);
+                                if (inst && typeof inst.render === 'function') {
+                                    var rr = inst.render();
+                                    if (rr && typeof rr.then === 'function') { rr.then(saveCanvasAsPdf).catch(function(e){ console.warn('inst.render failed', e); drawViaImage(); }); }
+                                    else { saveCanvasAsPdf(); }
+                                    return;
+                                }
+                            }
+                        } catch (eOld) { console.warn('Old Canvg invocation failed', eOld); }
+
+                        // canvg.render(svgStr, ctx) style?
+                        try {
+                            if (window.canvg && typeof window.canvg.render === 'function') {
+                                var maybeP = window.canvg.render(svgStr, ctx);
+                                if (maybeP && typeof maybeP.then === 'function') { maybeP.then(saveCanvasAsPdf).catch(function(e){ console.warn('canvg.render promise failed', e); drawViaImage(); }); }
+                                else { saveCanvasAsPdf(); }
+                                return;
+                            }
+                        } catch (eRender) { console.warn('canvg.render attempt failed', eRender); }
+
+                        // If canvg present but none matched, fallback
+                        console.warn('canvg present but API not matched; falling back to Image method');
+                        drawViaImage();
+                        return;
+                    }
+                } catch (errCanvg) {
+                    console.warn('canvg detection threw', errCanvg);
+                }
+
+                // No canvg -> image fallback
+                drawViaImage();
+
+            } catch (outer) {
+                console.error('exportSvgToPdfRasterRobust outer error', outer);
+                alert('Export failed — see console.');
+            }
+        }
+
+        // wiring snippet example
+        var btn = document.getElementById('exportChartBtn');
+        if (btn) {
+            btn.onclick = function () {
+                console.log("4581");
+                // ensure 'chart' is your Highcharts instance (replace variable name if different)
+                exportSvgToPdfRasterRobust(chart, 'placement-chart.pdf');
+            };
+        }
+
+
+
+
+
+        function truncateLeadingForSlot(name, fontSizePx, slotPx, extraChars) {
+            if (!name) return '';
+            try {
+                extraChars = Number(extraChars) || 0; // optional extra chars to show beyond strict slot fit
+                var maxChars = Math.max(1, Math.floor(slotPx / fontSizePx));
+                // if name already fits, return it unchanged (no ellipsis)
+                if (name.length <= maxChars) return name;
+
+                // decide how many characters to take when truncating
+                var take = Math.min(name.length, maxChars + extraChars);
+
+                // if take covers entire name, just return name (no ellipsis)
+                if (take >= name.length) return name;
+
+                // special case: when maxChars is 1, show 1 char + ellipsis
+                if (maxChars <= 1) return name.charAt(0) + '…';
+
+                return name.substring(0, take) + '…';
+            } catch (e) {
+                return name;
+            }
+        }
+
+
+
+
+        function drawQuarterAndYearBoxes(chart) {
+            try {
+                // remove previous group
+                if (chart._qyBoxGroup && chart._qyBoxGroup.destroy) {
+                    chart._qyBoxGroup.destroy();
+                    chart._qyBoxGroup = null;
+                }
+                var group = chart.renderer.g('quarterYearBoxes').attr({ zIndex: 120 }).add();
+                chart._qyBoxGroup = group;
+
+                var xAxis = chart.xAxis && chart.xAxis[0];
+                if (!xAxis) return;
+
+                var plotLeft = chart.plotLeft || 0;
+                var plotTop = chart.plotTop || 0;
+                var plotWidth = chart.plotWidth || Math.max(0, (chart.chartWidth || 0) - plotLeft);
+                var plotHeight = chart.plotHeight || Math.max(0, (chart.chartHeight || 0) - plotTop);
+
+                var categories = xAxis.categories || [];
+                var totalCats = categories.length;
+                if (!totalCats) return;
+
+                // equal width per category
+                var catW = plotWidth / totalCats;
+
+                // visuals / tuning
+                var padSide = 4;              // horizontal extra padding for each quarter box
+                var qLabelFont = 12;
+                var yearFont = 12;
+                var qBoxHeight = 28;          // height for quarter box
+                var gapBetweenPlotAndQ = 12;  // **gap between bottom of plot and top of quarter boxes**
+                var gapBetweenRows = 8;       // gap between Q-box bottom and year-box top
+
+                var qStroke = '#444';
+                var qStrokeW = 1;
+                var qFill = 'rgba(255,255,255,0)'; // transparent - change if want background
+                var qRadius = 0;
+
+                // POSITION: put quarter boxes *below* the plot area
+                var qRectTop = Math.round(plotTop + plotHeight + gapBetweenPlotAndQ); // moved *below* the bars
+                var qRectHeight = qBoxHeight;
+
+                // YEAR row below quarter row
+                var yearRectHeight = 40;
+                var yearRectTop = qRectTop + qRectHeight + gapBetweenRows;
+
+                // Draw quarter boxes (top row): only quarter label centered (no counts)
+                for (var idx = 0; idx < totalCats; idx++) {
+                    try {
+                        var left = Math.round(plotLeft + idx * catW) ;
+                        var width = Math.max(8, Math.round(catW + padSide * 2));
+
+                        // clamp to plot area
+                        if (left < plotLeft) left = plotLeft;
+                        if (left + width > plotLeft + plotWidth) width = Math.round(Math.max(8, plotLeft + plotWidth - left+9));
+
+                        // rectangle for quarter
+                        chart.renderer.rect(left, qRectTop-11, width-8, qRectHeight, 0)
+                            .attr({ fill: qFill, stroke: qStroke, 'stroke-width': qStrokeW })
+                            .add(group);
+
+                        // quarter label centered
+                        var cat = String(categories[idx] || '');
+                        var q = (cat.match(/\b(Q[1-4])\b/i) || [null, ''])[1];
+                        if (!q) q = (cat.split(/\s+/)[0] || '');
+
+                        // center point of the box
+                        var centerX = Math.round(left + width / 2);
+                        var centerY = Math.round(qRectTop + qBoxHeight / 2)-11;
+
+                        // create the SVG text, then rotate it -90° about the center
+                        var txt = chart.renderer.text(escapeHtml(q.toUpperCase()), centerX, centerY)
+                            .attr({ align: 'center' })
+                            .css({ fontSize: qLabelFont + 'px', fontWeight: '600', color: '#111', lineHeight: '1' })
+                            .add(group);
+
+                        // rotate about the center (Highcharts rotation uses the element's transform, set rotation then adjust attributes if needed)
+                        try {
+                            // rotation pivot: set the transform attribute so rotation occurs around the center point
+                            // Use SVG transform to ensure consistent rotation on export
+                            if (txt && txt.element) {
+                                var el = txt.element;
+                                // move text anchor to middle horizontally (dominant-baseline for vertical centering)
+                                el.setAttribute('text-anchor', 'middle');
+                                // rotate -90 degrees about the center point
+                                el.setAttribute('transform', 'rotate(-90 ' + centerX + ' ' + centerY + ')');
+                                // optional: adjust y slightly because rotated baseline may shift; tweak offset if needed:
+                                // el.setAttribute('transform', 'rotate(-90 ' + centerX + ' ' + (centerY) + ') translate(0,0)');
+                            } else {
+                                // fallback: use Highcharts attr rotation if element isn't present yet
+                                txt.attr({ rotation: -90 });
+                            }
+                        } catch (e) {
+                            // fallback to attr rotation
+                            try { txt.attr({ rotation: -90 }); } catch (e2) {}
+                        }
+
+                    } catch (inner) { console.warn('quarter draw error', inner); }
+                }
+
+                // Bottom row: year boxes only (one per year group). Map years -> contiguous indices
+                var yearMap = {};
+                for (var i = 0; i < totalCats; i++) {
+                    var catText = String(categories[i] || '');
+                    var m = catText.match(/\b(19|20)\d{2}\b/);
+                    var year = m ? m[0] : 'Unknown';
+                    if (!yearMap[year]) yearMap[year] = { indices: [] };
+                    yearMap[year].indices.push(i);
+                }
+                // order years by first index
+                var yearsOrdered = Object.keys(yearMap).sort(function(a,b){
+                    return Math.min.apply(null, yearMap[a].indices) - Math.min.apply(null, yearMap[b].indices);
+                });
+
+                yearsOrdered.forEach(function(yr) {
+                    try {
+                        var info = yearMap[yr];
+                        if (!info || !info.indices || !info.indices.length) return;
+                        var firstIndex = info.indices[0];
+                        var lastIndex = info.indices[info.indices.length - 1];
+
+                        // equal-width approach
+                        var left = Math.round(plotLeft + firstIndex * catW);
+                        var right = Math.round(plotLeft + (lastIndex + 1) * catW) + padSide+5;
+                        left = Math.max(plotLeft, left);
+                        right = Math.min(plotLeft + plotWidth, right);
+                        var width = Math.max(8, Math.round(right - left));
+
+                        if (yr === yearsOrdered[yearsOrdered.length - 1]) {
+                            width += 9;   // <-- add 9 pixels
+                        }
+
+                        // draw year rect
+                        chart.renderer.rect(left, yearRectTop-20, width-8, yearRectHeight, qRadius)
+                            .attr({ fill: 'rgba(255,255,255,0)', stroke: qStroke, 'stroke-width': qStrokeW })
+                            .add(group);
+
+                        // draw centered year text only (no totals)
+                        var centerX = Math.round(left + width / 2);
+                        var yearY = yearRectTop + Math.round(yearRectHeight / 2) - 20;  // move up a bit
+                        chart.renderer.text(String(yr), centerX, yearY)
+                            .attr({ align: 'center' })
+                            .css({ fontSize: yearFont + 'px', fontWeight: '600', color: '#111' })
+                            .add(group);
+
+                        // ----- age label (second line) -----
+                        var parsedYear = Number(yr);
+                        if (!isNaN(parsedYear) && parsedYear > 0) {
+                            var computedAge = new Date().getFullYear() - parsedYear;
+                            var ageText = '('+computedAge + ' y/o)';
+
+                            var ageY = yearY + 16;   // ⬅️ 16px below the year text (adjust as needed)
+
+                            chart.renderer.text(ageText, centerX, ageY)
+                                .attr({ align: 'center' })
+                                .css({ fontSize: (yearFont - 1) + 'px', color: '#333' })
+                                .add(group);
+                        }
+
+                    } catch (inner2) { console.warn('year draw error', inner2); }
+                });
+
+                // ---- ensure chart has enough bottom spacing so boxes are not clipped on redraw/export ----
+                // If chart spacing/margins are too small, boxes will be clipped. Suggest increasing spacingBottom.
+                try {
+                    var requiredBottomSpace = (yearRectTop + yearRectHeight + 12) - (plotTop + plotHeight);
+                    // If current spacingBottom smaller, set a larger spacingBottom (non-destructive)
+                    if (!chart.options) chart.options = {};
+                    if (!chart.options.chart) chart.options.chart = {};
+                    var curSpacingBottom = (chart.options.chart.spacingBottom || chart.spacing && chart.spacing[2]) || (chart.options.chart.marginBottom || 0);
+                    if (!curSpacingBottom || curSpacingBottom < requiredBottomSpace) {
+                        // set both options and call update so export respects it
+                        chart.update({ chart: { spacingBottom: Math.max(requiredBottomSpace, 80), marginBottom: Math.max(requiredBottomSpace, 80) } }, false);
+                    }
+                } catch (s) { /* ignore spacing failures */ }
+
+            } catch (e) {
+                console.warn('drawQuarterYearBoxes error', e);
+            }
+        }
 
     </script>
     <style>
@@ -3296,7 +4793,7 @@
                         <%--<asp:Button ID="btnVenderDischarged" runat="server" CssClass="leftMenu" Text="Client/Contact/Vendor – Discharged" ToolTip="Client/Contact/Vendor – Discharged"   ></asp:Button>--%>
 
                         <asp:Button ID="btnBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate Quarter" ToolTip="All Clients by Birthdate Quarter" OnClick="btnBirthdate_Click"></asp:Button>
-
+                        <asp:Button ID="btnPlacementPlanning" runat="server" CssClass="leftMenu" Text="Placement Planning" ToolTip="Placement Planning Chart" OnClientClick="return handleClientClick();" OnClick="btnPlacementPlanning_Click"></asp:Button>
                         <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClientClick="return handleClientClick();" OnClick="btnResRoster_Click"></asp:Button>
                         <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
                         <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClientClick="return handleClientClick();" OnClick="btnAllPlacement_Click"></asp:Button>
@@ -3396,6 +4893,19 @@
                                             </td>
                                         </tr>
                                     </table>
+                                </div>
+                                <div id="divPlacementPlanning">
+                                    <div id="placementExportBar" style="overflow:hidden; margin-bottom:6px; padding:4px 0;">
+                                        <div style="float:right;">
+                                            <button id="exportChartBtn" type="button" runat="server" visible="false"
+                                                    style="padding:6px 10px; background:#03507D; border:1px solid #82a783; border-radius:4px;
+                                                           cursor:pointer; color:white; font-size:13px; ">
+                                                Export Chart
+                                            </button>
+                                        </div>
+                                        <div style="clear:both;"></div>
+                                    </div>
+                                  <div id="placementChartContainer" style="width:100%; height:1000px; overflow: auto;"></div>
                                 </div>
                                 <div id="divPlacement" runat="server" visible="false">
                                     <table style="width: 100%">
@@ -3663,8 +5173,8 @@
                                                     <asp:ListItem Value="I">Inactive</asp:ListItem>
                                                 </asp:RadioButtonList></td>--%>
                                             <td>&nbsp;</td>
-                                          <%--  <td>
-                                                <asp:Button ID="btnShowDischarge" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowDischarge_Click" /></td>--%>
+                                            <td>
+                                                <asp:Button ID="btnShowDischarge" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowDischarge_Click" /></td>
                                         </tr>
                                     </table>
                                 </div>
