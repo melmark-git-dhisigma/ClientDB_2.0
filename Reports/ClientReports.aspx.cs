@@ -4647,22 +4647,73 @@ namespace ClientDB.Reports
                     {
                         RVClientReport.Visible = false;
 
-                        string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
-                                                " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                                                " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL " + 
-                                                " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
-                                                " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                                                " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                                                " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " +
-                                                " and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-          		                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                                                " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-          		                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
-                                                " and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0))) FUND WHERE ObjectType='Funder' " +
-                                                " AND CONVERT(DATE,EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') " + 
-                                                " ORDER BY EventLogId DESC ";
+                        //string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                        //                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                        //                        " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL " + 
+                        //                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                        //                        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                        //                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                        //                        " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " +
+                        //                        " and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                        //                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                        //                        " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                        //                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                        //                        " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+                        //                        " and ST.StudentPersonalId not in (SELECT Distinct " +
+                        //                        " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0))) FUND WHERE ObjectType='Funder' " +
+                        //                        " AND CONVERT(DATE,EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') " + 
+                        //                        " ORDER BY EventLogId DESC ";
+                        string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM ( " +
+                        " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
+                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue, " +
+                        " NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId " +
+                        " FROM EventLogs EL " +
+                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
+
+                        " OUTER APPLY ( " +
+                        "     SELECT TOP 1 PLC.* " +
+                        "     FROM Placement PLC " +
+                        "     WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
+                        "     AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) " +
+                        "     AND PLC.Status = 1 " +
+                        "     ORDER BY PLC.StartDate DESC " +
+                        " ) PLC " +
+
+                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+
+                        " WHERE LKP.LookupType = 'Department' " +
+                        " AND SP.ClientId>0 " +
+
+                        " AND SP.StudentPersonalId NOT IN ( " +
+                        "     SELECT DISTINCT ST.StudentPersonalId " +
+                        "     FROM StudentPersonal ST " +
+                        "     JOIN ContactPersonal CP ON CP.StudentPersonalId = ST.StudentPersonalId " +
+                        "     WHERE ST.StudentType='Client' " +
+                        "     AND CONVERT(INT,ST.ClientId)>0 " +
+                        "     AND ST.StudentPersonalId NOT IN ( " +
+                        "         SELECT DISTINCT ST.StudentPersonalId " +
+                        "         FROM StudentPersonal ST " +
+                        "         JOIN Placement PLC ON PLC.StudentPersonalId=ST.StudentPersonalId " +
+                        "         WHERE (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) " +
+                        "         AND PLC.Status=1 " +
+                        "         AND ST.StudentType='Client' " +
+                        "         AND CONVERT(INT,ST.ClientId)>0 " +
+                        "     ) " +
+
+                        "     AND ST.StudentPersonalId NOT IN ( " +
+                        "         SELECT DISTINCT ST.StudentPersonalId " +
+                        "         FROM StudentPersonal ST " +
+                        "         WHERE ST.PlacementStatus='D' " +
+                        "         AND ST.StudentType='Client' " +
+                        "         AND CONVERT(INT,ST.ClientId)>0 " +
+                        "     ) " +
+                        " ) " +
+
+                        " ) FUND " +
+                        " WHERE ObjectType='Funder' " +
+                        " AND CONVERT(DATE,EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
+                        " AND CONVERT(DATE,EventDate) <= CONVERT(DATE,'" + NewEndDate + "') " +
+                        " ORDER BY EventLogId DESC ";
 
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                         con.Open();
@@ -4684,15 +4735,15 @@ namespace ClientDB.Reports
                     {
                         RVClientReport.Visible = false;
 
-                        string placementChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
-                                                  " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                        string placementChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
+                                                  " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " +
                                                   " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
-                                                  " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                                                  " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
                                                   " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                                                  " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                  " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " + 
+                                                  " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                  " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
                                                   " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
-                                                  " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                                                  " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
                                                   " and ST.StudentPersonalId not in (SELECT Distinct " +
                                                   " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
                                                   " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
@@ -4717,25 +4768,56 @@ namespace ClientDB.Reports
                     {
                         RVClientReport.Visible = false;
 
-                        string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
-                                                     " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                                                     " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " + 
-                                                     " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " + 
-                                                     " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
-                                                     " WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
-                                                     " WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL " + 
-                                                     " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
-                                                     " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                                                     " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
-                                                     " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                                                     " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                                                     " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                     " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                                                     " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
-                                                     " and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                     " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
-                                                     " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
+                        //string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                        //                             " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                        //                             " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " + 
+                        //                             " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " + 
+                        //                             " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
+                        //                             " WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
+                        //                             " WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL " + 
+                        //                             " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                        //                             " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                        //                             " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                        //                             " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                        //                             " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                        //                             " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                        //                             " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                        //                             " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                        //                             " and ST.StudentPersonalId not in (SELECT Distinct " +
+                        //                             " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+                        //                             " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
+                                                    string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
+                            " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate, " +
+                            " CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " +
+                            " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " +
+                            " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) END Oldguard, " +
+                            " CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) END Newguard " +
 
+                            " FROM EventLogs EL " +
+                            " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
+
+                            " OUTER APPLY (SELECT TOP 1 * FROM Placement PLC WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
+                            " AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) AND PLC.Status=1 ORDER BY PLC.StartDate DESC) PLC " +
+
+                            " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+
+                            " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 " +
+                            " AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+
+                            " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+
+                            " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+
+                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+
+                            " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' " +
+                            " and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+
+                            " AND CONVERT(DATE, EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
+                            " AND CONVERT(DATE, EventDate) <= CONVERT(DATE,'" + NewEndDate + "') " +
+
+                            " ORDER BY EventLogId DESC ";
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                         con.Open();
                         SqlCommand cmd = new SqlCommand(guardianshipChngQry, con);
@@ -4756,21 +4838,48 @@ namespace ClientDB.Reports
                     {
                         RVClientReport.Visible = false;
 
-                        string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " + 
-                                                " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                                                " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
-                                                " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
-                                                " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                                                " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                                                " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
-                                                "   and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                                                " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                                                " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                                                " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                                                " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
-                                                " and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
-                                                " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC";
+                        //string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " + 
+                        //                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                        //                        " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
+                        //                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                        //                        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                        //                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                        //                        " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
+                        //                        "   and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                        //                        " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                        //                        " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                        //                        " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                        //                        " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                        //                        " and ST.StudentPersonalId not in (SELECT Distinct " +
+                        //                        " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+                        //                        " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC";
+                                                    string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " +
+                            " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
+                            " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
+
+                            " OUTER APPLY (SELECT TOP 1 * FROM Placement PLC WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
+                            " AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) AND PLC.Status=1 ORDER BY PLC.StartDate DESC) PLC " +
+
+                            " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+
+                            " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
+                            " and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+
+                            " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+
+                            " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+
+                            " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+
+                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+
+                            " and ST.StudentPersonalId not in (SELECT Distinct " +
+                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+
+                            " AND CONVERT(DATE, EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
+                            " AND CONVERT(DATE, EventDate) <= CONVERT(DATE,'" + NewEndDate + "') ORDER BY EventLogId DESC";
+
+
 
                         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
                         con.Open();
