@@ -115,6 +115,8 @@ namespace ClientDB.Models
             }
         }
 
+        public virtual bool IsTeststudent { get; set; }
+
         public virtual string SASID { get; set; }
         public virtual string Medicaid { get; set; }
         public virtual string Note { get; set; }

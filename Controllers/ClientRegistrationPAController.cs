@@ -90,6 +90,8 @@ namespace ClientDB.Controllers
                     });
                 }
             }
+
+            model.IsTeststudent = objFuns.getteststudent(sess.StudentId);
             string country = objFuns.getCountryName();
             IList<SelectListItem> x = new List<SelectListItem>();
             x.Add(new SelectListItem { Text = "--Select--", Value = "0" });
@@ -365,7 +367,7 @@ namespace ClientDB.Controllers
                     model.Note = item.Note;
                     model.IsOnCampusWithStaff = item.IsOnCampusWithStaff.GetBool();
                     model.IsOnCampusAlone = item.IsOnCampusAlone.GetBool();
-                    model.IsOffCampus = item.IsOffCampus.GetBool();
+                    model.IsOffCampus = item.IsOffCampus.GetBool();                    
                 }
             }
 
@@ -939,6 +941,28 @@ namespace ClientDB.Controllers
             // Trim and normalize spaces (one space between words)
             var parts = input.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             return string.Join(" ", parts);
+        }
+        public string UpdateTestStudent()
+        {
+            sess = (clsSession)Session["UserSessionClient"];
+            BiWeeklyRCPNewEntities dbobj = new BiWeeklyRCPNewEntities();
+
+            int StudId = sess.StudentId;
+            try
+            {
+                var studentPersonals = dbobj.StudentPersonals.Where(x => x.StudentPersonalId == StudId).SingleOrDefault();
+                studentPersonals.ClientId = -1 * studentPersonals.ClientId;
+                studentPersonals.ModifiedOn = DateTime.Now;
+                studentPersonals.ModifiedBy=sess.LoginId;
+                dbobj.SaveChanges();
+                return "Success";
+            }
+            catch (Exception eX)
+            {
+                errorLog errlog = new errorLog();
+                errlog.WriteToLog(eX.ToString());
+                return "Failed";
+            }
         }
     }
 }
