@@ -348,6 +348,28 @@ namespace ClientDB.AppFunctions
             string country = dbobj.LookUps.Where(objLookup => objLookup.LookupType == "Country" && objLookup.LookupCode == SetLookUpCode).Select(objLookup => objLookup.LookupName).Single();
             return country;
         }
+        public bool getteststudent(int StudentId)
+        {
+            dbobj = new BiWeeklyRCPNewEntities();
+            bool Checkteststudent = false;
+            try
+            {
+                if (StudentId > 0)
+                {
+                    var ClientId = dbobj.StudentPersonals.Where(objstudent => objstudent.StudentPersonalId == StudentId).Select(objstudent => objstudent.ClientId).Single();
+                    if (ClientId < 0)
+                    {
+                        Checkteststudent = true;
+                    }
+                }
+            }
+            catch (Exception eX)
+            {
+                errorLog errlog = new errorLog();
+                errlog.WriteToLog(eX.ToString());
+            }
+            return Checkteststudent;
+        }
         public string getState(int stateID)
         {
             string state = "";

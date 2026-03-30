@@ -607,6 +607,38 @@
         <div id="newPreview1"></div>--%>
         <table style="width: 70%; border-bottom: none; display: inline-block;">
             <tr>
+                <td colspan="2">          
+                      <% if (ViewBag.permission == "true")
+                       {
+                           if (Model.Id > 0)
+                           {
+                              
+                      %>
+                            <label class="lblSpan"> Test Account <span class="nospan-align"></span>
+    				            <%= Html.CheckBoxFor(x => x.IsTeststudent, new
+    					            {
+        					            id = "chkTestStudent",
+        					            onclick = "onTestStudentClick(this)"
+    					             }) %>
+    
+					        </label>
+                       <%
+                           }
+                           else
+                           {%>
+                    
+                       <% }
+                       
+                       }%>                   
+                    
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+            <tr>
                 <td>
                     <label class="lblSpan">Prefix</label><span class="nospan-align">*</span><br />
                     <%: Html.DropDownListFor(x => x.Prefix, Model.PrefixList, new {@class="newClass", Style="width:90px !important;margin-bottom:0px;" })%></td>
@@ -2450,6 +2482,58 @@
                     newEvent = para_Arr_NewEventLogsParent[i][0] + "|||" + para_Arr_NewEventLogsParent[i][1] + "|||" + para_Arr_NewEventLogsParent[i][2] + "|||" + para_Arr_NewEventLogsParent[i][3] + "|||" + para_Arr_NewEventLogsParent[i][4];
                     document.getElementById('newEventLog').value += newEvent + ">>>";
                 }
+            }
+
+            function onTestStudentClick(checkbox) {
+
+                var updatestudent="true";
+				// show popup when checking
+                if (checkbox.checked) {
+                    var confirmed = confirm("Are you sure you want to mark this student as a test student? Confirming will exclude the student from all reports.");
+
+                    if (!confirmed) {
+                        checkbox.checked = false; // revert
+                        updatestudent = "false";
+                        return false;
+                    }
+
+                    else {
+                        updatestudent = "true";
+                    }
+                }
+                else {
+                    // show popup when Unchecking
+                    var confirmed = confirm("Are you sure you want to mark this student as an active student? Confirming will include the student in all reports.");
+
+                    if (!confirmed) {
+                        checkbox.checked = true; // revert
+                        updatestudent = "false";
+                        return false;
+                    }
+                    else {
+                        updatestudent = "true";
+                    }
+                }                  
+
+                    // Call server ONLY if confirmed
+                if (updatestudent == "true") {
+
+                    $.ajax(
+            {
+                type: "POST",
+                url: "../ClientRegistrationPA/UpdateTestStudent",
+                data: "",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#btnGeneral').trigger("click");
+                }
+
+            });
+                }
+                
+                $('#btnGeneral').trigger("click");
+                return true;
             }
 
         </script>
