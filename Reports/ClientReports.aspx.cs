@@ -125,7 +125,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -183,7 +183,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -332,7 +332,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 FillStudNameIDs();
@@ -448,7 +448,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     showlab.Text = "<Br/><Br/>Show Labels:";
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -1208,7 +1208,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -1263,7 +1263,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -1441,7 +1441,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -1496,7 +1496,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -1669,7 +1669,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 FillRelationship();
                 FillConStudNameIDs();
 
@@ -1737,7 +1737,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     HContactStudname.Value = "All";
                     HContactstatus.Value = "0,1,2";
                     HContactRelation.Value = "All";
@@ -2188,7 +2188,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 string chkcontact = "";
 
                 foreach (ListItem item in CheckBoxListcontact.Items)
@@ -2284,7 +2284,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -2332,9 +2332,9 @@ namespace ClientDB.Reports
                 divAdmission.Visible = false;
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
-                divPlacement.Visible = false;          // hide the generic placement list (if used)
+                divPlacement.Visible = false;
                 divPlacementPlanning.Visible = true;
-                exportChartBtn.Visible = true;
+                //exportChartBtn.Visible = true;
 
                 // hide report buttons and reset controls like in other handlers
                 btnShowReport.Visible = false;
@@ -2368,18 +2368,18 @@ namespace ClientDB.Reports
                 "      SELECT DISTINCT ST.StudentPersonalId" +
                 "      FROM StudentPersonal ST" +
                 "      JOIN ContactPersonal cp on cp.StudentPersonalId = ST.StudentPersonalId" +
-                "      WHERE ST.StudentType='Client' AND ST.ClientId>0" +
+                "      WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0" +
                 "        AND ST.StudentPersonalId NOT IN (" +
                 "            SELECT DISTINCT ST2.StudentPersonalId" +
                 "            FROM StudentPersonal ST2" +
                 "            JOIN Placement PLC on PLC.StudentPersonalId = ST2.StudentPersonalId" +
                 "            WHERE (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE))" +
-                "              AND PLC.Status=1 AND ST2.StudentType='Client'" +
+                "              AND PLC.Status=1 AND ST2.StudentType='Client' AND CONVERT(INT,ST2.ClientId)>0" +
                 "        )" +
                 "        AND ST.StudentPersonalId NOT IN (" +
                 "            SELECT DISTINCT ST3.StudentPersonalId" +
                 "            FROM StudentPersonal ST3" +
-                "            WHERE ST3.PlacementStatus='D' AND ST3.StudentType='Client'" +
+                "            WHERE ST3.PlacementStatus='D' AND ST3.StudentType='Client' AND CONVERT(INT,ST3.ClientId)>0" +
                 "        )" +
                 "  )" +
                 "  AND CONVERT(INT,SD.ClientId) > 0;";
@@ -2419,8 +2419,8 @@ namespace ClientDB.Reports
                                     try
                                     {
                                         var s = Convert.ToString(reader.GetValue(2));
-                                        DateTime tmp;
-                                        if (DateTime.TryParse(s, out tmp)) bd = tmp;
+                                        DateTime tmpDt;
+                                        if (DateTime.TryParse(s, out tmpDt)) bd = tmpDt;
                                     }
                                     catch { bd = null; }
                                 }
@@ -2440,13 +2440,118 @@ namespace ClientDB.Reports
                     return;
                 }
 
-                // Aggregate into Year-Quarter buckets using dictionaries (no LINQ)
-                // Bucket key: "YYYY - Q#"
-                var bucketCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase); // category -> count
-                var bucketNames = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase); // category -> list of names (limited)
-                const int FIRST_NAMES_LIMIT = 200; // keep only first 200 names per bucket
+                // ---------------------------
+                // Read Age filters (preferred: hidden fields hfAgeFrom/hfAgeTo; fallback: posted form keys)
+                // ---------------------------
+                int? ageFrom = null;
+                int? ageTo = null;
+                int tmpAge;
+
+                // 1) Try hidden fields first (these should be present and populated by client script)
+                try
+                {
+                    var hfFrom = Page.FindControl("hfAgeFrom") as System.Web.UI.WebControls.HiddenField;
+                    var hfTo = Page.FindControl("hfAgeTo") as System.Web.UI.WebControls.HiddenField;
+
+                    if (hfFrom != null && !string.IsNullOrWhiteSpace(hfFrom.Value) && int.TryParse(hfFrom.Value.Trim(), out tmpAge))
+                        ageFrom = tmpAge;
+                    if (hfTo != null && !string.IsNullOrWhiteSpace(hfTo.Value) && int.TryParse(hfTo.Value.Trim(), out tmpAge))
+                        ageTo = tmpAge;
+                }
+                catch { }
+
+                // 2) Fallback: scan Request.Form keys for ones that end with txtAgeFrom / txtAgeTo (handles naming containers)
+                if (!ageFrom.HasValue)
+                {
+                    foreach (string k in Request.Form.AllKeys)
+                    {
+                        if (k == null) continue;
+                        if (k.EndsWith("txtAgeFrom", StringComparison.OrdinalIgnoreCase) || k.EndsWith("txtAgeFromClient", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var val = Request.Form[k];
+                            if (!string.IsNullOrEmpty(val) && int.TryParse(val.Trim(), out tmpAge))
+                            {
+                                ageFrom = tmpAge;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!ageTo.HasValue)
+                {
+                    foreach (string k in Request.Form.AllKeys)
+                    {
+                        if (k == null) continue;
+                        if (k.EndsWith("txtAgeTo", StringComparison.OrdinalIgnoreCase) || k.EndsWith("txtAgeToClient", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var val = Request.Form[k];
+                            if (!string.IsNullOrEmpty(val) && int.TryParse(val.Trim(), out tmpAge))
+                            {
+                                ageTo = tmpAge;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // 3) Final fallback: direct names (if you used exact names)
+                if (!ageFrom.HasValue)
+                {
+                    var v = Request.Form["txtAgeFrom"];
+                    if (!string.IsNullOrEmpty(v) && int.TryParse(v.Trim(), out tmpAge)) ageFrom = tmpAge;
+                }
+                if (!ageTo.HasValue)
+                {
+                    var v2 = Request.Form["txtAgeTo"];
+                    if (!string.IsNullOrEmpty(v2) && int.TryParse(v2.Trim(), out tmpAge)) ageTo = tmpAge;
+                }
+
+                // server-side validation (defense in depth)
+                if (ageFrom.HasValue && (ageFrom.Value < 0 || ageFrom.Value > 150)) { tdMsg.InnerHtml = "<span style='color:#b00020;'>Invalid minimum age (0–150).</span>"; return; }
+                if (ageTo.HasValue && (ageTo.Value < 0 || ageTo.Value > 150)) { tdMsg.InnerHtml = "<span style='color:#b00020;'>Invalid maximum age (0–150).</span>"; return; }
+                if (ageFrom.HasValue && ageTo.HasValue && ageFrom.Value > ageTo.Value) { tdMsg.InnerHtml = "<span style='color:#b00020;'>Minimum age cannot be greater than maximum age.</span>"; return; }
+
+                bool ageFilterActive = ageFrom.HasValue || ageTo.HasValue;
+
+                // Debugging: what server received
+                var dbgDetailStart = new
+                {
+                    ageFrom = ageFrom.HasValue ? (object)ageFrom.Value : "null",
+                    ageTo = ageTo.HasValue ? (object)ageTo.Value : "null",
+                    totalRowsBefore = studentsList.Count
+                };
+                ClientScript.RegisterStartupScript(this.GetType(), "AgeFilterDebugStart",
+                    "console.log(" + Newtonsoft.Json.JsonConvert.SerializeObject("AgeFilter debug start: " + Newtonsoft.Json.JsonConvert.SerializeObject(dbgDetailStart)) + ");", true);
+
+                // Aggregate into Year-Quarter buckets applying age filter (birthdate-window method)
+                var bucketCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                var bucketNames = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                const int FIRST_NAMES_LIMIT = 200;
                 const int NAMES_CHAR_LIMIT = 4000;
                 var bucketDisplay = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                var samplePassed = new List<object>();
+                var sampleExcluded = new List<object>();
+                int passed = 0;
+                DateTime today = DateTime.Today;
+
+                // compute birthdate boundaries if filters are active
+                DateTime? maxBirthDateForFrom = null; // birthdate <= this => age >= ageFrom
+                DateTime? minBirthDateForTo = null;   // birthdate >= this => age <= ageTo
+
+                if (ageFrom.HasValue)
+                {
+                    // born on or before this date => they are at least ageFrom today
+                    maxBirthDateForFrom = today.AddYears(-ageFrom.Value);
+                }
+                if (ageTo.HasValue)
+                {
+                    // people born on or after this date are at most ageTo today
+                    // derive as: today.AddYears(-(ageTo+1)).AddDays(1)
+                    minBirthDateForTo = today.AddYears(-(ageTo.Value + 1)).AddDays(1);
+                }
+
                 for (int i = 0; i < studentsList.Count; i++)
                 {
                     var tup = studentsList[i];
@@ -2467,32 +2572,106 @@ namespace ClientDB.Reports
 
                         yearLabel = bd.Value.Year.ToString();
 
-                        // compute age (years)
-                        DateTime now = DateTime.Now;
-                        age = now.Year - bd.Value.Year;
-                        if (now < bd.Value.AddYears(age)) age--;
+                        // compute age using DateTime.Today (for display)
+                        age = today.Year - bd.Value.Year;
+                        if (today < bd.Value.AddYears(age)) age--;
+                    }
+
+                    bool include = true;
+                    string excludeReason = null;
+
+                    if (ageFilterActive)
+                    {
+                        // exclude if birthdate unknown
+                        if (!bd.HasValue)
+                        {
+                            include = false;
+                            excludeReason = "no-birthdate";
+                        }
+                        else
+                        {
+                            // apply lower bound (ageFrom): bd <= maxBirthDateForFrom
+                            if (ageFrom.HasValue && maxBirthDateForFrom.HasValue)
+                            {
+                                if (bd.Value > maxBirthDateForFrom.Value)
+                                {
+                                    include = false;
+                                    excludeReason = "youngerThan{ageFrom.Value}";
+                                }
+                            }
+
+                            // apply upper bound (ageTo): bd >= minBirthDateForTo
+                            if (include && ageTo.HasValue && minBirthDateForTo.HasValue)
+                            {
+                                if (bd.Value < minBirthDateForTo.Value)
+                                {
+                                    include = false;
+                                    excludeReason = "olderThan{ageTo.Value}";
+                                }
+                            }
+                        }
+                    }
+
+                    if (!include)
+                    {
+                        // capture first 50 excluded examples for debugging
+                        if (sampleExcluded.Count < 50)
+                        {
+                            sampleExcluded.Add(new
+                            {
+                                Name = name,
+                                BirthDate = bd.HasValue ? bd.Value.ToString("yyyy-MM-dd") : "(null)",
+                                Age = age,
+                                Reason = excludeReason,
+                                maxBirthDateForFrom = maxBirthDateForFrom.HasValue ? maxBirthDateForFrom.Value.ToString("yyyy-MM-dd") : "(null)",
+                                minBirthDateForTo = minBirthDateForTo.HasValue ? minBirthDateForTo.Value.ToString("yyyy-MM-dd") : "(null)"
+                            });
+                        }
+                        continue;
+                    }
+
+                    // row passes filter
+                    passed++;
+
+                    // collect sample for debugging (first 50)
+                    if (samplePassed.Count < 50)
+                    {
+                        samplePassed.Add(new
+                        {
+                            Name = name,
+                            BirthDate = bd.HasValue ? bd.Value.ToString("yyyy-MM-dd") : "(null)",
+                            Age = age,
+                            Category = quarter + " " + yearLabel
+                        });
                     }
 
                     string ageText = age >= 0 ? (" (" + age.ToString() + "yo)") : "";
-                    // produce flat quarter-first key so JS can always split Quarter / Year
-                    string displayCategory = quarter + " " + yearLabel + ageText;   // what user sees
-                    string sortKey = yearLabel + " - " + quarter;                  // used for correct sorting
+                    string displayCategory = quarter + " " + yearLabel + ageText;
+                    string sortKey = yearLabel + " - " + quarter;
 
                     if (!bucketCounts.ContainsKey(sortKey)) bucketCounts[sortKey] = 0;
                     bucketCounts[sortKey] = bucketCounts[sortKey] + 1;
 
                     if (!bucketNames.ContainsKey(sortKey)) bucketNames[sortKey] = new List<string>();
                     var list = bucketNames[sortKey];
-                    if (list.Count < FIRST_NAMES_LIMIT)
-                    {
-                        list.Add(name);
+                    if (list.Count < FIRST_NAMES_LIMIT) list.Add(name);
+
+                    if (!bucketDisplay.ContainsKey(sortKey)) bucketDisplay[sortKey] = displayCategory;
                     }
-                    // otherwise we stop adding names for this category to keep payload small
-                    if (!bucketDisplay.ContainsKey(sortKey))
+
+                // Debug: show passed and sample + excluded examples to console
+                var debugObj = new
                     {
-                        bucketDisplay[sortKey] = displayCategory;
-                    }
-                }
+                    ageFrom = ageFrom.HasValue ? (object)ageFrom.Value : "null",
+                    ageTo = ageTo.HasValue ? (object)ageTo.Value : "null",
+                    totalBefore = studentsList.Count,
+                    passed = passed,
+                    samplePassed = samplePassed,
+                    sampleExcluded = sampleExcluded
+                };
+                string debugJson = Newtonsoft.Json.JsonConvert.SerializeObject(debugObj);
+                string dbgScript = "console.log('AgeFilter details: ' + " + Newtonsoft.Json.JsonConvert.SerializeObject(debugJson) + ");";
+                ClientScript.RegisterStartupScript(this.GetType(), "AgeFilterSampleDebug", dbgScript, true);
 
 
                 // Build ordered list of categories (sort by year asc then quarter 1..4; Unknown goes last)
@@ -2510,9 +2689,9 @@ namespace ClientDB.Reports
 
                     int ya = 9999, yb = 9999;
                     int qa = 99, qb = 99;
-                    int tmp;
-                    if (pa.Length > 0 && int.TryParse(pa[0], out tmp)) ya = tmp;
-                    if (pb.Length > 0 && int.TryParse(pb[0], out tmp)) yb = tmp;
+                    int tmpSort;
+                    if (pa.Length > 0 && int.TryParse(pa[0], out tmpSort)) ya = tmpSort;
+                    if (pb.Length > 0 && int.TryParse(pb[0], out tmpSort)) yb = tmpSort;
 
                     if (pa.Length > 1)
                     {
@@ -2586,7 +2765,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -2640,7 +2819,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -2774,7 +2953,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 FillDept(ddlDeptLocDept);
@@ -2956,7 +3135,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -3013,7 +3192,7 @@ namespace ClientDB.Reports
                 }
                 else
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
                     divStatisticalNew.Visible = false;
@@ -3259,7 +3438,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 divStatisticalNew.Visible = false;
@@ -3325,7 +3504,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 showlab.Text = "";
                 //FillMonth();
                 divContact.Visible = false;
@@ -3460,7 +3639,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 showlab.Text="";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3584,7 +3763,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3703,7 +3882,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 showlab.Text = "";
                 divContact.Visible = false;
                 divnodata.Visible = false;
@@ -3870,7 +4049,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 divContact.Visible = false;
                 if (checkHighcharts.Checked)
                 {
@@ -3988,7 +4167,7 @@ namespace ClientDB.Reports
             {
                 if (checkHighcharts.Checked)
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
                     string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
                             " JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId " +
@@ -4084,7 +4263,7 @@ namespace ClientDB.Reports
             {
                 if (checkHighcharts.Checked)
                 {
-                    exportChartBtn.Visible = false;
+                    //exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
                     string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " +
                     " ,PL.EndDate AS PLDischargeDate,CONVERT(VARCHAR(20),PL.EndDate,101) EndDate FROM Placement PL INNER JOIN StudentPersonal PA ON PL.StudentPersonalId=PA.StudentPersonalId INNER JOIN Class CLS ON PL.Location = CLS.ClassId WHERE  " +
@@ -4127,7 +4306,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 var selected = ChkStatisticalList.Items.Cast<ListItem>().Where(li => li.Selected).Count();
                 if (selected != 0)
                 {
@@ -4174,7 +4353,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 RVClientReport.Visible = true;
                 int Schoolid = 0;
                 string schooltype = ConfigurationManager.AppSettings["Server"];
@@ -4334,7 +4513,7 @@ namespace ClientDB.Reports
 
         protected void btnContactChanges_Click(object sender, EventArgs e)
         {
-            exportChartBtn.Visible = false;
+            //exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4361,7 +4540,7 @@ namespace ClientDB.Reports
 
         protected void btnGuardianChanges_Click(object sender, EventArgs e)
         {
-            exportChartBtn.Visible = false;
+            //exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4388,7 +4567,7 @@ namespace ClientDB.Reports
 
         protected void btnPlcChange_Click(object sender, EventArgs e)
         {
-            exportChartBtn.Visible = false;
+            //exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4415,7 +4594,7 @@ namespace ClientDB.Reports
 
         protected void btnFundChange_Click(object sender, EventArgs e)
         {
-            exportChartBtn.Visible = false;
+            //exportChartBtn.Visible = false;
             showlab.Text = "";
             divContact.Visible = false;
             divnodata.Visible = false;
@@ -4444,7 +4623,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 RVClientReport.Visible = true;
                 string NewStartDate = GetDateFromText(txtchangeSdate.Text);
                 string NewEndDate = GetDateFromText(txtchangeEdate.Text);
@@ -4807,7 +4986,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                exportChartBtn.Visible = false;
+                //exportChartBtn.Visible = false;
                 var selected = ChkStatisticalList2.Items.Cast<ListItem>().Where(li => li.Selected).Count();
                 if (selected != 0)
                 {
@@ -5272,7 +5451,7 @@ namespace ClientDB.Reports
 
         protected void btnReset_Click(object sender, EventArgs e)
         {
-            exportChartBtn.Visible = false;
+            //exportChartBtn.Visible = false;
             hfstudname.Value = "";
             hflocation.Value = "";
             hfrace.Value = "";
@@ -5303,7 +5482,7 @@ namespace ClientDB.Reports
             YEAR(SP.BirthDate) AS BirthYear
         FROM StudentPersonal SP
         INNER JOIN Placement PL ON PL.StudentPersonalId = SP.StudentPersonalId
-        WHERE SP.StudentType = 'Client'
+        WHERE SP.StudentType = 'Client' AND CONVERT(INT,SP.ClientId)>0
           AND (PL.EndDate IS NULL OR PL.EndDate >= CAST(GETDATE() AS DATE))
           AND PL.Status = 1
           AND SP.BirthDate IS NOT NULL
