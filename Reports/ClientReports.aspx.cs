@@ -64,6 +64,7 @@ namespace ClientDB.Reports
                     HeadingDiv.Visible = false;
                     divbirthdate.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     divContact.Visible = false;
                 }
             }
@@ -135,6 +136,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -192,6 +194,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
                     btnShowReportVendor.Visible = false;
@@ -346,6 +349,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 hdnMenu.Value = "btnallClient";
                 tdMsg.InnerHtml = "";
                 RVClientReport.Visible = false;
@@ -462,6 +466,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     hdnMenu.Value = "btnallClient";
                     tdMsg.InnerHtml = "";
                     RVClientReport.Visible = false;
@@ -1214,6 +1219,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -1268,6 +1274,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
                     btnShowReportVendor.Visible = false;
@@ -1445,6 +1452,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -1499,6 +1507,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
                     btnShowReportVendor.Visible = false;
@@ -1682,6 +1691,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -1746,6 +1756,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
                     btnShowReportVendor.Visible = true;
@@ -2236,6 +2247,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 hdnMenu.Value = "btnVendor";
                 RVClientReport.SizeToReportContent = true;
                 tdMsg.InnerHtml = "";
@@ -2284,6 +2296,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -2320,6 +2333,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;          // hide the generic placement list (if used)
+                divPlacementPlanning.Visible = true;
                 exportChartBtn.Visible = true;
 
                 // hide report buttons and reset controls like in other handlers
@@ -2582,6 +2596,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 divchanges.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
@@ -2635,6 +2650,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = false;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     divchanges.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
@@ -2775,6 +2791,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = true;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -2951,6 +2968,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = true;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -3007,6 +3025,7 @@ namespace ClientDB.Reports
                     divbyBirthdate.Visible = false;
                     divFunder.Visible = true;
                     divPlacement.Visible = false;
+                    divPlacementPlanning.Visible = false;
                     btnShowReport.Visible = false;
                     btnResetAllClient.Visible = false;
                     btnShowReportVendor.Visible = false;
@@ -3319,6 +3338,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = true;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -3452,6 +3472,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -3575,6 +3596,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -3693,6 +3715,7 @@ namespace ClientDB.Reports
                 divbyBirthdate.Visible = false;
                 divFunder.Visible = false;
                 divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
                 btnShowReport.Visible = false;
                 btnResetAllClient.Visible = false;
                 btnShowReportVendor.Visible = false;
@@ -4323,6 +4346,7 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            divPlacementPlanning.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
             btnShowReportVendor.Visible = false;
@@ -4349,6 +4373,7 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            divPlacementPlanning.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
             btnShowReportVendor.Visible = false;
@@ -4375,6 +4400,7 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            divPlacementPlanning.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
             btnShowReportVendor.Visible = false;
@@ -4401,6 +4427,7 @@ namespace ClientDB.Reports
             divbyBirthdate.Visible = false;
             divFunder.Visible = false;
             divPlacement.Visible = false;
+            divPlacementPlanning.Visible = false;
             btnShowReport.Visible = false;
             btnResetAllClient.Visible = false;
             btnShowReportVendor.Visible = false;

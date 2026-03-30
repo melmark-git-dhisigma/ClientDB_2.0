@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ClientDB.Reports {
-    
-    
-    public partial class ClientReports {
-        
+namespace ClientDB.Reports
+{
+
+
+    public partial class ClientReports
+    {
+
         /// <summary>
         /// Head1 control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
-        
+
         /// <summary>
         /// FormClientReport control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm FormClientReport;
-        
+
         /// <summary>
         /// ScriptManager1 control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.ScriptManager ScriptManager1;
-        
+
         /// <summary>
         /// hdnType control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnType;
-        
+
         /// <summary>
         /// checkHighcharts control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox checkHighcharts;
-        
+
         /// <summary>
         /// btnallClient control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnallClient;
-        
+
         /// <summary>
         /// btnClienContact control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnClienContact;
-        
+
         /// <summary>
         /// btnPgmRoster control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnPgmRoster;
-        
+
         /// <summary>
         /// btnVendor control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnVendor;
-        
+
         /// <summary>
         /// btnBirthdate control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnBirthdate;
-        
+
         /// <summary>
         /// btnPlacementPlanning control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnPlacementPlanning;
-        
+
         /// <summary>
         /// btnResRoster control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnResRoster;
-        
+
         /// <summary>
         /// btnAllFunder control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAllFunder;
-        
+
         /// <summary>
         /// btnAllPlacement control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAllPlacement;
-        
+
         /// <summary>
         /// btnAllBirthdate control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAllBirthdate;
-        
+
         /// <summary>
         /// btnAllAdmissionDate control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAllAdmissionDate;
-        
+
         /// <summary>
         /// btnAllDischargedate control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAllDischargedate;
-        
+
         /// <summary>
         /// btnStatistical control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnStatistical;
-        
+
         /// <summary>
         /// btnFundChange control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFundChange;
-        
+
         /// <summary>
         /// btnPlcChange control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnPlcChange;
-        
+
         /// <summary>
         /// btnGuardianChanges control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGuardianChanges;
-        
+
         /// <summary>
         /// btnContactChanges control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnContactChanges;
-        
+
         /// <summary>
         /// HeadingDiv control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl HeadingDiv;
-        
+
         /// <summary>
         /// tdMsg control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl tdMsg;
-        
+
         /// <summary>
         /// divContact control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divContact;
-        
+
         /// <summary>
         /// UpdatePanelContact control.
         /// </summary>
@@ -245,7 +247,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanelContact;
-        
+
         /// <summary>
         /// Labelclient control.
         /// </summary>
@@ -254,7 +256,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Labelclient;
-        
+
         /// <summary>
         /// DropDownCheckBoxesConStudname control.
         /// </summary>
@@ -263,7 +265,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes DropDownCheckBoxesConStudname;
-        
+
         /// <summary>
         /// Labelrelation control.
         /// </summary>
@@ -272,7 +274,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Labelrelation;
-        
+
         /// <summary>
         /// DropDownCheckBoxesRelation control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes DropDownCheckBoxesRelation;
-        
+
         /// <summary>
         /// CheckBoxListcontact control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList CheckBoxListcontact;
-        
+
         /// <summary>
         /// Btncontact control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Btncontact;
-        
+
         /// <summary>
         /// BtncontactReset control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtncontactReset;
-        
+
         /// <summary>
         /// HContactRelation control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HContactRelation;
-        
+
         /// <summary>
         /// HContactstatus control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HContactstatus;
-        
+
         /// <summary>
         /// HContactStudname control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HContactStudname;
-        
+
         /// <summary>
         /// divbirthdate control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divbirthdate;
-        
+
         /// <summary>
         /// Label1 control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label1;
-        
+
         /// <summary>
         /// ddlQuarter control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlQuarter;
-        
+
         /// <summary>
         /// btnquarter control.
         /// </summary>
@@ -371,7 +373,16 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnquarter;
-        
+
+        /// <summary>
+        /// divPlacementPlanning control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divPlacementPlanning;
+
         /// <summary>
         /// exportChartBtn control.
         /// </summary>
@@ -380,7 +391,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlButton exportChartBtn;
-        
+
         /// <summary>
         /// divPlacement control.
         /// </summary>
@@ -389,7 +400,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divPlacement;
-        
+
         /// <summary>
         /// ddlDeptLocDept control.
         /// </summary>
@@ -398,7 +409,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDeptLocDept;
-        
+
         /// <summary>
         /// ddlDeptLocLoc control.
         /// </summary>
@@ -407,7 +418,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDeptLocLoc;
-        
+
         /// <summary>
         /// ddlDeptPlctypeDept control.
         /// </summary>
@@ -416,7 +427,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDeptPlctypeDept;
-        
+
         /// <summary>
         /// ddlDeptPlctypePlcType control.
         /// </summary>
@@ -425,7 +436,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDeptPlctypePlcType;
-        
+
         /// <summary>
         /// ddlLocLoc control.
         /// </summary>
@@ -434,7 +445,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlLocLoc;
-        
+
         /// <summary>
         /// txtActiveStartDate control.
         /// </summary>
@@ -443,7 +454,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtActiveStartDate;
-        
+
         /// <summary>
         /// txtActiveEndDate control.
         /// </summary>
@@ -452,7 +463,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtActiveEndDate;
-        
+
         /// <summary>
         /// txtDischrStartDate control.
         /// </summary>
@@ -461,7 +472,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDischrStartDate;
-        
+
         /// <summary>
         /// txtDischrEndDate control.
         /// </summary>
@@ -470,7 +481,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDischrEndDate;
-        
+
         /// <summary>
         /// txtNewStartDate control.
         /// </summary>
@@ -479,7 +490,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNewStartDate;
-        
+
         /// <summary>
         /// txtNewEndDate control.
         /// </summary>
@@ -488,7 +499,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNewEndDate;
-        
+
         /// <summary>
         /// btnShowPlacement control.
         /// </summary>
@@ -497,7 +508,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowPlacement;
-        
+
         /// <summary>
         /// divFunder control.
         /// </summary>
@@ -506,7 +517,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFunder;
-        
+
         /// <summary>
         /// ddlFundingSource control.
         /// </summary>
@@ -515,7 +526,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlFundingSource;
-        
+
         /// <summary>
         /// btnShowFunder control.
         /// </summary>
@@ -524,7 +535,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowFunder;
-        
+
         /// <summary>
         /// divbyBirthdate control.
         /// </summary>
@@ -533,7 +544,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divbyBirthdate;
-        
+
         /// <summary>
         /// ddlMonth control.
         /// </summary>
@@ -542,7 +553,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlMonth;
-        
+
         /// <summary>
         /// txtAgeFrom control.
         /// </summary>
@@ -551,7 +562,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAgeFrom;
-        
+
         /// <summary>
         /// txtAgeTo control.
         /// </summary>
@@ -560,7 +571,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAgeTo;
-        
+
         /// <summary>
         /// txtBithdateStart control.
         /// </summary>
@@ -569,7 +580,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtBithdateStart;
-        
+
         /// <summary>
         /// txtBirthdateEnd control.
         /// </summary>
@@ -578,7 +589,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtBirthdateEnd;
-        
+
         /// <summary>
         /// btnShowBirthdate control.
         /// </summary>
@@ -587,7 +598,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowBirthdate;
-        
+
         /// <summary>
         /// divAdmission control.
         /// </summary>
@@ -596,7 +607,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAdmission;
-        
+
         /// <summary>
         /// txtAdmissionFrom control.
         /// </summary>
@@ -605,7 +616,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAdmissionFrom;
-        
+
         /// <summary>
         /// txtAdmissionTo control.
         /// </summary>
@@ -614,7 +625,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAdmissionTo;
-        
+
         /// <summary>
         /// txtNumberOfAdmission control.
         /// </summary>
@@ -623,7 +634,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNumberOfAdmission;
-        
+
         /// <summary>
         /// btnShowAdmissionDate control.
         /// </summary>
@@ -632,7 +643,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowAdmissionDate;
-        
+
         /// <summary>
         /// divDischarge control.
         /// </summary>
@@ -641,7 +652,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDischarge;
-        
+
         /// <summary>
         /// divStatistical control.
         /// </summary>
@@ -650,7 +661,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divStatistical;
-        
+
         /// <summary>
         /// ChkStatisticalList control.
         /// </summary>
@@ -659,7 +670,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList ChkStatisticalList;
-        
+
         /// <summary>
         /// btnShowStatistical control.
         /// </summary>
@@ -668,7 +679,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowStatistical;
-        
+
         /// <summary>
         /// divStatisticalNew control.
         /// </summary>
@@ -677,7 +688,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divStatisticalNew;
-        
+
         /// <summary>
         /// UpdatePanel1 control.
         /// </summary>
@@ -686,7 +697,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-        
+
         /// <summary>
         /// DropDownCheckBoxesStudname control.
         /// </summary>
@@ -695,7 +706,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes DropDownCheckBoxesStudname;
-        
+
         /// <summary>
         /// DropDownCheckBoxesLocation control.
         /// </summary>
@@ -704,7 +715,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes DropDownCheckBoxesLocation;
-        
+
         /// <summary>
         /// DropDownCheckBoxesRaces control.
         /// </summary>
@@ -713,7 +724,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes DropDownCheckBoxesRaces;
-        
+
         /// <summary>
         /// DropDownCheckBoxesActive control.
         /// </summary>
@@ -722,7 +733,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Saplin.Controls.DropDownCheckBoxes DropDownCheckBoxesActive;
-        
+
         /// <summary>
         /// hfstudname control.
         /// </summary>
@@ -731,7 +742,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfstudname;
-        
+
         /// <summary>
         /// hflocation control.
         /// </summary>
@@ -740,7 +751,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hflocation;
-        
+
         /// <summary>
         /// hfrace control.
         /// </summary>
@@ -749,7 +760,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfrace;
-        
+
         /// <summary>
         /// hfstatus control.
         /// </summary>
@@ -758,7 +769,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfstatus;
-        
+
         /// <summary>
         /// ChkStatisticalList2 control.
         /// </summary>
@@ -767,7 +778,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList ChkStatisticalList2;
-        
+
         /// <summary>
         /// btnShowStatistical2 control.
         /// </summary>
@@ -776,7 +787,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowStatistical2;
-        
+
         /// <summary>
         /// btnReset control.
         /// </summary>
@@ -785,7 +796,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnReset;
-        
+
         /// <summary>
         /// divnodata control.
         /// </summary>
@@ -794,7 +805,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divnodata;
-        
+
         /// <summary>
         /// divchanges control.
         /// </summary>
@@ -803,7 +814,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divchanges;
-        
+
         /// <summary>
         /// txtchangeSdate control.
         /// </summary>
@@ -812,7 +823,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtchangeSdate;
-        
+
         /// <summary>
         /// txtchangeEdate control.
         /// </summary>
@@ -821,7 +832,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtchangeEdate;
-        
+
         /// <summary>
         /// btnChangeResult control.
         /// </summary>
@@ -830,7 +841,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnChangeResult;
-        
+
         /// <summary>
         /// hdnballet control.
         /// </summary>
@@ -839,7 +850,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnballet;
-        
+
         /// <summary>
         /// hdnDateRange control.
         /// </summary>
@@ -848,7 +859,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnDateRange;
-        
+
         /// <summary>
         /// RVClientReport control.
         /// </summary>
@@ -857,7 +868,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Microsoft.Reporting.WebForms.ReportViewer RVClientReport;
-        
+
         /// <summary>
         /// dropdown_container control.
         /// </summary>
@@ -866,7 +877,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl dropdown_container;
-        
+
         /// <summary>
         /// btnShowReport control.
         /// </summary>
@@ -875,7 +886,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowReport;
-        
+
         /// <summary>
         /// btnResetAllClient control.
         /// </summary>
@@ -884,7 +895,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnResetAllClient;
-        
+
         /// <summary>
         /// btnShowReportVendor control.
         /// </summary>
@@ -893,7 +904,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnShowReportVendor;
-        
+
         /// <summary>
         /// btnResetVendor control.
         /// </summary>
@@ -902,7 +913,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnResetVendor;
-        
+
         /// <summary>
         /// showlab control.
         /// </summary>
@@ -911,7 +922,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label showlab;
-        
+
         /// <summary>
         /// noOfClients control.
         /// </summary>
@@ -920,7 +931,7 @@ namespace ClientDB.Reports {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label noOfClients;
-        
+
         /// <summary>
         /// hdnMenu control.
         /// </summary>
