@@ -382,7 +382,7 @@ namespace ClientDB.Reports
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfAgeFrom;
-        
+
         /// <summary>
         /// hfAgeTo control.
         /// </summary>
@@ -391,7 +391,7 @@ namespace ClientDB.Reports
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hfAgeTo;
-        
+
         /// <summary>
         /// btnApplyAgeServer control.
         /// </summary>
@@ -400,7 +400,7 @@ namespace ClientDB.Reports
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnApplyAgeServer;
-        
+
         /// <summary>
         /// divPlacementPlanning control.
         /// </summary>
@@ -418,7 +418,16 @@ namespace ClientDB.Reports
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl agefilter;
-        
+
+        /// <summary>
+        /// upPlacementChart control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upPlacementChart;
+
         /// <summary>
         /// divPlacement control.
         /// </summary>
