@@ -375,6 +375,33 @@ namespace ClientDB.Reports
         protected global::System.Web.UI.WebControls.Button btnquarter;
 
         /// <summary>
+        /// hfAgeFrom control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfAgeFrom;
+        
+        /// <summary>
+        /// hfAgeTo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfAgeTo;
+        
+        /// <summary>
+        /// btnApplyAgeServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnApplyAgeServer;
+        
+        /// <summary>
         /// divPlacementPlanning control.
         /// </summary>
         /// <remarks>
@@ -384,14 +411,14 @@ namespace ClientDB.Reports
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divPlacementPlanning;
 
         /// <summary>
-        /// exportChartBtn control.
+        /// agefilter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlButton exportChartBtn;
-
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl agefilter;
+        
         /// <summary>
         /// divPlacement control.
         /// </summary>
@@ -652,6 +679,15 @@ namespace ClientDB.Reports
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDischarge;
+
+        /// <summary>
+        /// btnShowDischarge control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnShowDischarge;
 
         /// <summary>
         /// divStatistical control.

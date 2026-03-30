@@ -31,14 +31,15 @@
 <script src="../Documents/JS/jquery.validationEngine.js"></script>
 <script src="../Documents/JS/jquery.unobtrusive-ajax.js"></script>
 
-	<script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.10/umd.min.js"></script>
-    <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg2pdf.js/1.4.3/svg2pdf.umd.min.js"></script>
     <script src="https://unpkg.com/svg2pdf.js/dist/svg2pdf.umd.min.js"></script>
+     <script src="../Documents/highcharts/7.1.2/highcharts.js"></script>
+   <script src="../Documents/highcharts/7.1.2/modules/accessibility.js"></script>
+    <script src="../Documents/highcharts/7.1.2/grouped-categories.js"></script>
+     <script src="../Documents/highcharts/7.1.2/modules/exporting.js"></script>
+         <script src="../Documents/highcharts/7.1.2/modules/offline-exporting.js"></script>
 
 <!-- Local Stylesheets -->
 <link href="../Documents/CSS/validationEngine.jquery.css" rel="stylesheet" />
@@ -485,6 +486,25 @@
             return true;
         }
 
+        function handleClientClick1() {
+             document.getElementById("hfAgeFrom").value='';
+             document.getElementById("hfAgeTo").value='';
+             var filt = document.getElementById("agefilter");
+             if (filt) {
+                 filt.style.display = "block"; 
+             }
+             var exp = document.getElementById("exportChartBtn");
+             if (exp) {
+                 exp.style.display = "block"; 
+             }
+            var checkbox = document.getElementById('<%= checkHighcharts.ClientID %>');
+            if (checkbox && checkbox.checked) {
+                columndata={};
+                showLoader();
+            }
+            return true;
+        }
+
         var currentPage = 1;
         var rowsPerPage = 10;
         var fullData = [];
@@ -634,6 +654,15 @@
                 document.getElementById("btnResetAllClient").style.display = 'inline-block';
             };
             paginationContainer.appendChild(exportButton);
+
+            var exportPdfBtn = document.createElement('button');
+            exportPdfBtn.type = 'button';
+            exportPdfBtn.textContent = 'Export PDF';
+            exportPdfBtn.onclick = function () {
+                // call the fit export
+                exportPlacementWithSvgLabelsAndPdf();
+            };
+            paginationContainer.appendChild(exportPdfBtn);
         }
         function hideandshowcolumn()
         {
@@ -1823,7 +1852,6 @@
 
             loadDataFromServerFunder(fullData);
         }
-
         //All Placement Table
         function loadDataFromServerPlacement(data) {
             fullData = data;
@@ -1872,43 +1900,43 @@
                 var currentId = pageData[i]["Client Id"];
                 if (currentId === previousClientId) {
                     rowspanTracker[currentId]++;
-            } else {
-            rowspanTracker[currentId] = 1;
-        previousClientId = currentId;
-        }
-        }
+                } else {
+                    rowspanTracker[currentId] = 1;
+                    previousClientId = currentId;
+                }
+            }
 
-        previousClientId = null;
+            previousClientId = null;
 
-        for (var i = 0; i < pageData.length; i++) {
-            var row = pageData[i];
-            var currentId = row["Client Id"];
-            var isFirstOfGroup = currentId !== previousClientId;
-            var currentRowspan = rowspanTracker[currentId];
+            for (var i = 0; i < pageData.length; i++) {
+                var row = pageData[i];
+                var currentId = row["Client Id"];
+                var isFirstOfGroup = currentId !== previousClientId;
+                var currentRowspan = rowspanTracker[currentId];
 
-            var tr = document.createElement('tr');
+                var tr = document.createElement('tr');
 
-            columns.forEach(function(col) {
-                if ((col === "Client Id" || col === "Client Name") && !isFirstOfGroup) {
-                    return; // Skip merged cell
-        }
+                columns.forEach(function (col) {
+                    if ((col === "Client Id" || col === "Client Name") && !isFirstOfGroup) {
+                        return; // Skip merged cell
+                    }
 
-                var td = document.createElement('td');
-                td.textContent = row[col];
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
 
-                if ((col === "Client Id" || col === "Client Name") && isFirstOfGroup) {
-                    td.rowSpan = currentRowspan;
-        }
+                    if ((col === "Client Id" || col === "Client Name") && isFirstOfGroup) {
+                        td.rowSpan = currentRowspan;
+                    }
 
-                tr.appendChild(td);
-        });
+                    tr.appendChild(td);
+                });
 
-            previousClientId = currentId;
-            tableBody.appendChild(tr);
-        }
+                previousClientId = currentId;
+                tableBody.appendChild(tr);
+            }
 
-        createPaginationControlsPlacement(data.length, data);
-        hideLoader();
+            createPaginationControlsPlacement(data.length, data);
+            hideLoader();
         }
 
         function createPaginationControlsPlacement(totalRows, data) {
@@ -3042,6 +3070,14 @@
             });
         }
 
+        function escapeHtml(s) {
+            return String(s || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
         function renderAggregatedPlacementChart(data) {
             // delegate to the new implementation
@@ -3069,7 +3105,350 @@
         });
         }
 
+        function getBirthYearFromAge(age) {
+            if (!age || isNaN(age)) return null;
+
+            var currentYear = new Date().getFullYear();
+            return currentYear - parseInt(age);
+        }
+
         function renderPlacementChart(dataFromServer, opts) {
+            var filt = document.getElementById("agefilter");
+            if (filt) {
+                filt.style.display = "block"; 
+            }
+            if( dataFromServer.length==0)
+            {
+                placementChartContainer.innerHTML = '<div style="padding:12px;color:#666">No placement data to display</div>';
+                var exportBtn = document.getElementById("exportChartBtn");
+                if (exportBtn) {
+                    exportBtn.style.display = "none"; // hides the button
+                }
+            }
+            else{
+                var exp = document.getElementById("exportChartBtn");
+                if (exp) {
+                    exp.style.display = "block"; 
+                }
+                var minYear = null;
+            var maxYear = null;
+
+            // Find min and max year from server data
+            for (var i = 0; i < dataFromServer.length; i++) {
+                var y = parseInt(dataFromServer[i].Year, 10);
+                if (minYear === null || y < minYear) minYear = y;
+                if (maxYear === null || y > maxYear) maxYear = y;
+            }
+
+            // Apply age filtering
+            //var ageFrom = ddocument.getElementById("fromage").value; 
+            //var ageTo   = document.getElementById("txtAgeToClient").value;   
+
+            var ageFrom = document.getElementById("hfAgeFrom").value;
+            var ageTo   = document.getElementById("hfAgeTo").value;
+            if (ageFrom !== '') {
+                maxYear = getBirthYearFromAge(ageFrom);
+            }
+
+            if (ageTo !== '') {
+                minYear = getBirthYearFromAge(ageTo);
+            }
+           
+            if (minYear > maxYear) {
+                var t = minYear;
+                minYear = maxYear;
+                maxYear = t;
+            }
+
+            var groupedCategories = [];
+            var allCategories = [];
+            var currentYear = new Date().getFullYear();
+
+            // Build categories (ascending order, ensures visibility for empty years)
+            for (var year = minYear; year <= maxYear; year++) {
+
+                var quarters = ["Q1", "Q2", "Q3", "Q4"];
+                var age = currentYear - year;
+                var yearLabel = year + "<br/>(" + age + " y/o)";
+
+                groupedCategories.push({
+                    name: yearLabel,
+                    categories: quarters
+                });
+
+                quarters.forEach(q => allCategories.push(year + " " + q));
+            }
+
+            // Build series
+            var seriesMap = {};
+            for (var i = 0; i < dataFromServer.length; i++) {
+                var yq = dataFromServer[i].Year + " " + dataFromServer[i].Quarter;
+
+                var catIndex = allCategories.indexOf(yq);
+
+                // ❗ IMPORTANT FIX: skip data outside the selected range
+                if (catIndex === -1) continue;
+
+                var names = dataFromServer[i].SampleNames.split(';');
+                for (var j = 0; j < names.length; j++) {
+                    var name = names[j].trim();
+
+                    if (!seriesMap[name]) {
+                        let shortName = name.length > 18 ? name.substring(0, 14) : name;
+                        seriesMap[name] = {
+                            name: name,
+                            shortName: shortName,
+                            data: new Array(allCategories.length).fill(0)
+                        };
+                    }
+
+                    seriesMap[name].data[catIndex] = {
+                        y: 1,
+                        displayName: seriesMap[name].shortName,
+                        dataLabels: { enabled: true }
+                    };
+                }
+            }
+
+            var seriesList = Object.values(seriesMap);
+
+            // Compute Y-axis values
+            var maxCount = Math.max(...dataFromServer.map(d => parseInt(d.Count, 10)));
+            var totalCount = dataFromServer.reduce((sum, d) => sum + parseInt(d.Count, 10), 0);
+
+            var today = new Date();
+            var printedOn =
+                ("0" + (today.getMonth() + 1)).slice(-2) + "/" +
+                ("0" + today.getDate()).slice(-2) + "/" +
+                today.getFullYear();
+
+
+            Highcharts.chart('placementChartContainer', {
+                chart: {
+                    type: 'column',
+                    animation: false,
+                    scrollablePlotArea: {
+                        minWidth: Math.max(allCategories.length * 20, 800),
+                        scrollPositionX: 0
+                    },
+                    borderColor: '#000',
+                    borderWidth: 2,
+                    borderRadius: 1,
+                    events: {
+                        load: function () {
+                            var chart = this;
+                            var labelText = "Printed On: " + printedOn;
+
+                            var lastX = chart.xAxis[0].max;
+
+                            var label = chart.renderer.text(labelText, 0, 0)
+                                .css({
+                                    fontSize: '12px',
+                                    fontWeight: 'bold',
+                                    color: '#000'
+                                })
+                                .add();
+
+                            chart.printedLabel = label;
+
+                            function positionLabel() {
+                                var bbox = label.getBBox();
+                                var xPos = chart.xAxis[0].toPixels(lastX, true) - bbox.width - 10;
+                                var yPos = chart.plotTop + chart.plotHeight + 80;
+                                label.attr({ x: xPos, y: yPos });
+                            }
+
+                            positionLabel();
+                            Highcharts.addEvent(chart, 'redraw', positionLabel);
+                        }
+                    }
+                },
+
+                credits: { enabled: false },
+
+                title: {
+                    text: 'All Current Students by Birthdate',
+                    style: { color: '#000', fontWeight: 'bold' }
+                },
+
+                subtitle: {
+                    text: 'Total Count = ' + totalCount,
+                    align: 'left',
+                    style: {
+                        color: '#000',
+                        fontWeight: 'bold',
+                        fontSize: '12px'
+                    }
+                },
+
+                xAxis: {
+                    categories: groupedCategories,
+                    labels: {
+                        rotation: 0,
+                        style: {
+                            color: '#000',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    tickLength: 8,
+                    title: {
+                        text: 'BirthDate',
+                        style: { color: '#000', fontWeight: 'bold' }
+                    }
+                },
+
+                yAxis: {
+                    min: 0,
+                    max: Math.max(1, maxCount),
+                    allowDecimals: false,
+                    labels: {
+                        style: {
+                            color: '#000',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    title: {
+                        text: 'Student Count',
+                        style: { color: '#000', fontWeight: 'bold' }
+                    }
+                },
+
+                legend: {
+                    enabled: true,
+                    layout: 'horizontal',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: true,
+                    symbolHeight: 14,
+                    symbolWidth: 14,
+                    symbolRadius: 0,
+                    itemStyle: {
+                        fontWeight: 'bold',
+                        fontSize: '12px',
+                        color: '#000'
+                    }
+                },
+
+                plotOptions: {
+                    series: {
+                        stacking: 'normal',
+                        color: '#C8F7C5',
+                        pointWidth: 20,
+                        borderColor: '#000',
+                        borderWidth: 1,
+                        showInLegend: false,
+                        dataLabels: {
+                            enabled: false,
+                            useHTML: false,
+                            defer: true,
+                            allowOverlap: true,
+                            inside: true,
+                            rotation: -90,
+                            crop: false,
+                            overflow: 'allow',
+                            formatter: function () {
+                                return (this.point.displayName && this.y === 1)
+                                    ? this.point.displayName
+                                    : '';
+                            },
+                            style: {
+                                color: '#000',
+                                fontWeight: 'bold',
+                                textOutline: 'none',
+                                fontSize: '10px'
+                            }
+                        }
+                    }
+                },
+
+                series: [
+                    ...seriesList.map(s => ({ ...s, showInLegend: false })),
+        {
+        name: 'Current Students',
+        data: [],
+        showInLegend: true,
+        color: '#C8F7C5',
+        marker: { symbol: 'square' }
+        }
+        ],
+
+        exporting: {
+            enabled: true,
+            sourceWidth: Math.max(allCategories.length * 40, 1400),
+            sourceHeight: 1200,
+            scale: 1,
+            fallbackToExportServer: false,
+            buttons: {
+                contextButton: {
+                        menuItems: ['downloadPNG', 'downloadJPEG']
+                }
+            }
+        }
+        });
+        }
+        }
+
+
+
+        function exportChartToPDF() {
+            // Get Highcharts chart object
+            var chart = Highcharts.charts[0];  // If only one chart. If multiple, pass ID.
+
+            if (!chart) {
+                alert("Chart not found!");
+                return;
+            }
+
+            // STEP 1: Get SVG from Highcharts
+            var svg = chart.getSVG({
+                exporting: {
+                    scale: 2    // higher quality output
+                }
+            });
+
+            // STEP 2: Create Canvas & draw the SVG on it
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+
+            // Set canvas dimensions large enough
+            var svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+            var url = URL.createObjectURL(svgBlob);
+
+            var img = new Image();
+            img.onload = function () {
+
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                ctx.drawImage(img, 0, 0);
+
+                // STEP 3: Canvas to PNG
+                var pngData = canvas.toDataURL("image/png");
+
+                // STEP 4: Create jsPDF (landscape)
+                var { jsPDF } = window.jspdf;
+            var pdf = new jsPDF({
+                orientation: "landscape",
+                unit: "px",
+                format: [img.width, img.height]
+            });
+
+            // Add PNG image into PDF
+            pdf.addImage(pngData, "PNG", 0, 0, img.width, img.height);
+
+            // STEP 5: Save the PDF
+            pdf.save("chart.pdf");
+
+            URL.revokeObjectURL(url);
+        };
+
+        img.src = url;
+        }
+
+
+
+        function renderPlacementChart1(dataFromServer, opts) {
             // Full-featured placement chart:
             // - columns show counts
             // - scatter overlay places one label per y-slot (0.5,1.5,2.5...) centered vertically
@@ -3637,44 +4016,114 @@
         };
 
 
+        function drawYearSpans(chart, yearGroups) {
+            try {
+                if (chart._yearGroup && chart._yearGroup.destroy) {
+                    chart._yearGroup.destroy();
+                    chart._yearGroup = null;
+                }
+                var g = chart.renderer.g('yearGroups').attr({ zIndex: 120 }).add();
+                chart._yearGroup = g;
 
-        function wirePlacementReportUI(chart) {
-            document.getElementById('exportChartBtn').onclick = function () {
-                console.log("3726");
+                var xAxis = chart.xAxis && chart.xAxis[0];
+                if (!xAxis) return;
+
+                // plot area geometry (safe fallbacks)
+                var plotLeft = chart.plotLeft || 0;
+                var plotTop = chart.plotTop || 0;
+                var plotWidth = chart.plotWidth || Math.max(0, (chart.chartWidth || 0) - plotLeft);
+                var plotHeight = chart.plotHeight || Math.max(0, (chart.chartHeight || 0) - plotTop);
+
+                var totalCategories = (xAxis && xAxis.categories && xAxis.categories.length) ? xAxis.categories.length : 0;
+                if (!totalCategories) return;
+
+                // compute fixed category width (pixel) and ensure it matches the plotted area
+                var catWidth = plotWidth / totalCategories;
+
+                // visuals
+                var padSides = 4; // small horizontal padding inside each group box
+                var rectStroke = '#444';
+                var rectStrokeWidth = 1;
+                var rectFill = 'rgba(255,255,255,0)'; // change if you want fill
+                var rectR = 4;
+
+                // compute rectangle vertical position: just below plot area (adjust these numbers if needed)
+                var rectY = Math.round(plotTop + plotHeight + 2); // top of box
+                var rectHeight = 28; // height of the box that encloses Q labels + year
+                var yearLabelYOffset = 6; // vertical centering tweak inside rect
+
+                yearGroups.forEach(function (yg) {
                 try {
-                    // find chart (use your existing chart variable)
-                    var foundChart = (typeof chart !== 'undefined' && chart) ? chart : (window.chart || (Highcharts && Highcharts.charts && Highcharts.charts[0]));
-                    if (!foundChart) { alert('Chart not found'); return; }
+                        // use equal-width logic: left = plotLeft + startIndex * catWidth
+                        var left = plotLeft + (yg.startIndex * catWidth) - padSides;
+                        var width = Math.max(8, Math.round((yg.endIndex - yg.startIndex + 1) * catWidth + padSides * 2));
 
-                    // compute desired rasterScale: try 300 DPI
-                    // we need the final draw width in px that exporter uses (it computes scale to fit page).
-                    // As an approximation call exporter once with rasterScale=1 to compute drawW, or compute from chart width:
-                    var approxSvgW = foundChart.chartWidth || 800;
-                    // desired DPI:
-                    var desiredDPI = 300;
-                    // compute scale factor relative to 96ppi baseline:
-                    var rasterScale = Math.ceil((desiredDPI / 96) * 1); // e.g. 300/96 = 3.125 -> 4
-                    // more conservative: clamp to 1..4 to avoid extremely large PDFs
-                    rasterScale = Math.min(Math.max(1, rasterScale), 4);
+                        // clamp within plot area
+                        if (left < plotLeft) left = plotLeft;
+                        if (left + width > plotLeft + plotWidth) width = Math.round(Math.max(8, plotLeft + plotWidth - left));
 
-                    // call high-res exporter (use rasterScale computed)
-                    exportSvgToPdfRasterHighRes(foundChart, 'placement-chart.pdf', {
-                        page: 'A4',
-                        orientation: 'landscape',
-                        marginMm: 10,
-                        rasterScale: rasterScale
+                        // draw the rectangle border
+                        chart.renderer.rect(left, rectY, width, rectHeight, rectR)
+                            .attr({ fill: rectFill, stroke: rectStroke, 'stroke-width': rectStrokeWidth })
+                            .add(g);
+
+                        // draw centered year text inside the rect
+                        var centerX = Math.round(left + width / 2);
+                        var yearLabelY = rectY + Math.round(rectHeight / 2) + yearLabelYOffset;
+
+                        chart.renderer.text(String(yg.year), centerX, yearLabelY)
+                            .attr({ align: 'center' })
+                            .css({ color: '#222', fontSize: '12px', fontWeight: '600' })
+                            .add(g);
+
+                    } catch (inner) {
+                        console.warn('drawYearSpans group failed', inner);
+                    }
                     });
                 } catch (e) {
-                    console.error(e);
-                    alert('Export failed — see console');
+                console.warn('drawYearSpans error', e);
                 }
-            };
-            var sel = document.getElementById('exportFormatSelect');
-            // prevent server fallback globally
-            if (window.Highcharts && Highcharts.setOptions) {
-                Highcharts.setOptions({ exporting: { fallbackToExportServer: false , url: '' } });
             }
-        }
+
+
+
+        //function wirePlacementReportUI(chart) {
+        //    document.getElementById('exportChartBtn').onclick = function () {
+        //        console.log("3726");
+        //        try {
+        //            // find chart (use your existing chart variable)
+        //            var foundChart = (typeof chart !== 'undefined' && chart) ? chart : (window.chart || (Highcharts && Highcharts.charts && Highcharts.charts[0]));
+        //            if (!foundChart) { alert('Chart not found'); return; }
+
+        //            // compute desired rasterScale: try 300 DPI
+        //            // we need the final draw width in px that exporter uses (it computes scale to fit page).
+        //            // As an approximation call exporter once with rasterScale=1 to compute drawW, or compute from chart width:
+        //            var approxSvgW = foundChart.chartWidth || 800;
+        //            // desired DPI:
+        //            var desiredDPI = 300;
+        //            // compute scale factor relative to 96ppi baseline:
+        //            var rasterScale = Math.ceil((desiredDPI / 96) * 1); // e.g. 300/96 = 3.125 -> 4
+        //            // more conservative: clamp to 1..4 to avoid extremely large PDFs
+        //            rasterScale = Math.min(Math.max(1, rasterScale), 4);
+
+        //            // call high-res exporter (use rasterScale computed)
+        //            exportSvgToPdfRasterHighRes(foundChart, 'placement-chart.pdf', {
+        //                page: 'A4',
+        //                orientation: 'landscape',
+        //                marginMm: 10,
+        //                rasterScale: rasterScale
+        //            });
+        //        } catch (e) {
+        //            console.error(e);
+        //            alert('Export failed — see console');
+        //        }
+        //    };
+        //    var sel = document.getElementById('exportFormatSelect');
+        //    // prevent server fallback globally
+        //    if (window.Highcharts && Highcharts.setOptions) {
+        //        Highcharts.setOptions({ exporting: { fallbackToExportServer: false , url: '' } });
+        //    }
+        //}
 
         function addExportAnnotations(chart, opts) {
             opts = opts || {};
@@ -4142,6 +4591,121 @@
         }
 
 
+
+        function ChangeSelectedMenu(menuName) {
+            try {
+                // remove highlight from all
+                $('.menuButton').removeClass('menuSelected');
+
+                // add highlight to the selected one
+                $('#' + menuName).addClass('menuSelected');
+
+                // store current menu selection if needed
+                var hdn = document.getElementById('<%= hdnMenu.ClientID %>');
+                if (hdn) hdn.value = menuName;
+            } catch (e) {
+                console.log('ChangeSelectedMenu error:', e);
+            }
+        }
+
+
+
+
+
+        function createSvgLabelsForExport_v2(chart) {
+            var created = { svgEls: [], hiddenLabels: [], group: null };
+            try {
+                if (!chart) return created;
+
+                // Create a group to hold created labels
+                var group = chart.renderer.g('export-labels-group').add();
+                created.group = group;
+
+                // small vertical offset to nudge text into bar visually; tweak if needed
+                var yOffset = 0; // try 0, 4, -4 depending on alignment
+
+                for (var s = 0; s < chart.series.length; s++) {
+                    var series = chart.series[s];
+                    // We want to recreate labels only for the series that used HTML labels originally
+                    var useHtml = series.options && series.options.dataLabels && series.options.dataLabels.useHTML;
+                    if (!useHtml && series.type !== 'scatter') continue;
+
+                    for (var p = 0; p < series.data.length; p++) {
+                        var point = series.data[p];
+                        if (!point) continue;
+
+                        // Try to find the HTML element for the label (Highcharts puts it on dataLabel.element or .div)
+                        var dl = point.dataLabel;
+                        var htmlEl = null;
+                        if (dl && dl.element && (dl.element.tagName || '').toLowerCase() !== 'svg') {
+                            htmlEl = dl.element;
+                        } else if (dl && dl.div) {
+                            htmlEl = dl.div;
+                        }
+
+                        // If there's no HTML label, skip
+                        if (!htmlEl) continue;
+
+                        // Hide HTML label so it won't overlap exported SVG
+                        try { htmlEl.style.visibility = 'hidden'; created.hiddenLabels.push(htmlEl); } catch (e) {}
+
+                        // compute SVG coordinates for label based on point.plotX/plotY
+                        var plotX = (typeof point.plotX === 'number') ? point.plotX : 0;
+                        var plotY = (typeof point.plotY === 'number') ? point.plotY : 0;
+
+                        var x = Math.round(chart.plotLeft + plotX);
+                        var y = Math.round(chart.plotTop + plotY + yOffset);
+
+                        // label text: prefer point.name -> point.options.name -> category
+                        var text = (point.name && String(point.name).trim()) || (point.options && point.options.name) || (point.category || '');
+                        if (!text) continue;
+
+                        // Create SVG text element, center it and rotate 90 degrees clockwise so it reads top->bottom
+                        // We set text-anchor to middle so x is the center; rotation is around the (x,y)
+                        var svgText = chart.renderer.text(text, x, y)
+                            .attr({ align: 'center' })
+                            .css({
+                                fontSize: (series.options.dataLabels && series.options.dataLabels.style && series.options.dataLabels.style.fontSize) || '11px',
+                                lineHeight: '1',
+                                whiteSpace: 'nowrap',
+                                color: (series.options.dataLabels && series.options.dataLabels.style && series.options.dataLabels.style.color) || '#222'
+                            })
+                            .add(group);
+
+                        // rotate 90 degrees around (x, y) so text orientation matches screen's vertical-rl + rotate(180deg)
+                        // If you see upside-down, change 90 to -90.
+                        try {
+                            svgText.attr({ rotation: 90 });
+                            // Some Highcharts versions require explicit transform for origin:
+                            // svgText.element.setAttribute('transform', 'rotate(90 ' + x + ' ' + y + ')');
+                        } catch (eRot) {
+                            try {
+                                svgText.element.setAttribute('transform', 'rotate(90 ' + x + ' ' + y + ')');
+                            } catch (e2) {}
+                        }
+
+                        // center anchor in SVG (text-anchor)
+                        try {
+                            svgText.element.setAttribute('text-anchor', 'middle');
+                        } catch (eAttr) {}
+
+                        created.svgEls.push(svgText);
+                    }
+                }
+
+                return created;
+            } catch (err) {
+                console.error('createSvgLabelsForExport_v2 failed', err);
+                // cleanup on error
+                try {
+                    if (created.svgEls) created.svgEls.forEach(function (el) { try { el.destroy(); } catch (e) {} });
+                    if (created.hiddenLabels) created.hiddenLabels.forEach(function (el) { try { el.style.visibility = ''; } catch (e) {} });
+                    if (created.group) try { created.group.destroy(); } catch (e) {}
+                } catch (e) {}
+                return created;
+            }
+        }
+
         function restoreHtmlLabelsFromExport_v2(created, chart) {
             try {
                 if (!created) return;
@@ -4286,17 +4850,96 @@
         }
 
         // wiring snippet example
-        var btn = document.getElementById('exportChartBtn');
-        if (btn) {
-            btn.onclick = function () {
-                console.log("4581");
-                // ensure 'chart' is your Highcharts instance (replace variable name if different)
-                exportSvgToPdfRasterRobust(chart, 'placement-chart.pdf');
-            };
+        //var btn = document.getElementById('exportChartBtn');
+        //if (btn) {
+        //    btn.onclick = function () {
+        //        console.log("4581");
+        //        // ensure 'chart' is your Highcharts instance (replace variable name if different)
+        //        exportSvgToPdfRasterRobust(chart, 'placement-chart.pdf');
+        //    };
+        //}
+
+
+
+        function exportPlacementWithSvgLabelsAndPdf(opts) {
+            opts = opts || {};
+            opts.elementId = opts.elementId || "placementChartContainer";
+            opts.filename = opts.filename || "PlacementPlanning.pdf";
+            opts.mode = opts.mode || "multi";
+            opts.scale = typeof opts.scale === "number" ? opts.scale : 2;
+
+            var chart = window._placementChart; // your chart instance
+            var originalUseHTML = null;
+            var restored = false;
+
+            try {
+                // If we have a Highcharts chart instance, toggle useHTML -> false
+                if (chart && chart.options && chart.options.xAxis && chart.options.xAxis[0]) {
+                    try {
+                        originalUseHTML = chart.options.xAxis[0].labels && chart.options.xAxis[0].labels.useHTML;
+                        // Only update if currently using HTML labels
+                        if (originalUseHTML) {
+                            chart.update({
+                                xAxis: [{
+                                    labels: {
+                                        useHTML: false,
+                                        style: {
+                                            color: '#000',      // ensure visible contrast in export
+                                            fontSize: '10px',
+                                            whiteSpace: 'normal'
+                                        }
+                                    }
+                                }]
+                            }, false); // do not redraw twice
+                            // force redraw now
+                            chart.redraw();
+                        }
+                    } catch (e) {
+                        console.warn("Could not switch useHTML -> false for export:", e);
+                    }
+                }
+
+                // Wait a tick for the chart to actually redraw (small timeout increases reliability)
+                setTimeout(function () {
+                    try {
+                        // Call the html2canvas-based exporter you already have
+                        exportChartElementToPdfHtml2Canvas({
+                            elementId: opts.elementId,
+                            mode: opts.mode,
+                            scale: opts.scale,
+                            filename: opts.filename
+                        });
+                    } finally {
+                        // Restore original label rendering after a small delay so export finishes
+                        setTimeout(function () {
+                            try {
+                                if (chart && originalUseHTML && chart.options && chart.options.xAxis && chart.options.xAxis[0]) {
+                                    chart.update({
+                                        xAxis: [{
+                                            labels: {
+                                                useHTML: true
+                                            }
+                                        }]
+                                    }, false);
+                                    chart.redraw();
+                                }
+                            } catch (er) {
+                                console.warn("Failed to restore useHTML after export:", er);
+                            }
+                        }, 1200);
+                    }
+                }, 120); // small delay
+            } catch (outerErr) {
+                console.error("exportPlacementWithSvgLabelsAndPdf error:", outerErr);
+                // fallback: call exporter directly
+                exportChartElementToPdfHtml2Canvas({
+                    elementId: opts.elementId,
+                    mode: opts.mode,
+                    scale: opts.scale,
+                    filename: opts.filename
+                });
+            }
         }
-
-
-
 
 
         function truncateLeadingForSlot(name, fontSizePx, slotPx, extraChars) {
@@ -4323,7 +4966,131 @@
         }
 
 
+        function drawQuarterBoxes(chart) {
+            try {
+                // remove previous group if any
+                if (chart._quarterBoxGroup && chart._quarterBoxGroup.destroy) {
+                    chart._quarterBoxGroup.destroy();
+                    chart._quarterBoxGroup = null;
+                }
 
+                var g = chart.renderer.g('quarterBoxes').attr({ zIndex: 120 }).add();
+                chart._quarterBoxGroup = g;
+
+                var xAxis = chart.xAxis && chart.xAxis[0];
+                if (!xAxis) return;
+
+                // plot area geometry (safe fallbacks)
+                var plotLeft = chart.plotLeft || 0;
+                var plotTop = chart.plotTop || 0;
+                var plotWidth = chart.plotWidth || Math.max(0, (chart.chartWidth || 0) - plotLeft);
+                var plotHeight = chart.plotHeight || Math.max(0, (chart.chartHeight || 0) - plotTop);
+
+                var categories = xAxis.categories || [];
+                var totalCategories = categories.length;
+                if (!totalCategories) return;
+
+                // ----- CONFIGURABLE VISUALS -----
+                var padSides = 4;            // horizontal padding removed from each side when computing cell area (tweak)
+                var rectStroke = '#444';
+                var rectStrokeWidth = 1;
+                var rectFill = 'rgba(255,255,255,0)'; // transparent fill
+                var rectR = 3;               // corner radius
+
+                // label area sizes (tweak as needed)
+                var qLabelHeight = 18;       // height for the Q label area inside box
+                var rectHeight = qLabelHeight + 8; // rectangle height that encloses the Q label
+                var rectY = Math.round(plotTop + plotHeight - qLabelHeight - 6); // tweak -6 if needed
+
+                var yearGap = 8;
+                var yearFontSize = 11;
+
+                // Small right/left alignment nudge to fix overlap with first boxes
+                // Set to 0 to disable. Start with 4 if you previously used that.
+                var QY_ALIGNMENT_PX = 4;
+
+                // --- compute integer widths distributed evenly across categories ---
+                // Use the plot area reduced by padSides (so boxes don't overflow visual boundaries)
+                var effectiveLeft = Math.round(plotLeft + padSides);
+                var effectiveWidth = Math.max(0, Math.round(plotWidth - padSides * 2));
+
+                // base width per category (integer), and distribute remainder pixels
+                var baseW = Math.floor(effectiveWidth / totalCategories);
+                var remainder = effectiveWidth - baseW * totalCategories; // 0..totalCategories-1
+
+                // start x
+                var curX = effectiveLeft;
+
+                // track previous year so we only print year once per year group
+                var prevYear = null;
+
+                for (var i = 0; i < totalCategories; i++) {
+                    try {
+                        // give +1 pixel to the first `remainder` cells
+                        var cellW = baseW + (i < remainder ? 1 : 0);
+
+                        // if this is the very first cell, apply alignment nudge (shift right)
+                        var left = curX;
+                        if (i === 0 && QY_ALIGNMENT_PX) {
+                            left += QY_ALIGNMENT_PX;
+                            // reduce cell width so sum remains correct visually
+                            cellW = Math.max(4, cellW - QY_ALIGNMENT_PX);
+                        }
+
+                        // If last cell, ensure it extends exactly to the plot right boundary (avoid 1px gap)
+                        if (i === totalCategories - 1) {
+                            var rightEdge = Math.round(plotLeft + plotWidth - padSides);
+                            cellW = Math.max(4, rightEdge - left); // stretch last cell to exact rightEdge
+                        }
+
+                        // clamp left/width to plot area
+                        if (left < plotLeft) left = plotLeft;
+                        if (left + cellW > plotLeft + plotWidth) cellW = Math.round(Math.max(8, plotLeft + plotWidth - left));
+
+                        // draw rect for this quarter
+                        chart.renderer.rect(left, rectY, cellW, rectHeight, rectR)
+                            .attr({ fill: rectFill, stroke: rectStroke, 'stroke-width': rectStrokeWidth })
+                            .add(g);
+
+                        // draw the quarter label (category label) centered in the cell
+                        var cat = String(categories[i] || '');
+                        var centerX = Math.round(left + cellW / 2);
+                        // place quarter label just below the rect (adjust Y as required)
+                        var qLabelY = rectY + rectHeight - 4; // slightly inside the rect bottom; tweak if you want below it
+                        chart.renderer.text(cat, centerX, qLabelY)
+                            .attr({ align: 'center' })
+                            .css({ color: '#222', fontSize: '10px' })
+                            .add(g);
+
+                        // extract year (first 4-digit group) from category text
+                        var yearMatch = cat.match(/\b(19|20)\d{2}\b/);
+                        var yearText = yearMatch ? yearMatch[0] : '';
+
+                        // draw year centered under the rect only when the year changes (prevents duplicates)
+                        if (yearText && yearText !== prevYear) {
+                            var yearY = rectY + rectHeight + yearGap + (yearFontSize / 2);
+                            chart.renderer.text(String(yearText), centerX, yearY)
+                                .attr({ align: 'center' })
+                                .css({ color: '#222', fontSize: yearFontSize + 'px' })
+                                .add(g);
+
+                            prevYear = yearText;
+                        }
+
+                        // advance current x by original base cell width (use consistent stepping)
+                        // Use the original cellW that was assigned before last-cell stretch to keep loop predictable
+                        curX += baseW + (i < remainder ? 1 : 0);
+                    } catch (inner) {
+                        console.warn('drawQuarterBoxes: draw group failed', inner);
+                    }
+                }
+
+                // defensive: if rounding left a tiny leftover on the right, we already stretched last cell,
+                // but ensure group doesn't exceed chart bounds (optional).
+            } catch (e) {
+                console.warn('drawQuarterBoxes error', e);
+            }
+        }
 
         function drawQuarterAndYearBoxes(chart) {
             try {
@@ -4506,6 +5273,65 @@
             }
         }
 
+
+        function toInt(v) {
+            if (v === null || v === undefined) return NaN;
+            var n = parseInt(v, 10);
+            return isNaN(n) ? NaN : n;
+        }
+
+        // Called by the Apply Age button or by your server script when loading data
+        // jsonData should be a JS array of objects (not a string).
+        function filterByAge(jsonData, applyToFunctionName) {
+            var fromEl = document.getElementById('<%= txtAgeFrom.ClientID %>');
+            var toEl = document.getElementById('<%= txtAgeTo.ClientID %>');
+            var from = toInt(fromEl ? fromEl.value.trim() : '');
+            var to = toInt(toEl ? toEl.value.trim() : '');
+
+            // if no bounds provided, return original
+            var useFrom = !isNaN(from);
+            var useTo = !isNaN(to);
+
+            // If neither provided, just return original
+            if (!useFrom && !useTo) return jsonData;
+
+            // Filter - expects each row to have an 'Age' property (number/string)
+            var filtered = jsonData.filter(function (row) {
+                var age = toInt(row.Age);
+                if (isNaN(age)) return false; // if Age missing/invalid, exclude (change if desired)
+                if (useFrom && age < from) return false;
+                if (useTo && age > to) return false;
+                return true;
+            });
+
+            return filtered;
+        }
+
+        // This function is wired to the Apply Age button. It assumes the last-loaded dataset
+        // is available in window.__lastLoadedData and that the rendering function is loadDataFromServer.
+        function applyAgeFilterClientSide() {
+            try {
+                // you must ensure your page stores the last JSON payload in window.__lastLoadedData
+                var jsonData = window.__lastLoadedData;
+                if (!jsonData) {
+                    alert('No data loaded to filter.');
+                    return;
+                }
+                var filtered = filterByAge(jsonData);
+                // If your rendering function signature is loadDataFromServer(data, true)
+                if (typeof loadDataFromServer === 'function') {
+                    loadDataFromServer(filtered, true);
+                } else if (typeof loadDataFromServerQuarter === 'function') {
+                    // if you use loadDataFromServerQuarter for quarter page
+                    loadDataFromServerQuarter(filtered);
+                } else {
+                    console.warn('No known client render function found.');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
     </script>
     <style>
         /*Column Dropdown Styling*/
@@ -4605,6 +5431,31 @@
                     background-color: #ccc;
                     cursor: not-allowed;
                 }
+
+                .age-filter { display:flex; align-items:center; gap:8px; font-size:13px; }
+  .age-filter .label { min-width:56px; text-align:right; padding-right:6px; color:#222; }
+  .age-filter .age-input {
+    width:60px;
+    padding:6px 8px;
+    border-radius:6px;
+    border:1px solid #c6d0d6;
+    box-sizing:border-box;
+    font-size:13px;
+    text-align:center;
+  }
+  .age-filter .apply-btn {
+    padding:6px 10px;
+    border-radius:6px;
+    border: none;
+    background:#03507D;
+    color:#fff;
+    cursor:pointer;
+    font-size:13px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.1);
+  }
+  .age-filter .apply-btn[disabled] { opacity:0.6; cursor:not-allowed; }
+  .age-filter .small-note { font-size:11px; color:#666; margin-left:6px; }
+  .age-filter .error { color:#b00020; font-size:12px; margin-left:8px; }
     </style>
 
     <script>
@@ -4733,6 +5584,57 @@
 
             xhr.send(JSON.stringify({ selectedValues: selectedValues }));
         }
+
+        function applyAgeAndPostback() {
+            var errEl = document.getElementById('ageFilterError');
+            errEl.style.display = 'none';
+            errEl.textContent = '';
+
+            var fromEl = document.getElementById('txtAgeFromClient');
+            var toEl = document.getElementById('txtAgeToClient');
+            var fromVal = (fromEl && fromEl.value.trim() !== '') ? parseInt(fromEl.value.trim(), 10) : null;
+            var toVal = (toEl && toEl.value.trim() !== '') ? parseInt(toEl.value.trim(), 10) : null;
+
+            // Basic client validation
+            if (fromVal !== null && (isNaN(fromVal) || fromVal < 0 || fromVal > 150)) {
+                errEl.style.display = 'inline';
+                errEl.textContent = 'Please enter a valid minimum age (0–150).';
+                fromEl.focus();
+                return false;
+            }
+            if (toVal !== null && (isNaN(toVal) || toVal < 0 || toVal > 150)) {
+                errEl.style.display = 'inline';
+                errEl.textContent = 'Please enter a valid maximum age (0–150).';
+                toEl.focus();
+                return false;
+            }
+            if (fromVal !== null && toVal !== null && fromVal > toVal) {
+                errEl.style.display = 'inline';
+                errEl.textContent = 'Minimum age cannot be greater than maximum age.';
+                fromEl.focus();
+                return false;
+            }
+
+            // All good — copy to server hidden fields
+            var hfFrom = document.getElementById('<%= hfAgeFrom.ClientID %>');
+            var hfTo = document.getElementById('<%= hfAgeTo.ClientID %>');
+            if (hfFrom) hfFrom.value = (fromVal !== null) ? String(fromVal) : '';
+            if (hfTo)   hfTo.value   = (toVal !== null)   ? String(toVal)   : '';
+
+            // optional: disable button briefly to avoid double clicks
+            var btn = document.getElementById('btnApplyAge');
+            if (btn) { btn.disabled = true; setTimeout(function(){ btn.disabled = false; }, 2000); }
+
+            // Trigger the hidden server button postback (calls your existing server handler)
+            __doPostBack('<%= btnApplyAgeServer.UniqueID %>', '');
+                    return false;
+                }
+                (function(){
+                    var f = document.getElementById('txtAgeFromClient'), t = document.getElementById('txtAgeToClient');
+                    function keyHandler(e){ if (!e) e = window.event; if (e.key === 'Enter' || e.keyCode === 13) { applyAgeAndPostback(); return false; } }
+                    if (f) f.addEventListener('keydown', keyHandler);
+                    if (t) t.addEventListener('keydown', keyHandler);
+                })();
     </script>
 
     <style type="text/css">
@@ -4793,7 +5695,7 @@
                         <%--<asp:Button ID="btnVenderDischarged" runat="server" CssClass="leftMenu" Text="Client/Contact/Vendor – Discharged" ToolTip="Client/Contact/Vendor – Discharged"   ></asp:Button>--%>
 
                         <asp:Button ID="btnBirthdate" runat="server" CssClass="leftMenu" Text="All Clients by Birthdate Quarter" ToolTip="All Clients by Birthdate Quarter" OnClick="btnBirthdate_Click"></asp:Button>
-                        <asp:Button ID="btnPlacementPlanning" runat="server" CssClass="leftMenu" Text="Placement Planning" ToolTip="Placement Planning Chart" OnClientClick="return handleClientClick();" OnClick="btnPlacementPlanning_Click"></asp:Button>
+                        <asp:Button ID="btnPlacementPlanning" runat="server" CssClass="leftMenu" Text="Placement Planning" ToolTip="Placement Planning Chart" OnClientClick="return handleClientClick1();" OnClick="btnPlacementPlanning_Click"></asp:Button>
                         <asp:Button ID="btnResRoster" runat="server" CssClass="leftMenu" Text=" Residential Roster Report" ToolTip=" Residential Roster Reports" OnClientClick="return handleClientClick();" OnClick="btnResRoster_Click"></asp:Button>
                         <asp:Button ID="btnAllFunder" runat="server" CssClass="leftMenu" Text="All Clients by Funder" ToolTip="All Clients by Funder" OnClientClick="return handleClientClick();" OnClick="btnAllFunder_Click"></asp:Button>
                         <asp:Button ID="btnAllPlacement" runat="server" CssClass="leftMenu" Text="All Clients by Placement" ToolTip="All Clients by placement" OnClientClick="return handleClientClick();" OnClick="btnAllPlacement_Click"></asp:Button>
@@ -4894,14 +5796,44 @@
                                         </tr>
                                     </table>
                                 </div>
+                                <asp:HiddenField ID="hfAgeFrom" runat="server" runat="server" />
+                                <asp:HiddenField ID="hfAgeTo" runat="server" />
+                                <asp:Button ID="btnApplyAgeServer" runat="server" OnClick="btnPlacementPlanning_Click" Style="display:none;" />
                                 <div id="divPlacementPlanning" runat="server">
-                                    <div id="placementExportBar" style="overflow:hidden; margin-bottom:6px; padding:4px 0;">
-                                        <div style="float:right;">
-                                            <button id="exportChartBtn" type="button" runat="server" visible="false"
-                                                    style="padding:6px 10px; background:#03507D; border:1px solid #82a783; border-radius:4px;
-                                                           cursor:pointer; color:white; font-size:13px; ">
-                                                Export Chart
+                                    <div id="placementExportBar" style="margin-bottom:6px; padding:4px 0;">
+                                        <div class="age-filter" role="group" aria-label="Age filter" id="agefilter" runat="server" style="display:none;">
+                                          <label class="label" for="txtAgeFromClient">Age From</label>
+
+                                          <!-- plain inputs (easy to control) -->
+                                          <input id="txtAgeFromClient" name="txtAgeFromClient" class="age-input" 
+                                                 type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3"
+                                                 placeholder="e.g. 10" title="Enter minimum age (years)"
+                                                 oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+
+                                          <span style="font-weight:600;">—</span>
+
+                                          <label class="label" for="txtAgeToClient" style="min-width:15px; text-align:left;">To</label>
+
+                                          <input id="txtAgeToClient" name="txtAgeToClient" class="age-input"
+                                                 type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3"
+                                                 placeholder="e.g. 18" title="Enter maximum age (years)"
+                                                 oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+
+                                          <button id="btnApplyAge" type="button" class="apply-btn"
+                                                  onclick="return applyAgeAndPostback();">
+                                            Apply Age
                                             </button>
+
+                                          <span id="ageFilterError" class="error" aria-live="polite" style="display:none;"></span>
+                                          <%--<span class="small-note">years</span>--%>
+                                        </div>
+                                        <div style="float:right;">
+                                           <input id="exportChartBtn"
+       type="button"
+       value="Export Chart"
+       onclick="exportChartToPDF();"
+       style="padding:6px 10px; background:#03507D; border:1px solid #82a783; 
+              border-radius:4px; cursor:pointer; color:white; font-size:13px; display:none" />
                                         </div>
                                         <div style="clear:both;"></div>
                                     </div>
@@ -5173,8 +6105,8 @@
                                                     <asp:ListItem Value="I">Inactive</asp:ListItem>
                                                 </asp:RadioButtonList></td>--%>
                                             <td>&nbsp;</td>
-                                            <td>
-                                                <asp:Button ID="btnShowDischarge" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowDischarge_Click" /></td>
+                                          <%--  <td>
+                                                <asp:Button ID="btnShowDischarge" runat="server" Text="Show Report" BackColor="#03507D" ForeColor="#FFFFFF" Font-Bold="True" OnClientClick="return handleClientClick();" OnClick="btnShowDischarge_Click" /></td>--%>
                                         </tr>
                                     </table>
                                 </div>
