@@ -545,7 +545,7 @@
 
         function handleClientClick() {
             var checkbox = document.getElementById('<%= checkHighcharts.ClientID %>');
-            if (checkbox && checkbox.checked) {
+            if (checkbox && !checkbox.checked) {
                 columndata={};
                 showLoader();
             }
@@ -564,7 +564,7 @@
                  exp.style.display = "block"; 
              }
             var checkbox = document.getElementById('<%= checkHighcharts.ClientID %>');
-            if (checkbox && checkbox.checked) {
+            if (checkbox && !checkbox.checked) {
                 columndata={};
                 showLoader();
             }
