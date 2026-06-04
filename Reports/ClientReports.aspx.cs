@@ -177,7 +177,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldquarter_Click(sender, e);
                 }
@@ -442,7 +442,7 @@ namespace ClientDB.Reports
             try
             {
                 showlab.Text = "";
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldReport_Click(sender, e);
                 }
@@ -1257,7 +1257,7 @@ namespace ClientDB.Reports
             try
             {
                 showlab.Text = "";
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldClienContact_Click(sender, e);
                 }
@@ -1490,7 +1490,7 @@ namespace ClientDB.Reports
             try
             {
                 showlab.Text = "";
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldPgmRoster_Click(sender, e);
                 }
@@ -1731,7 +1731,7 @@ namespace ClientDB.Reports
             try
             {
                 showlab.Text = "";
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldVendor_Click(sender, e);
                 }
@@ -2822,7 +2822,7 @@ namespace ClientDB.Reports
             try
             {
                 showlab.Text = "";
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldResRoster_Click(sender, e);
                 }
@@ -2997,7 +2997,7 @@ namespace ClientDB.Reports
                     Schoolid = 1;
                 else
                     Schoolid = 2;
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     RVClientReport.Visible = false;
                     string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
@@ -3195,7 +3195,7 @@ namespace ClientDB.Reports
             try
             {
                 showlab.Text = "";
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     btnOldAllFunder_Click(sender, e);
                 }
@@ -3462,7 +3462,7 @@ namespace ClientDB.Reports
                     Schoolid = 1;
                 else
                     Schoolid = 2;
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
                     RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FunderReport"];
@@ -3539,7 +3539,7 @@ namespace ClientDB.Reports
                 HeadingDiv.InnerHtml = "All Clients by Birthdate";
                 string BithdateStart = (txtBithdateStart.Text != "" ? GetDateFromText(txtBithdateStart.Text) : "");
                 string BirthdateEnd = (txtBirthdateEnd.Text != "" ? GetDateFromText(txtBirthdateEnd.Text) : "");
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     RVClientReport.Visible = false;
                     ddlMonth.SelectedItem.Value = "0";
@@ -3671,7 +3671,7 @@ namespace ClientDB.Reports
                 RVClientReport.Visible = false;
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "All Clients by Admission date";
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
                             " JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId " +
@@ -3795,7 +3795,7 @@ namespace ClientDB.Reports
                 RVClientReport.Visible = false;
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "All Clients by Discharge date";
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " + 
                     " ,PL.EndDate AS PLDischargeDate,CONVERT(VARCHAR(20),PL.EndDate,101) EndDate FROM Placement PL INNER JOIN StudentPersonal PA ON PL.StudentPersonalId=PA.StudentPersonalId INNER JOIN Class CLS ON PL.Location = CLS.ClassId WHERE  " + 
@@ -3914,7 +3914,7 @@ namespace ClientDB.Reports
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "Statistical Report";
                 divbirthdate.Visible = false;
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     showlab.Text = "Show Labels:";
                     divStatistical.Visible = false;
@@ -4060,7 +4060,7 @@ namespace ClientDB.Reports
             {
                 //exportChartBtn.Visible = false;
                 divContact.Visible = false;
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     RVClientReport.Visible = false;
 
@@ -4174,7 +4174,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     //exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
@@ -4270,7 +4270,7 @@ namespace ClientDB.Reports
         {
             try
             {
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     //exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
@@ -4376,7 +4376,7 @@ namespace ClientDB.Reports
                 string DischrStartDate = (txtDischrStartDate.Text != "" ? GetDateFromText(txtDischrStartDate.Text) : "");
                 string NewEndDate = (txtNewEndDate.Text != "" ? GetDateFromText(txtNewEndDate.Text) : "");
                 string NewStartDate = (txtNewStartDate.Text != "" ? GetDateFromText(txtNewStartDate.Text) : "");
-                if (checkHighcharts.Checked)
+                if (!checkHighcharts.Checked)
                 {
                     RVClientReport.Visible = false;
 
@@ -4643,7 +4643,7 @@ namespace ClientDB.Reports
                 RVClientReport.ServerReport.ReportServerCredentials = new CustomReportCredentials(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"], ConfigurationManager.AppSettings["Domain"]);
                 if (hdnMenu.Value == "btnFundChange")
                 {
-                    if (checkHighcharts.Checked)
+                    if (!checkHighcharts.Checked)
                     {
                         RVClientReport.Visible = false;
 
@@ -4731,7 +4731,7 @@ namespace ClientDB.Reports
                 }
                 else if (hdnMenu.Value == "btnPlcChange")
                 {
-                    if (checkHighcharts.Checked)
+                    if (!checkHighcharts.Checked)
                     {
                         RVClientReport.Visible = false;
 
@@ -4764,7 +4764,7 @@ namespace ClientDB.Reports
                 }
                 else if (hdnMenu.Value == "btnGuardianChanges")
                 {
-                    if (checkHighcharts.Checked)
+                    if (!checkHighcharts.Checked)
                     {
                         RVClientReport.Visible = false;
 
@@ -4834,7 +4834,7 @@ namespace ClientDB.Reports
                 }
                 else if (hdnMenu.Value == "btnContactChanges")
                 {
-                    if (checkHighcharts.Checked)
+                    if (!checkHighcharts.Checked)
                     {
                         RVClientReport.Visible = false;
 
@@ -4895,7 +4895,7 @@ namespace ClientDB.Reports
                     else
                     RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["ContactChangesReport"];
                 }
-                if (!checkHighcharts.Checked)
+                if (checkHighcharts.Checked)
                 {
                     RVClientReport.ShowParameterPrompts = false;
                     ReportParameter[] parm = new ReportParameter[2];
