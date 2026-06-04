@@ -488,6 +488,11 @@ namespace ClientDB.AppFunctions
                     ReturnMedicalmodel.Diet = studentPA.Diet;
                     ReturnMedicalmodel.Other = studentPA.Other;
                     ReturnMedicalmodel.Seizures = studentPA.Seizures;
+                    ReturnMedicalmodel.PrimaryNurseMT = studentPA.PrimaryNurseMT;
+                    ReturnMedicalmodel.WellnessCheckStatusMT = studentPA.WellnessCheckStatusMT;
+                    ReturnMedicalmodel.PCPNameMT = studentPA.PCPNameMT;
+                    ReturnMedicalmodel.PCPPhoneMT = studentPA.PCPPhoneMT;
+                    ReturnMedicalmodel.PCPAddressMT = studentPA.PCPAddressMT;
                 }
                 Medical = dbobj.MedicalAndInsurances.Where(objMedical => objMedical.StudentPersonalId == ClientId && objMedical.SchoolId == sess.SchoolId).FirstOrDefault();
                 if(Medical!= null)
@@ -1678,6 +1683,11 @@ namespace ClientDB.AppFunctions
                         sp.TripRestriction2 = model.TripRestriction2;
                         sp.TripComments = model.TripComments;
                         sp.ClientInfoComments = model.ClientInfoComments;
+                        sp.SelfPreservationAbilityGT = model.SelfPreservationAbilityGT;
+                        sp.SignificantBehavioralCharacteristicsGT = model.SignificantBehavioralCharacteristicsGT;
+                        sp.CapabilitiesGT = model.CapabilitiesGT;
+                        sp.LimitationsGT = model.LimitationsGT;
+                        sp.PreferencesGT = model.PreferencesGT;
 
                         if (model.Classification1 == null)
                         {
@@ -2481,6 +2491,11 @@ namespace ClientDB.AppFunctions
                         sp.TripRestriction2 = model.TripRestriction2;
                         sp.TripComments = model.TripComments;
                         sp.ClientInfoComments = model.ClientInfoComments;
+                        sp.SelfPreservationAbilityGT = model.SelfPreservationAbilityGT;
+                        sp.SignificantBehavioralCharacteristicsGT = model.SignificantBehavioralCharacteristicsGT;
+                        sp.CapabilitiesGT = model.CapabilitiesGT;
+                        sp.LimitationsGT = model.LimitationsGT;
+                        sp.PreferencesGT = model.PreferencesGT;
 
                         if (model.Classification1 == null)
                         {
@@ -3979,7 +3994,7 @@ namespace ClientDB.AppFunctions
 
                 try
                 {
-                    regModel.InsuranceList = dbobj.Insurances.Where(objInsur => objInsur.StudentPersonalId == StudentId && objInsur.PreferType == "Primary").ToList();
+                    regModel.InsuranceList = dbobj.Insurances.Where(objInsur => objInsur.StudentPersonalId == StudentId).ToList();
 
 
                     //regModel.InsuranceList = (from objI in objIns                                             
@@ -4015,6 +4030,13 @@ namespace ClientDB.AppFunctions
                 regModel.DateOfBirth = ConvertDate(student.BirthDate);
                 regModel.PlaceOfBirth = student.PlaceOfBirth;
                 regModel.Photodate = ConvertDate(student.Photodate);
+
+                regModel.SelfPreservationAbilityGT = student.SelfPreservationAbilityGT;
+                regModel.SignificantBehavioralCharacteristicsGT = student.SignificantBehavioralCharacteristicsGT;
+                regModel.CapabilitiesGT = student.CapabilitiesGT;
+                regModel.LimitationsGT = student.LimitationsGT;
+                regModel.PreferencesGT = student.PreferencesGT;
+
                 regModel.CountryofBirth = dbobj.LookUps.Where(objlukup => objlukup.LookupType == "Country" && objlukup.LookupCode == SetLookUpCode).Select(objlukup => objlukup.LookupId).Single(); //student.CountryOfBirth;
                 regModel.StateOfBirth = student.StateOfBirth;
                 string modifiedDate = "";
@@ -4306,6 +4328,13 @@ namespace ClientDB.AppFunctions
                         regModel.Capabilities = item.Capabilities;
                         regModel.Limitations = item.Limitations;
                         regModel.Preferences = item.Preferances;
+                        regModel.PrimaryNurseMT = StudentPersonalPA.PrimaryNurseMT;
+                        regModel.WellnessCheckStatusMT = StudentPersonalPA.WellnessCheckStatusMT;
+                        regModel.PCPNameMT = StudentPersonalPA.PCPNameMT;
+                        regModel.PCPPhoneMT = StudentPersonalPA.PCPPhoneMT;
+                        regModel.PCPAddressMT = StudentPersonalPA.PCPAddressMT;
+
+
                     }
                 }
             }
@@ -5059,6 +5088,11 @@ namespace ClientDB.AppFunctions
                 regModel.PhotoReleasePermission = student.ImagePermission;
                 regModel.ClientInfoComments = student.ClientInfoComments;
                 regModel.PhotoPermComment = student.PhotoPermComment;
+                regModel.SelfPreservationAbilityGT = student.SelfPreservationAbilityGT;
+                regModel.SignificantBehavioralCharacteristicsGT = student.SignificantBehavioralCharacteristicsGT;
+                regModel.CapabilitiesGT = student.CapabilitiesGT;
+                regModel.LimitationsGT = student.LimitationsGT;
+                regModel.PreferencesGT = student.PreferencesGT;
 
                 regModel.PrimaryDiag = student.PrimaryDiag;
 
@@ -5118,6 +5152,11 @@ namespace ClientDB.AppFunctions
                 regModel.TripRestriction2 = student.TripRestriction2;
                 regModel.TripComments = student.TripComments;
                 regModel.ClientInfoComments = student.ClientInfoComments;
+                regModel.SelfPreservationAbilityGT = student.SelfPreservationAbilityGT;
+                regModel.SignificantBehavioralCharacteristicsGT = student.SignificantBehavioralCharacteristicsGT;
+                regModel.CapabilitiesGT = student.CapabilitiesGT;
+                regModel.LimitationsGT = student.LimitationsGT;
+                regModel.PreferencesGT = student.PreferencesGT;
 
                 regModel.ReferralIEPFullName = student.IEPReferralFullName;
                 regModel.ReferralIEPPhone = student.IEPReferralPhone;
@@ -9378,6 +9417,12 @@ namespace ClientDB.AppFunctions
                     studentPA.Diet = model.Diet;
                     studentPA.Seizures = model.Seizures;
                     studentPA.Other = model.Other;
+                    studentPA.PrimaryNurseMT = model.PrimaryNurseMT;
+                    studentPA.WellnessCheckStatusMT = model.WellnessCheckStatusMT;
+                    studentPA.PCPNameMT = model.PCPNameMT;
+                    studentPA.PCPPhoneMT = model.PCPPhoneMT;
+                    studentPA.PCPAddressMT = model.PCPAddressMT;
+
                     //dbobj.StudentPersonalPAs.Add(studentPA);
                     dbobj.SaveChanges();
 
@@ -9484,6 +9529,11 @@ namespace ClientDB.AppFunctions
                         studentPA.Diet = model.Diet;
                         studentPA.Seizures = model.Seizures;
                         studentPA.Other = model.Other;
+                        studentPA.PrimaryNurseMT = model.PrimaryNurseMT ;
+                        studentPA.WellnessCheckStatusMT = model.WellnessCheckStatusMT;
+                        studentPA.PCPNameMT = model.PCPNameMT;
+                        studentPA.PCPPhoneMT = model.PCPPhoneMT;
+                        studentPA.PCPAddressMT = model.PCPAddressMT;
                         dbobj.StudentPersonalPAs.Add(studentPA);
                         dbobj.SaveChanges();
                         for (int i = 0; i < model.Diagnosis.Count; i++)

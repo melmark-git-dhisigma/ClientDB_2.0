@@ -1,4 +1,7 @@
 ﻿<%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<ClientDB.Models.MedicalModel>" %>
+
+<script src="../../Documents/JS/jquery.validationEngine.js"></script>
+<script src="../../Documents/JS/jquery.validationEngine-en.js"></script>
  <style type="text/css"> 
  .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
         width: 49% !important;
@@ -84,9 +87,47 @@
                     <%=Html.TextBoxFor(m => m.Other, Model.Other, new {  @class="[] newClass",maxlength=500 })%></td>
             </tr>
 
+             <tr>
+                <td colspan="2">
+                    <label class="lblSpan">Primary Nurse</label><span class="nospan-align">*</span><br />
+                    <%=Html.TextBoxFor(m => m.PrimaryNurseMT, Model.PrimaryNurseMT, new {  @class="[] newClass",maxlength=300 })%></td>
+            </tr>
 
-                
-                </Table>
+             <tr>
+                <td colspan="2">
+                    <label class="lblSpan">Wellness Check Status</label><span class="nospan-align">*</span><br />
+                    <%=Html.TextBoxFor(m => m.WellnessCheckStatusMT, Model.WellnessCheckStatusMT, new {  @class="[] newClass" })%></td>
+            </tr>                
+          </Table>
+
+        <table style="width: 100%;">
+            <tr>
+                <td class="auto-style2" colspan="4">
+                    <h4>PCP (Primary Care Physician)</h4>
+                </td>
+            </tr>
+        </table>
+
+        <table class="tblStyle" style="width: 100%;">
+
+              <tr>
+                <td colspan="2">
+                    <label class="lblSpan">PCP Name</label><span class="nospan-align">*</span><br />
+                    <%=Html.TextBoxFor(m => m.PCPNameMT, Model.PCPNameMT, new {  @class="[] newClass",maxlength=300 })%></td>
+
+                  <td colspan="2">
+                    <label class="lblSpan">Phone </label><span class="nospan-align">*</span><br />
+                    <%=Html.TextBoxFor(m => m.PCPPhoneMT, Model.PCPPhoneMT,new {  @class="validate[custom[usPhoneNumber]] usPhone",onpaste="funPaste(event);" })%></td>
+            </tr>
+               
+            <tr>
+                <td colspan="2">
+                    <label class="lblSpan">Address </label><span class="nospan-align">*</span><br />
+                    <%=Html.TextBoxFor(m => m.PCPAddressMT, Model.PCPAddressMT, new {  @class="[] newClass",maxlength=1000 })%></td>
+            </tr>
+                       
+          </Table>
+
         <table style="width: 100%;">
             <tr>
                 <td class="auto-style2" colspan="4">
@@ -94,6 +135,7 @@
                 </td>
             </tr>
         </table>
+
        <table style="width: 100%;">
            <%-- first --%>
            <% if( Model.Diagnosis.Count>0)

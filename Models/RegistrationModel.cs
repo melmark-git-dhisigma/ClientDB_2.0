@@ -109,6 +109,19 @@ namespace ClientDB.Models
         public virtual string EmergencyContactTitle5 { get; set; }
         public virtual string EmergencyContactPhone5 { get; set; }
 
+        public virtual string PrimaryNurseMT { get; set; }
+        public virtual string WellnessCheckStatusMT { get; set; }
+
+        public virtual string PCPNameMT { get; set; }
+        public virtual string PCPPhoneMT { get; set; }
+        public virtual string PCPAddressMT { get; set; }
+
+        public virtual string SelfPreservationAbilityGT { get; set; }
+        public virtual string SignificantBehavioralCharacteristicsGT { get; set; }
+        public virtual string CapabilitiesGT { get; set; }
+        public virtual string LimitationsGT { get; set; }
+        public virtual string PreferencesGT { get; set; }
+
         public virtual string PrimaryPhysicianName { get; set; }
         public virtual string PrimaryPhysicianAddress { get; set; }
         public virtual string PrimaryPhysicianPhone { get; set; }
