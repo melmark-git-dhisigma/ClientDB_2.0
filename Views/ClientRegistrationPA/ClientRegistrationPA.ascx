@@ -854,7 +854,59 @@
                     <%=Html.TextAreaFor(m => m.ClientInfoComments  ,new {value=@Model.ClientInfoComments,  @class="sd newClass", @rows="3",@cols="30", Style="width:100%;"})%>
                 </td>
             </tr>
+            <tr>
+                <td colspan="5">
+                    <label class="lblSpan">Self Preservation Ability </label>
+                    <span class="nospan-align"></span>
+                    <br />
+                    <%=Html.TextAreaFor(m => m.SelfPreservationAbilityGT ,new {value=@Model.SelfPreservationAbilityGT,  @class="sd newClass", @rows="3",@cols="30", Style="width:100%;"})%>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <label class="lblSpan">Significant Behavioral Characteristics </label>
+                    <span class="nospan-align"></span>
+                    <br />
+                    <%=Html.TextAreaFor(m => m.SignificantBehavioralCharacteristicsGT ,new {value=@Model.SignificantBehavioralCharacteristicsGT,  @class="sd newClass", @rows="3",@cols="30", Style="width:100%;"})%>
+                </td>
+            </tr>
         </table>
+
+        <table style="width: 100%;">
+            <tr>
+                <td colspan="9">
+                    <h4>Relevant Capabilities, Limitations, and Preferences</h4>
+                </td>
+            </tr>
+        </table>
+
+        <table>            
+            <tr>
+                <td colspan="5">
+                    <label class="lblSpan">Capabilities </label>
+                    <span class="nospan-align"></span>
+                    <br />
+                    <%=Html.TextAreaFor(m => m.CapabilitiesGT  ,new {value=@Model.CapabilitiesGT,  @class="sd newClass", @rows="3",@cols="30", Style="width:100%;"})%>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <label class="lblSpan">Limitations </label>
+                    <span class="nospan-align"></span>
+                    <br />
+                    <%=Html.TextAreaFor(m => m.LimitationsGT  ,new {value=@Model.LimitationsGT,  @class="sd newClass", @rows="3",@cols="30", Style="width:100%;"})%>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <label class="lblSpan">Preferences </label>
+                    <span class="nospan-align"></span>
+                    <br />
+                    <%=Html.TextAreaFor(m => m.PreferencesGT  ,new {value=@Model.PreferencesGT,  @class="sd newClass", @rows="3",@cols="30", Style="width:100%;"})%>
+                </td>
+            </tr>
+        </table>
+
        <%-- <table style="width: 100%;">
             <tr>
                 <td class="auto-style2" colspan="4">

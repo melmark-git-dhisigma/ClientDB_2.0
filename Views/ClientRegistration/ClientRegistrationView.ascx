@@ -10,189 +10,133 @@
         padding: 8px 1px;
         width: 25%;
     }
+    .auto-style1 {
+        height: 23px;
+    }
 </style>
 <div style="width: 100%">
     <div>
         <table>
 
             <tr>
-                <%--<td class="">First Name </td>
-                <td class="">
-                    <%=Model.FirstName%></td>--%>
-                <td class="">Legal Name(Last, First, MI)</td>
-                <td class="">
+                
+                <td style="border-right: none;" colspan="4">&nbsp;</td>
+            </tr>
+            
+            <tr>
+                
+                <td>Legal Name(Last, First, MI)</td>
+                <td>
                     <%=Model.LastName%><%=Model.LastNameSuffix%>,
                     <%=Model.FirstName%>,
                     <%=Model.MiddleName%>
                 </td>
-                <td class="">Nick Name</td>
-                <td class="nobdr">
-                    <%=Model.NickName%></td>
+                <td>Nick Name</td>
+                <td><%=Model.NickName%></td>
             </tr>
-            <%--<tr>
-                <td class="">Middle Name</td>
-                <td class="">
-                    <%=Model.MiddleName%></td>
-                <td class="">Last Name </td>
-                <td class="nobdr">
-                    <%=Model.LastName%>
-                    <%=Model.LastNameSuffix%>
-                </td>
-            </tr>--%>
+            
             <tr>
-                <td class="">Admission Date </td>
-                <td class="">
+                <td>Admission Date </td>
+                <td>
                     <%=Model.AdmissinDate%>
-                <td class="">Gender</td>
+                <td>Gender</td>
                 <%if (Model.Gender == "1")
                   { %>
-                <td class="nobdr">Male
-                </td>
+                <td>Male</td>
                 <%}
                   else if (Model.Gender == "2")
                   { %>
-                <td class="nobdr">Female
-                </td>
+                <td>Female</td>
                 <%} %>
             </tr>
             <tr>
-                <td class="">Date of Birth </td>
-                <td class="">
+                <td>Date of Birth </td>
+                <td>
                     <%=Model.DateOfBirth%>
-                <td class="">Race</td>
-                <td class="nobdr">
-                    <%=Model.StrRace%></td>
+                <td>Race</td>
+                <td><%=Model.StrRace%></td>
             </tr>
             <tr>
-                <td class="">Place of Birth</td>
-                <td class="">
+                <td>Place of Birth</td>
+                <td>
                     <%=Model.PlaceOfBirth%></td>
-                <td class="">Country of Birth</td>
-                <td class="nobdr">
-                    <%=Model.CountryBirth%></td>
+                <td>Country of Birth</td>
+                <td><%=Model.CountryBirth%></td>
             </tr>
             <tr>
-                <td class="">State of Birth</td>
-                <td class="">
+                <td>State of Birth</td>
+                <td>
                     <%=Model.StateBirth%></td>
-                <td class="">Citizenship</td>
-                <td class="nobdr">
-                    <%=Model.CitizenshipBirth%></td>
+                <td>Citizenship</td>
+                <td><%=Model.CitizenshipBirth%></td>
             </tr>
             <tr>
-                <td class="">Height (in)</td>
-                <td class="">
+                <td>Height (in)</td>
+                <td>
                     <%=Model.Height%></td>
-                <td class="">Weight (lbs)</td>
-                <td class="nobdr">
-                    <%=Model.Weight%></td>
+                <td>Weight (lbs)</td>
+                <td><%=Model.Weight%></td>
             </tr>
             <tr>
-                <td class="">Hair Color</td>
-                <td class="">
+                <td>Hair Color</td>
+                <td>
                     <%=Model.HairColor%></td>
-                <td class="">Eye Color</td>
-                <td class="nobdr">
-                    <%=Model.EyeColor%></td>
+                <td>Eye Color</td>
+                <td><%=Model.EyeColor%></td>
             </tr>
             <tr>
-                <td class="">Primary Language</td>
-                <td class="">
+                <td>Primary Language</td>
+                <td>
                     <%=Model.PrimaryLanguage%></td>
-                <td class="">Legal Competency Status</td>
-                <td class="nobdr">
-                    <%=Model.LegalCompetencyStatus%></td>
+                <td>Legal Competency Status</td>
+                <td><%=Model.LegalCompetencyStatus%></td>
             </tr>
             <tr>
-                <td class="">Guardianship Status</td>
-                <td class="">
+                <td>Guardianship Status</td>
+                <td>
                     <%=Model.GuardianshipStatus%></td>
-                <td class="">Other State Agencies Involved With Student</td>
-                <td class="nobdr">
-                    <%=Model.OtherStateAgenciesInvolvedWithStudent%></td>
+                <td>Other State Agencies Involved With Student</td>
+                <td><%=Model.OtherStateAgenciesInvolvedWithStudent%></td>
             </tr>
             <tr>
-                <td class="">Distinguishing Marks</td>
-                <td class="">
+                <td>Distinguishing Marks</td>
+                <td>
                     <%=Model.DistigushingMarks%></td>
-                <td class="">Marital Status of Both Parents</td>
-                <td class="nobdr">
-                    <%=Model.MaritalStatusofBothParents%></td>
+                <td>Marital Status of Both Parents</td>
+                <td><%=Model.MaritalStatusofBothParents%></td>
             </tr>
             <tr>
-                <td class="">Case Manager Residential</td>
-                <td class="">
+                <td>Case Manager Residential</td>
+                <td>
                     <%=Model.CaseManagerResidential%></td>
-                <td class="">Case Manager Educational</td>
-                <td class="nobdr">
-                    <%=Model.CaseManagerEducational%></td>
+                <td>Case Manager Educational</td>
+                <td><%=Model.CaseManagerEducational%></td>
             </tr>
             <tr>
-                <td class="">Educational Surrogate:(If applicable):</td>
-                <td class="">
+                <td>Educational Surrogate:(If applicable):</td>
+                <td>
                     <%=Model.EducationalSurrogate%></td>
-                <%--<td class="">Case Manager Educational</td>
-                <td class="nobdr">
-                    <%=Model.CaseManagerEducational%></td>--%>
-            </tr>
-            <%--<tr>
-                <td class="" style="border-right: none; padding-top: 10px;" colspan="2">
-                    <h4>Address Information</h4>
-                </td>
-            </tr>
-           
+                <td colspan="2"></td>
+                
+            </tr>                      
+                
             <tr>
-                <td class="">Street Address</td>
-                <td class="nobdr">
-                    <%=Model.AddressLine2%></td>
-            </tr>
-             <tr>
-                <td class="">Unit #</td>
-                <td class="">
-                    <%=Model.AddressLine1%></td>
-
+                <td>Primary Nurse</td>
+                <td colspan="3"><%=Model.PrimaryNurseMT%></td>
             </tr>
             <tr>
-                <%--<td class="">Address Line 3 </td>
-                <td class="">
-                    <%=Model.AddressLine3%></td>--%>
-                <%--<td class="">City</td>
-                <td class="">
-                    <%=Model.City%></td>
-                </tr>
-                <tr>
-                <td class="">State</td>
-                <td class="nobdr">
-                    <%=Model.StrState%></td>
-                
+                <td>Wellness Check Status</td>
+                <td colspan="3"><%=Model.WellnessCheckStatusMT%></td>
             </tr>
-            <tr>
-                
-                <td class="">Zip</td>
-                <td class="">
-                    <%=Model.ZipCode%></td>
-                </tr>
-             <tr>
-                <td class="">County</td>
-                <td class="nobdr">
-                    <%=Model.studCounty%></td>
-                
-            </tr>
-                <tr>
-                <td class="">Country</td>
-                <td class="nobdr">
-                    <%=Model.StrCountry%></td>
-                
-            </tr>--%>
             
                 
             <tr>
-                <td class="" style="border-right: none; padding-top: 10px;" colspan="4">
+                <td style="border-right: none; padding-top: 10px;" colspan="4">
                     <h4>Emergency Contacts – Personal</h4>
                 </td>
                 
             </tr>
-       <%if (Model.EmergencyContactList != null )
+       <%if (Model.EmergencyContactList != null && Model.EmergencyContactList.Any())
               {foreach(var data in Model.EmergencyContactList)
               { %>
            <tr>
@@ -224,150 +168,152 @@
                </td>
            </tr>
             <%}}
+              
               else
-              {%>
+         {
+             %>
+           
             <tr>
-                <td>
-                    No data available
-                </td>
-            </tr>
+               <td colspan="4">
+                   <table style="width:100%">
+                       <tr>
+                           <td>Relation</td>
+                           <td></td>
+                           <td>Full Name</td>
+                           <td></td>
+                           <td>Primary Language</td>
+                           <td></td>
+                       </tr>
+                       <tr>
+                           <td rowspan="3">Address</td>
+                           <td colspan="3" rowspan="3"></td>
+                           <td>Home Phone</td>
+                           <td></td>
+                       </tr>
+                       <tr>
+                           <td>Other Phone</td>
+                           <td></td>
+                       </tr>
+                       <tr>
+                           <td>Email</td>
+                           <td></td>
+                       </tr>
+                   </table>
+               </td>
+           </tr>
+
             <%
          } %>
             
             <tr>
-                <td class="" style="border-right: none; padding-top: 10px;" colspan="4">
+                <td style="border-right: none; padding-top: 10px;" colspan="4">
                     <h4>Emergency Contacts - School</h4>
                 </td>
             </tr>
-            <%if (Model.EmergencyContactFirstName1 != null || Model.EmergencyContactLastName1 != null || Model.EmergencyContactPhone1 != null)
-              { %>
+            
             <tr>
 
-                <td class="">First Name</td>
-                <td class="">
+                <td>First Name</td>
+                <td>
                     <%=Model.EmergencyContactFirstName1%></td>
-                <td class="">Last Name</td>
-                <td class="nobdr"><%=Model.EmergencyContactLastName1%></td>
+                <td>Last Name</td>
+                <td><%=Model.EmergencyContactLastName1%></td>
             </tr>
             <tr>
-                <td class="">Title</td>
-                <td class="">
+                <td>Title</td>
+                <td>
                     <%=Model.EmergencyContactTitle1%></td>
-                <td class="">Phone</td>
-                <td class="nobdr"><%=Model.EmergencyContactPhone1%></td>
+                <td>Phone</td>
+                <td><%=Model.EmergencyContactPhone1%></td>
             </tr>
-            <%} %>
-            <%if (Model.EmergencyContactFirstName2 != null || Model.EmergencyContactLastName2 != null || Model.EmergencyContactPhone2 != null)
-              { %>
+                       
             <tr>
-                <td class="">First Name</td>
-                <td class="">
+                <td>First Name</td>
+                <td>
                     <%=Model.EmergencyContactFirstName2%></td>
-                <td class="">Last Name</td>
-                <td class="nobdr"><%=Model.EmergencyContactLastName2%></td>
+                <td>Last Name</td>
+                <td><%=Model.EmergencyContactLastName2%></td>
             </tr>
             <tr>
-                <td class="">Title</td>
-                <td class="">
+                <td>Title</td>
+                <td>
                     <%=Model.EmergencyContactTitle2%></td>
-                <td class="">Phone</td>
-                <td class="nobdr"><%=Model.EmergencyContactPhone2%></td>
+                <td>Phone</td>
+                <td><%=Model.EmergencyContactPhone2%></td>
             </tr>
-            <%} %>
-            <%if (Model.EmergencyContactFirstName3 != null || Model.EmergencyContactLastName3 != null || Model.EmergencyContactPhone3 != null)
-              { %>
+                        
             <tr>
-                <td class="">First Name</td>
-                <td class="">
+                <td>First Name</td>
+                <td>
                     <%=Model.EmergencyContactFirstName3%></td>
-                <td class="">Last Name</td>
-                <td class="nobdr"><%=Model.EmergencyContactLastName3%></td>
+                <td>Last Name</td>
+                <td><%=Model.EmergencyContactLastName3%></td>
             </tr>
             <tr>
-                <td class="">Title</td>
-                <td class="">
+                <td>Title</td>
+                <td>
                     <%=Model.EmergencyContactTitle3%></td>
-                <td class="">Phone</td>
-                <td class="nobdr"><%=Model.EmergencyContactPhone3%></td>
+                <td>Phone</td>
+                <td><%=Model.EmergencyContactPhone3%></td>
             </tr>
-            <%} %>
-            <%if (Model.EmergencyContactFirstName4 != null || Model.EmergencyContactLastName4 != null || Model.EmergencyContactPhone4 != null)
-              { %>
+            
             <tr>
-                <td class="">First Name</td>
-                <td class="">
+                <td>First Name</td>
+                <td>
                     <%=Model.EmergencyContactFirstName4%></td>
-                <td class="">Last Name</td>
-                <td class="nobdr"><%=Model.EmergencyContactLastName4%></td>
+                <td>Last Name</td>
+                <td><%=Model.EmergencyContactLastName4%></td>
             </tr>
             <tr>
-                <td class="">Title</td>
-                <td class="">
+                <td>Title</td>
+                <td>
                     <%=Model.EmergencyContactTitle4%></td>
-                <td class="">Phone</td>
-                <td class="nobdr"><%=Model.EmergencyContactPhone4%></td>
+                <td>Phone</td>
+                <td><%=Model.EmergencyContactPhone4%></td>
             </tr>
-            <%} %>
-            <%if (Model.EmergencyContactFirstName5 != null || Model.EmergencyContactLastName5 != null || Model.EmergencyContactPhone5 != null)
-              { %>
+            
             <tr>
-                <td class="">First Name</td>
-                <td class="">
+                <td>First Name</td>
+                <td>
                     <%=Model.EmergencyContactFirstName5%></td>
-                <td class="">Last Name</td>
-                <td class="nobdr"><%=Model.EmergencyContactLastName5%></td>
+                <td>Last Name</td>
+                <td><%=Model.EmergencyContactLastName5%></td>
             </tr>
             <tr>
-                <td class="">Title</td>
-                <td class="">
+                <td>Title</td>
+                <td>
                     <%=Model.EmergencyContactTitle5%></td>
-                <td class="">Phone</td>
-                <td class="nobdr"><%=Model.EmergencyContactPhone5%></td>
+                <td>Phone</td>
+                <td><%=Model.EmergencyContactPhone5%></td>
             </tr>
-            <%} %>
-
+            
             <tr>
                 <td style="border-right: none; padding-top: 10px;" colspan="4">
                     <h4>Medical and Insurance</h4>
                 </td>
             </tr>
-
-            <% if (Model.PrimaryPhysicianName != null)
-               {
-
-            %>
+                        
             <tr>
-                <td><b>Primary Physician</b></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td colspan="4"><b>Primary Physician</b></td>
             </tr>
             <tr>
                 <td>Physician Name</td>
-                <td><%=Model.PrimaryPhysicianName%></td>
-                <td>Address</td>
-                <td class="nobdr"><%=Model.PrimaryPhysicianAddress%></td>
-            </tr>
-
-            <tr>
+                <td><%=Model.PCPNameMT%></td>
                 <td>Phone</td>
-                <td><%=Model.PrimaryPhysicianPhone%></td>
-                <td>&nbsp;</td>
-                <td class="nobdr">&nbsp;</td>
+                <td><%=Model.PCPPhoneMT%></td>
             </tr>
 
-            <%} %>
-
-            
-            <% if (Model.InsuranceList != null)
-               {%>
-            <% if (Model.InsuranceList.ToList().Count > 0)
-               {%>
             <tr>
-                <td><b>Insurance</b></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>Address</td>
+                <td colspan="3"><%=Model.PCPAddressMT%></td>
+            </tr>          
+            
+            <tr>
+                <td class="nobdr", colspan="4">&nbsp;</td>
+            </tr>
+            
+            <tr>
+                <td colspan="4" colspan="4"><b>Insurance</b></td>
             </tr>
             <%
                    foreach (var Ins in Model.InsuranceList)
@@ -377,107 +323,63 @@
                 <td>Insurance Type</td>
                 <td><%=Ins.InsuranceType%></td>
                 <td>Policy Number</td>
-                <td class="nobdr"><%=Ins.PolicyNumber%></td>
+                <td><%=Ins.PolicyNumber%></td>
             </tr>
 
             <tr>
                 <td>Policy Holder</td>
                 <td><%=Ins.PolicyHolder%></td>
-                <td>&nbsp;</td>
-                <td class="nobdr">&nbsp;</td>
             </tr>
 
-            <%} %>
+           <%} %>
 
-            <% 
-           }
-                   
-            %>
-
-
-
-
-            <%} %>
-
-
-
-
-
-            <% if (Model.InsuranceType != null || Model.PolicyNumber != null || Model.PolicyHolder != null)
-               {%>
             <tr>
-                <td>Insurance Type</td>
-                <td><%=Model.InsuranceType%></td>
-                <td>Policy Number</td>
-                <td class="nobdr"><%=Model.PolicyNumber%></td>
+                <td class="nobdr" colspan="2">&nbsp;</td>
             </tr>
-            <tr>
-                <td>Policy Holder</td>
-                <td><%=Model.PolicyHolder%></td>
-                <td>&nbsp;</td>
-                <td class="nobdr">&nbsp;</td>
-            </tr>
-            <%} %>
-
-
-            <% if (Model.DateOfLastPhysicalExam != null)
-               {%>
+            
             <tr>
                 <td>Date Of Last Physical Exam</td>
                 <td><%=Model.DateOfLastPhysicalExam%></td>
             </tr>
-            <%} %>
-            <% if (Model.MedicalConditionOrDiagnosis!= null)
-               {%>
+            
             <tr>
-                <td>Medical Conditions/Diagnosis</td>
-                <td><%=Model.MedicalConditionOrDiagnosis%></td>
+                <td class="auto-style1">Medical Conditions/Diagnosis</td>
+                <td class="auto-style1"><%=Model.MedicalConditionOrDiagnosis%></td>
             </tr>
-            <%} %>
-            <% if (Model.Allergies != null)
-               {%>
+            
             <tr>
                 <td>Allergies</td>
                 <td><%=Model.Allergies%></td>
             </tr>
-            <%} %>
-            <% if (Model.CurrentMedications != null)
-               {%>
+            
             <tr>
                 <td>Current Medications</td>
                 <td><%=Model.CurrentMedications%></td>
             </tr>
-            <%} %>
-            <% if (Model.SelfPreservationAbility!= null)
-               {%>
+            
             <tr>
                 <td>Self Preservation Ability</td>
-                <td><%=Model.SelfPreservationAbility%></td>
+                <td><%=Model.SelfPreservationAbilityGT%></td>
             </tr>
-            <%} %>
-            <% if (Model.SignificantBehaviorCharacteristics != null)
-               {%>
+            
             <tr>
-                <td >Significant Behavior Characteristics</td>
-                <td><%=Model.SignificantBehaviorCharacteristics%></td>
+                <td>Significant Behavior Characteristics</td>
+                <td><%=Model.SignificantBehavioralCharacteristicsGT%></td>
             </tr>
-            <%} %>
-            <% if (Model.Capabilities != null || Model.Limitations != null || Model.Preferences != null)
-               {%>
+            
             <tr>
                 <td rowspan="3">Relevent Capabilities,Limitations,and Preferences</td>
                 <td><b>Capabilities</b><br>
-                    <%=Model.Capabilities%></td>
+                    <%=Model.CapabilitiesGT%></td>
             </tr>
             <tr>
                 <td><b>Limitations</b><br>
-                    <%=Model.Limitations%></td>
+                    <%=Model.LimitationsGT%></td>
             </tr>
             <tr>
                 <td><b>Preferences</b><br>
-                    <%=Model.Preferences%></td>
+                    <%=Model.PreferencesGT%></td>
             </tr>
-            <%} %>
             
             
             <tr>
@@ -485,34 +387,30 @@
                     <h4>Referral/IEP Information</h4>
                 </td>
             </tr>
-            <% if (Model.ReferralIEPFullName != null || Model.ReferralIEPTitle != null || Model.ReferralIEPPhone != null || Model.ReferralIEPReferringAgency != null || Model.ReferralIEPSourceofTuition != null)
-               {%>
+
             <tr>
                 <td>Full Name</td>
                 <td><%=Model.ReferralIEPFullName%></td>
                 <td>Title</td>
-                <td class="nobdr"><%=Model.ReferralIEPTitle%></td>
+                <td><%=Model.ReferralIEPTitle%></td>
             </tr>
             <tr>
                 <td>Phone</td>
                 <td><%=Model.ReferralIEPPhone%></td>
                 <td>Referring Agency</td>
-                <td class="nobdr"><%=Model.ReferralIEPReferringAgency%></td>
+                <td><%=Model.ReferralIEPReferringAgency%></td>
             </tr>
             <tr>
                 <td>Source Of Tuition</td>
-                <td><%=Model.ReferralIEPSourceofTuition%></td>
-                <td>&nbsp;</td>
-                <td class="nobdr">&nbsp;</td>
+                <td colspan="3"><%=Model.ReferralIEPSourceofTuition%></td>
             </tr>
-            <%} %>
+
             <tr>
-                <td class="" style="border-right: none; padding-top: 10px;" colspan="4">
+                <td  style="border-right: none; padding-top: 10px;" colspan="4">
                     <h4>Education History</h4>
                 </td>
             </tr>
-            <% if (Model.DateInitiallyEligibleforSpecialEducation != null || Model.DateofMostRecentSpecialEducationEvaluations != null || Model.DateofNextScheduled3YearEvaluation != null || Model.CurrentIEPStartDate != null || Model.CurrentIEPExpirationDate != null)
-               {%>
+            
             <tr>
                 <td class="auto-style5">Date Initially Eligible for Special Education</td>
                 <td class="auto-style6">
@@ -522,148 +420,151 @@
                     <%=Model.DateofMostRecentSpecialEducationEvaluations%></td>
             </tr>
             <tr>
-                <td class="">Date of Next Scheduled 3-Year Evaluation</td>
-                <td class="">
+                <td>Date of Next Scheduled 3-Year Evaluation</td>
+                <td>
                     <%=Model.DateofNextScheduled3YearEvaluation%></td>
-                <td class="">Current IEP Start Date</td>
+                <td>Current IEP Start Date</td>
                 <td class="nobdr">
                     <%=Model.CurrentIEPStartDate%></td>
             </tr>
             <tr>
-                <td class="">Current IEP Expiration Date</td>
-                <td class="">
+                <td>Current IEP Expiration Date</td>
+                <td>
                     <%=Model.CurrentIEPExpirationDate%></td>
-                <td class="">&nbsp;</td>
-                <td class="nobdr">&nbsp;</td>
             </tr>
-            <%} %>
+
             <tr>
-                <td class="" style="border-right: none; padding-top: 10px;" style="border-right: none; padding-top: 10px;" colspan="4">
+                <td  style="border-right: none; padding-top: 10px;" style="border-right: none; padding-top: 10px;" colspan="4">
                     <h4>Schools Attended</h4>
                 </td>
             </tr>
-            <%if (Model.SchoolName1 != null || Model.DateFrom1 != null || Model.SchoolAttendedAddress11 != null)
-              { %>
+            
             <tr>
-                <td class="">School Name</td>
-                <td class="">
-                    <%=Model.SchoolName1%></td>
-                <td class="">Dates Attended<br />
+                <td class="auto-style1">School Name</td>
+                <td class="auto-style1">
+                    <%=Model.SchoolName1%></td>                
+            </tr>
+            <tr>
+                <td>Dates Attended<br />
                 </td>
-                <td class="nobdr">From: &nbsp<%=Model.DateFrom1%>&nbsp To:&nbsp<%=Model.DateTo1%> </td>
+                <td>From: &nbsp<%=Model.DateFrom1%>&nbsp To:&nbsp<%=Model.DateTo1%> </td>
             </tr>
             <tr>
-                <td class="">Address Line 1</td>
-                <td class="nobdr"><%=Model.SchoolAttendedAddress11%></td>
+                <td>Address Line 1</td>
+                <td><%=Model.SchoolAttendedAddress11%></td>
             </tr>
             <tr>
-                <td class="">Address Line 2</td>
-                <td class="">
+                <td>Address Line 2</td>
+                <td>
                     <%=Model.SchoolAttendedAddress21%>
                     </td>
             </tr>
             
             <tr>
-                <td class="">City</td>
-                <td class="">
+                <td>City</td>
+                <td>
                     <%=Model.SchoolAttendedCity1%></td>
              </tr>
             <tr>
-                <td class="">State</td>
-                <td class="nobdr"><%=Model.SchoolAttendedState1%></td>
+                <td>State</td>
+                <td><%=Model.SchoolAttendedState1%></td>
             </tr>
-            <%} %>
-            <%if (Model.SchoolName2 != null || Model.DateFrom2 != null || Model.SchoolAttendedAddress12 != null)
-              { %>
+            
             <tr>
-                <td class="">School Name</td>
-                <td class="">
-                    <%=Model.SchoolName2%></td>
-                <td class="">Dates Attended<br />
+                <td class="nobdr" colspan="2"></td>
+            </tr>
+            
+            <tr>
+                <td>School Name</td>
+                <td>
+                    <%=Model.SchoolName2%></td>                
+            </tr>
+            <tr>
+                <td>Dates Attended<br />
                 </td>
-                <td class="nobdr">From:&nbsp<%=Model.DateFrom2%>&nbsp To:&nbsp<%=Model.DateTo2%></td>
+                <td>From:&nbsp<%=Model.DateFrom2%>&nbsp To:&nbsp<%=Model.DateTo2%></td>
             </tr>
             <tr>
-                <td class="">Address Line 1</td>
-                <td class="nobdr"><%=Model.SchoolAttendedAddress12%></td>
+                <td>Address Line 1</td>
+                <td><%=Model.SchoolAttendedAddress12%></td>
             </tr>
             <tr>
-                <td class="">Address Line 2</td>
-                <td class="">
+                <td>Address Line 2</td>
+                <td>
                     <%=Model.SchoolAttendedAddress22%>
                     </td>
              </tr>
             
             <tr>
-                <td class="">City</td>
-                <td class="">
+                <td>City</td>
+                <td>
                     <%=Model.SchoolAttendedCity2%></td>
              </tr>
             <tr>
-                <td class="">State</td>
-                <td class="nobdr"><%=Model.SchoolAttendedState2%></td>
+                <td>State</td>
+                <td><%=Model.SchoolAttendedState2%></td>
             </tr>
-            <%} %>
-            <%if (Model.SchoolName3 != null || Model.DateFrom3 != null || Model.SchoolAttendedAddress13 != null)
-              { %>
+            
             <tr>
-                <td class="">School Name</td>
-                <td class="">
+                <td class="nobdr" colspan="2">&nbsp;</td>
+            </tr>
+            
+            <tr>
+                <td>School Name</td>
+                <td>
                     <%=Model.SchoolName3%></td>
-                <td class="">Dates Attended</td>
-                <td class="nobdr">From:&nbsp
+                
+            </tr>
+            
+            <tr>
+                <td>Dates Attended</td>
+                <td>From:&nbsp
                     <%=Model.DateFrom3%>&nbsp
                     To:&nbsp
                     <%=Model.DateTo3%></td>
             </tr>
             <tr>
-                <td class="">Address Line 1</td>
-                <td class="nobdr"><%=Model.SchoolAttendedAddress13%></td>
+                <td>Address Line 1</td>
+                <td><%=Model.SchoolAttendedAddress13%></td>
             </tr>
             <tr>
-                <td class="">Address Line 2</td>
-                <td class="">
+                <td>Address Line 2</td>
+                <td>
                     <%=Model.SchoolAttendedAddress23%>
                     </td>
              </tr>
              
             <tr>
-                <td class="">City</td>
-                <td class="">
+                <td>City</td>
+                <td>
                     <%=Model.SchoolAttendedCity3%></td>
              </tr>
              <tr>
-                <td class="">State</td>
-                <td class="nobdr"><%=Model.SchoolAttendedState3%></td>
+                <td>State</td>
+                <td><%=Model.SchoolAttendedState3%></td>
             </tr>
-            <%} %>
+
             <tr>
                 <td class="auto-style9" style="border-right: none; padding-top: 10px;" colspan="4">
                     <h4>Discharge Information</h4>
                 </td>
             </tr>
-            <% if (Model.DischargeDate != null || Model.LocationAfterDischarge != null || Model.MelmarkNewEnglandsFollowUpResponsibilities != null)
-               {%>
+
             <tr>
-                <td class="">Discharge Date</td>
-                <td class="">
+                <td>Discharge Date</td>
+                <td>
                     <%=Model.DischargeDate%></td>
-                <td class="">Location After Discharge</td>
-                <td class="nobdr">
+                <td>Location After Discharge</td>
+                <td>
                     <%=Model.LocationAfterDischarge%></td>
             </tr>
             <tr>
-                <td class="">Melmark New England&#39;s Follow Up Responsibilities</td>
-                <td class="">
+                <td>Melmark New England&#39;s Follow Up Responsibilities</td>
+                <td  colspan="3">
                     <%=Model.MelmarkNewEnglandsFollowUpResponsibilities%></td>
-                <td class="">&nbsp;</td>
-                <td class="nobdr">&nbsp;</td>
             </tr>
-            <%} %>
-            <tr>
-                 <%--<td>  <a href="../ClientRegistration/ExportAllData/" class="styleA" target="_blank" style="border:none;width:100px;height:19px;font-weight:bold;font-size:small">Export</a></td>--%>
-            </tr>
-        </table>
+
+            </table>
 
     </div>
 </div>

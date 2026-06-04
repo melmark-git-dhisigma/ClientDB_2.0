@@ -42,6 +42,11 @@ namespace ClientDB.Models
         public virtual string Seizures { get; set; }
         public virtual string Diet { get; set; }
         public virtual string Other { get; set; }
+        public virtual string PrimaryNurseMT { get; set; }
+        public virtual string WellnessCheckStatusMT { get; set; }
+        public virtual string PCPNameMT { get; set; }
+        public virtual string PCPPhoneMT { get; set; }
+        public virtual string PCPAddressMT { get; set; }
         public virtual IList<Diagnosis> Diagnosis { get; set; }
         public MedicalModel()
         {

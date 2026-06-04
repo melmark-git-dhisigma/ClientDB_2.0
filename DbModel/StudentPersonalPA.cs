@@ -40,6 +40,11 @@ namespace ClientDB.DbModel
         public string Seizures { get; set; }
         public string Diet { get; set; }
         public string Other { get; set; }
+        public string PrimaryNurseMT { get; set; }
+        public string WellnessCheckStatusMT { get; set; }
+        public string PCPNameMT { get; set; }
+        public string PCPPhoneMT { get; set; }
+        public string PCPAddressMT { get; set; }
         public string LiftingOrTransfers { get; set; }
         public string Ambulation { get; set; }
         public string Toileting { get; set; }

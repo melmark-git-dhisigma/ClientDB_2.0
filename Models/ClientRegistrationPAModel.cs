@@ -251,6 +251,11 @@ namespace ClientDB.Models
         public virtual string TripRestriction2 { get; set; }
         public virtual string TripComments { get; set; }
         public virtual string ClientInfoComments { get; set; }
+        public virtual string SelfPreservationAbilityGT { get; set; }
+        public virtual string SignificantBehavioralCharacteristicsGT { get; set; }
+        public virtual string CapabilitiesGT { get; set; }
+        public virtual string LimitationsGT { get; set; }
+        public virtual string PreferencesGT { get; set; }
 
         public virtual int? Classification1 { get; set; }
         public virtual int? Classification2 { get; set; }
@@ -535,6 +540,11 @@ namespace ClientDB.Models
         public virtual string Seizures { get; set; }
         public virtual string Diet { get; set; }
         public virtual string Other { get; set; }
+        public virtual string PrimaryNurseMT { get; set; }
+        public virtual string WellnessCheckStatusMT { get; set; }
+        public virtual string PCPNameMT { get; set; }
+        public virtual string PCPPhoneMT { get; set; }
+        public virtual string PCPAddressMT { get; set; }
         public virtual string LiftingOrTransfers1 { get; set; }
         public virtual string LiftingOrTransfers2 { get; set; }
         public virtual string Ambulation1 { get; set; }

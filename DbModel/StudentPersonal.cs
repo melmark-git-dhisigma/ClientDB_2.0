@@ -137,6 +137,11 @@ namespace ClientDB.DbModel
         public string TripRestriction2 { get; set; }
         public string TripComments { get; set; }
         public string ClientInfoComments { get; set; }
+        public string SelfPreservationAbilityGT { get; set; }
+        public string SignificantBehavioralCharacteristicsGT { get; set; }
+        public string CapabilitiesGT { get; set; }
+        public string LimitationsGT { get; set; }
+        public string PreferencesGT { get; set; }
         public Nullable<int> Classification1 { get; set; }
         public Nullable<int> Classification2 { get; set; }
         public Nullable<int> Classification3 { get; set; }
