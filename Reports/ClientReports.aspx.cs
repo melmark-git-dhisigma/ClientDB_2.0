@@ -20,6 +20,7 @@ using System.Web.Services;
 using System.Web.Script.Serialization;
 using System.Text.RegularExpressions;
 using System.Web.Script.Services;
+using System.Diagnostics;
 
 
 namespace ClientDB.Reports
@@ -183,6 +184,15 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -203,6 +213,7 @@ namespace ClientDB.Reports
                     RVClientReport.Visible = false;
                     if (ddlQuarter.SelectedItem.Value != "0")
                     {
+                            csrplog.Parameters = "&Quarter=" + ddlQuarter.SelectedItem.Value;
                         tdMsg.InnerHtml = "";
                         int Schoolid = 0;
                         string schooltype = ConfigurationManager.AppSettings["Server"];
@@ -255,17 +266,32 @@ namespace ClientDB.Reports
                         DataTable dt = new DataTable();
                         da = new SqlDataAdapter(cmd);
                         da.Fill(dt);
+                            if (dt != null) csrplog.RowCount = dt.Rows.Count;
                         dt = GetSelectedColumnQuarter(dt, ddlQuarter.SelectedItem.Value);
                         if (dt.Rows.Count > 0)
                         dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Birth Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
                         var jsonData = JsonConvert.SerializeObject(dt);
                         ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
-                        
+                            csrplog.Status = "Success";
                     }
                     else
                     {
                         tdMsg.InnerHtml = "<div class='warning_box'>Please select birthdate quarter</div>";
                         ddlQuarter.Focus();
+                    }
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
                     }
                 }
             }
@@ -448,6 +474,14 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
                     //exportChartBtn.Visible = false;
                     showlab.Text = "<Br/><Br/>Show Labels:";
                     divContact.Visible = false;
@@ -472,6 +506,7 @@ namespace ClientDB.Reports
                     RVClientReport.Visible = false;
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "All Clients Info";
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     divbirthdate.Visible = false;
                     btnResetAllClient.Visible = true;
                     btnShowReport.Visible = true;
@@ -533,9 +568,9 @@ namespace ClientDB.Reports
                         cmd.Parameters.AddWithValue("@ParamStudRow", ContainsLoop("Total number of client", selectedItemList));
                         cmd.Parameters.AddWithValue("@GetActiveID", "A");
 
-                        da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-
+                            da = new SqlDataAdapter(cmd);
+                            da.Fill(dt);
+                            if (dt != null) csrplog.RowCount = dt.Rows.Count;
                         dtFinalCopy = GetSelectedColumns(dt);
                         //DataTable dtActive = new DataTable();
                         //dtActive.Columns.Add("Status");
@@ -556,6 +591,21 @@ namespace ClientDB.Reports
                     else
                     {
                         tdMsg.InnerHtml = "<div class='warning_box'>Please select report items</div>";
+                    }
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
                     }
                 }
             }
@@ -1263,6 +1313,14 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
                     //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -1283,6 +1341,7 @@ namespace ClientDB.Reports
                     RVClientReport.Visible = false;
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "Emergency/Home Contact";
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     btnShowReport.Visible = false;
 
 
@@ -1346,13 +1405,30 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if(dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnsEmergency(dt);
                     dt.DefaultView.Sort = dt.Columns["Client Name"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
 
 
                     string jsonData = JsonConvert.SerializeObject(dt);
-                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerEmergency(" + jsonData + ");", true);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerEmergency(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                    }
+
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1496,6 +1572,14 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
                     //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -1518,6 +1602,7 @@ namespace ClientDB.Reports
                     RVClientReport.Visible = false;
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "Program Roster";
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     int Schoolid = 0;
                     divbirthdate.Visible = false;
                     
@@ -1551,10 +1636,26 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnsProgramRoster(dt);
 
                     string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerProgramRoster(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1737,6 +1838,14 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
                     //exportChartBtn.Visible = false;
                     HContactStudname.Value = "All";
                     HContactstatus.Value = "0,1,2";
@@ -1767,6 +1876,11 @@ namespace ClientDB.Reports
                     RVClientReport.Visible = false;
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "Client/Contact/Vendor";
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
+                        csrplog.Parameters =
+                                                "HContactStudname=" + HContactStudname.Value +
+                                                "&HContactstatus=" + HContactstatus.Value +
+                                                "&HContactRelation=" + HContactRelation.Value;
                     SqlDataAdapter da = new SqlDataAdapter();
                     SqlCommand cmd = null;
                     DataTable dt = new DataTable();
@@ -1782,6 +1896,7 @@ namespace ClientDB.Reports
 
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dtFinal = GetSelectedColumnsVendor(dt);
                     PopulateDropdownVendor(dtFinal);
                     DataTable dtActive = new DataTable();
@@ -1791,7 +1906,23 @@ namespace ClientDB.Reports
                     //PopulateDropdownVendor(dtFinal);
                     var jsonData = JsonConvert.SerializeObject(dtFinal);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerVendor(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
                 }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -2321,8 +2452,14 @@ namespace ClientDB.Reports
 
         protected void btnPlacementPlanning_Click(object sender, EventArgs e)
         {
+            Stopwatch sw = Stopwatch.StartNew();
+            clsReportExecutionLog csrplog = new clsReportExecutionLog();
             try
             {
+                csrplog.StartTime = DateTime.Now;
+                sess = (clsSession)Session["UserSessionClient"];
+                csrplog.UserId = sess.LoginId;
+                csrplog.ServerID = Environment.MachineName;
                 tdMsg.InnerHtml = "";
                 showlab.Text = "";
                 divContact.Visible = false;
@@ -2356,7 +2493,7 @@ namespace ClientDB.Reports
                 // show heading and set the title
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "Placement Planning";
-
+                csrplog.ReportName = HeadingDiv.InnerHtml;
                 string quarterQuery = "SELECT DISTINCT SD.StudentPersonalId," +
                 "       SD.LastName + ',' + SD.FirstName AS studentPersonalName," +
                 "       SD.BirthDate " +
@@ -2446,7 +2583,7 @@ namespace ClientDB.Reports
                         emptyScript,
                         true); return;
                 }
-
+                csrplog.RowCount = studentsList.Count;
                 // ---------------------------
                 // Read Age filters (preferred: hidden fields hfAgeFrom/hfAgeTo; fallback: posted form keys)
                 // ---------------------------
@@ -2466,7 +2603,7 @@ namespace ClientDB.Reports
                         ageTo = tmpAge;
                 }
                 catch { }
-
+                csrplog.Parameters = "AgeFrom=" + ageFrom + "&AgeTo=" + ageTo;
                 // 2) Fallback: scan Request.Form keys for ones that end with txtAgeFrom / txtAgeTo (handles naming containers)
                 if (!ageFrom.HasValue)
                 {
@@ -2761,13 +2898,23 @@ namespace ClientDB.Reports
                 string script = "console.log('Placement aggregated JSON (len=" + aggregatedPayload.Count + ")'); renderAggregatedPlacementChart(" + jsonData + ");";
                 ClientScript.RegisterStartupScript(this.GetType(), "LoadPlacementData", script, true);
                 ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
+                csrplog.Status = "Success";
             }
             catch (Exception ex)
             {
+                csrplog.Status = "Failed";
+                csrplog.ErrorMessage = ex.Message;
                 // for debugging bubble up or log as appropriate
                 ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
                 throw;
             }
+            finally
+            {
+                sw.Stop();
+                csrplog.EndTime = DateTime.Now;
+                csrplog.DurationMs = sw.ElapsedMilliseconds;
+                ReportLogger.Save(csrplog);
+        }
         }
 
         protected void btnOldResRoster_Click(object sender, EventArgs e)
@@ -2828,6 +2975,14 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
                     //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -2850,6 +3005,7 @@ namespace ClientDB.Reports
                     RVClientReport.Visible = false;
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "Residential Roster Report";
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     RVClientReport.Visible = false;
                     int Schoolid = 0;
                     string schooltype = ConfigurationManager.AppSettings["Server"];
@@ -2887,12 +3043,28 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnResRoster(dt);
                     dt.DefaultView.Sort = dt.Columns["Location"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
                     var jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerQuarter(" + jsonData + ");", true);
                     divbirthdate.Visible = false;
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
             }
             catch (Exception ex)
@@ -2999,8 +3171,17 @@ namespace ClientDB.Reports
                     Schoolid = 2;
                 if (!checkHighcharts.Checked)
                 {
-                    RVClientReport.Visible = false;
-                    string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
+                        RVClientReport.Visible = false;
+                        string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
                                             " END AS PlacementStatus ,(SELECT STUFF(ISNULL((SELECT ', ' + DATA " +
                                             " FROM  " +
                                             " [Split] (IsDays,',') WHERE DATA<>'0' " +
@@ -3029,12 +3210,27 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnPlacement(dt);
                     dt.DefaultView.Sort = dt.Columns["Client Id"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
                     var jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerPlacement(" + jsonData + ");", true);
-
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -3201,6 +3397,14 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
                     //exportChartBtn.Visible = false;
                     divContact.Visible = false;
                     divnodata.Visible = false;
@@ -3225,6 +3429,7 @@ namespace ClientDB.Reports
                     HeadingDiv.Visible = true;
                     HeadingDiv.InnerHtml = "All Clients by Funder";
                     RVClientReport.Visible = false;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     int Schoolid = 0;
                     string schooltype = ConfigurationManager.AppSettings["Server"];
                     if (schooltype == "NE")
@@ -3241,13 +3446,28 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnFunder(dt);
                     dt.DefaultView.Sort = dt.Columns["Funder"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
                     var jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerFunder(" + jsonData + ");", true);
 
-
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
             }
             catch (Exception ex)
@@ -3475,6 +3695,17 @@ namespace ClientDB.Reports
                 }
                 else
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
+                        csrplog.Parameters = "SchoolId=" + Schoolid.ToString() +
+                                             "&FundingSource=" + ddlFundingSource.SelectedValue.ToString();
                     string funderQuery = "SELECT SPA.FundingSource,SP.LastName+','+SP.FirstName AS ClientName,SP.ClientId,SP.SchoolId FROM StudentPersonal SP INNER JOIN StudentPersonalPA SPA ON SP.StudentPersonalId=SPA.StudentPersonalId " +
                                          " WHERE SPA.FundingSource IS NOT NULL AND SPA.FundingSource<>'' AND SP.StudentType='Client' AND SP.PlacementStatus<>'I' AND CONVERT(INT,SP.ClientId)>0  ORDER BY SPA.FundingSource,SP.ClientId";
                     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
@@ -3484,6 +3715,7 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     if (ddlFundingSource.SelectedValue.ToString() != "0")
                     {
                         for (int i = dt.Rows.Count - 1; i >= 0; i--)
@@ -3500,6 +3732,21 @@ namespace ClientDB.Reports
                     dt = dt.DefaultView.ToTable();
                     var jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerFunder(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                    }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+            }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
             }
             catch (Exception ex)
@@ -3541,6 +3788,15 @@ namespace ClientDB.Reports
                 string BirthdateEnd = (txtBirthdateEnd.Text != "" ? GetDateFromText(txtBirthdateEnd.Text) : "");
                 if (!checkHighcharts.Checked)
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     RVClientReport.Visible = false;
                     ddlMonth.SelectedItem.Value = "0";
                     txtAgeTo.Text = txtAgeFrom.Text = txtBithdateStart.Text = txtBirthdateEnd.Text = "";
@@ -3566,13 +3822,29 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
-                    dt = GetSelectedColumnsBirthdate(dt);
-                    dt.DefaultView.Sort = dt.Columns["Last Name"].ColumnName + " ASC";
-                    dt = dt.DefaultView.ToTable();
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
+                        dt = GetSelectedColumnsBirthdate(dt);
+                        dt.DefaultView.Sort = dt.Columns["Last Name"].ColumnName + " ASC";
+                        dt = dt.DefaultView.ToTable();
 
 
-                    string jsonData = JsonConvert.SerializeObject(dt);
-                    ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                        string jsonData = JsonConvert.SerializeObject(dt);
+                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                    }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -3673,6 +3945,15 @@ namespace ClientDB.Reports
                 HeadingDiv.InnerHtml = "All Clients by Admission date";
                 if (!checkHighcharts.Checked)
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
                             " JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId " +
                             " WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1  " +
@@ -3690,12 +3971,28 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnsAdmissionDate(dt);
                     if (dt.Rows.Count > 0)
                     dt = dt.AsEnumerable().OrderByDescending(row => DateTime.ParseExact(row.Field<string>("Admission Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
                     string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -3797,6 +4094,15 @@ namespace ClientDB.Reports
                 HeadingDiv.InnerHtml = "All Clients by Discharge date";
                 if (!checkHighcharts.Checked)
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " + 
                     " ,PL.EndDate AS PLDischargeDate,CONVERT(VARCHAR(20),PL.EndDate,101) EndDate FROM Placement PL INNER JOIN StudentPersonal PA ON PL.StudentPersonalId=PA.StudentPersonalId INNER JOIN Class CLS ON PL.Location = CLS.ClassId WHERE  " + 
                     " PA.PlacementStatus = 'D' and CLS.ClassCd = 'DSCH' " + 
@@ -3808,13 +4114,28 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnsDischargeDate(dt);
                     if (dt.Rows.Count > 0)
                         dt = dt.AsEnumerable().OrderBy(row => DateTime.ParseExact(row.Field<string>("Discharge Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
                     string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
-
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -3916,6 +4237,15 @@ namespace ClientDB.Reports
                 divbirthdate.Visible = false;
                 if (!checkHighcharts.Checked)
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     showlab.Text = "Show Labels:";
                     divStatistical.Visible = false;
                     string statisticalQuery = "SELECT Location,(SELECT ClassName FROM Class WHERE ClassId=Location) ClassName,MaxStudents,COUNT( CASE WHEN Gender='Male' " + 
@@ -3943,6 +4273,7 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnsStatistical(dt);
 
                     string jsonData = JsonConvert.SerializeObject(dt);
@@ -3952,6 +4283,21 @@ namespace ClientDB.Reports
                         "LoadDataFromServerStatistical(" + jsonData + ", true);",
                         true
                     );
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -4062,7 +4408,27 @@ namespace ClientDB.Reports
                 divContact.Visible = false;
                 if (!checkHighcharts.Checked)
                 {
-                    RVClientReport.Visible = false;
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
+                        RVClientReport.Visible = false;
+                        string month = ddlMonth.SelectedItem.Value.ToString();
+                        int ageFrom = string.IsNullOrWhiteSpace(txtAgeFrom.Text) ? 0 : Convert.ToInt32(txtAgeFrom.Text);
+                        int ageTo = string.IsNullOrWhiteSpace(txtAgeTo.Text) ? 200 : Convert.ToInt32(txtAgeTo.Text);
+                        string bDateS = txtBithdateStart.Text == "" ? "01/01/1900" : txtBithdateStart.Text;
+                        string bDateE = txtBirthdateEnd.Text == "" ? DateTime.Now.ToString("MM/dd/yyyy") : txtBirthdateEnd.Text;
+                        csrplog.Parameters =
+                                                "month=" + month+
+                                                "&ageFrom=" + Convert.ToString(ageFrom) +
+                                                "&ageTo=" + Convert.ToString(ageTo) +
+                                                "&bDateStart=" + bDateS +
+                                                "&bDateEnd=" + bDateE;
 
                     string birthdateQuery = "SELECT distinct ClientId,Lastname,Firstname ,CONVERT(VARCHAR(20),BirthDate,101) AS BirthDate,BirthDate AS BDate " +
                     " ,DATEDIFF(YEAR,BirthDate,GETDATE())-(CASE WHEN DATEADD(YY,DATEDIFF(YEAR,BirthDate,GETDATE()),BirthDate) > GETDATE() THEN 1 " +
@@ -4086,6 +4452,7 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
 
                     dt = FilterTableBirthdate(dt);
                     dt = GetSelectedColumnsBirthdate(dt);
@@ -4095,6 +4462,21 @@ namespace ClientDB.Reports
 
                     string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -4176,6 +4558,20 @@ namespace ClientDB.Reports
             {
                 if (!checkHighcharts.Checked)
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
+                        string admDateFrom = txtAdmissionFrom.Text == "" ? "01/01/1900" : txtAdmissionFrom.Text;
+                        string admDateTo = txtAdmissionTo.Text == "" ? DateTime.Now.ToString("MM/dd/yyyy") : txtAdmissionTo.Text;
+                        csrplog.Parameters = "NumberOfAdmission=" + txtNumberOfAdmission.Text +
+                                             "&admDateFrom=" + admDateFrom +
+                                             "&admDateTo=" + admDateTo;
                     //exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
                     string admissionQuery = "SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST " +
@@ -4195,6 +4591,7 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = FilterTableAdmissionDate(dt);
                     dt = GetSelectedColumnsAdmissionDate(dt);
                     if(dt.Rows.Count>0)
@@ -4202,6 +4599,21 @@ namespace ClientDB.Reports
 
                     string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -4272,6 +4684,15 @@ namespace ClientDB.Reports
             {
                 if (!checkHighcharts.Checked)
                 {
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
                     //exportChartBtn.Visible = false;
                     RVClientReport.Visible = false;
                     string dischargeQuery = "SELECT PA.ClientId,PA.Lastname,PA.Firstname,PA.AdmissionDate,CONVERT(VARCHAR(20),PA.AdmissionDate,101) AS ADate,PA.DischargeDate AS SPDischargeDate " +
@@ -4285,12 +4706,28 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = GetSelectedColumnsDischargeDate(dt);
                     if (dt.Rows.Count > 0)
                         dt = dt.AsEnumerable().OrderBy(row => DateTime.ParseExact(row.Field<string>("Discharge Date"), "MM/dd/yyyy", CultureInfo.InvariantCulture)).CopyToDataTable();
 
                     string jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerBirthdate(" + jsonData + ");", true);
+                        csrplog.Status = "Success";
+                    }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
 
                 }
                 else
@@ -4376,11 +4813,43 @@ namespace ClientDB.Reports
                 string DischrStartDate = (txtDischrStartDate.Text != "" ? GetDateFromText(txtDischrStartDate.Text) : "");
                 string NewEndDate = (txtNewEndDate.Text != "" ? GetDateFromText(txtNewEndDate.Text) : "");
                 string NewStartDate = (txtNewStartDate.Text != "" ? GetDateFromText(txtNewStartDate.Text) : "");
+
+                string department = hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocDept.SelectedValue.ToString() : ddlDeptPlctypeDept.SelectedValue.ToString());
+                string placementType = hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Placement Type" ? ddlDeptPlctypePlcType.SelectedValue.ToString() : ddlDeptPlctypePlcType.SelectedValue.ToString());
+                string location = hdnballet.Value == "" ? "0" : (hdnballet.Value == "Choose Department and Location" ? ddlDeptLocLoc.SelectedValue.ToString() : ddlLocLoc.SelectedValue.ToString());
+                string startDate = hdnDateRange.Value == "" ? "1900-01-01" : (hdnDateRange.Value == "Active Placement" ? ActiveStartDate : (hdnDateRange.Value == "Discharged Placement" ? DischrStartDate : NewStartDate));
+                string endDate = hdnDateRange.Value == "" ? GetDateFromToday(Convert.ToDateTime(DateTime.Now.ToShortDateString()).ToString("dd-MM-yyyy")) : (hdnDateRange.Value == "Active Placement" ? ActiveEndDate : (hdnDateRange.Value == "Discharged Placement" ? DischrEndDate : NewEndDate));
+                string dateType = hdnDateRange.Value == "" ? "0" : (hdnDateRange.Value == "Active Placement" ? "Active Placement,New Placement" : hdnDateRange.Value);
+                string categoryType = hdnballet.Value == "" ? "0" : hdnballet.Value;
+
                 if (!checkHighcharts.Checked)
                 {
-                    RVClientReport.Visible = false;
+                    Stopwatch sw = Stopwatch.StartNew();
+                    clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                    try
+                    {
+                        csrplog.StartTime = DateTime.Now;
+                        sess = (clsSession)Session["UserSessionClient"];
+                        csrplog.UserId = sess.LoginId;
+                        csrplog.ServerID = Environment.MachineName;
+                        csrplog.ReportName = HeadingDiv.InnerHtml;
+                        csrplog.Parameters = "ActiveStartDate=" + ActiveStartDate +
+                                            "&ActiveEndDate=" + ActiveEndDate +
+                                            "&DischrEndDate=" + DischrEndDate +
+                                            "&DischrStartDate=" + DischrStartDate +
+                                            "&NewEndDate=" + NewEndDate +
+                                            "&NewStartDate=" + NewStartDate +
+                                            "&department=" + department +
+                                            "&placementType=" + placementType +
+                                            "&location=" + location +
+                                            "&startDate=" + startDate +
+                                            "&endDate=" + endDate +
+                                            "&dateType=" + dateType +
+                                            "&categoryType=" + categoryType +
+                                            "&SchoolId=" + Convert.ToString(Schoolid);
+                        RVClientReport.Visible = false;
 
-                    string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
+                        string placementQuery = " SELECT *,CASE WHEN PLCStatus='New Admission' OR PLCStatus='Re-Admission' THEN 'New Placement' ELSE CASE WHEN PLCStatus='Respite' OR PLCStatus='Move' OR PLCStatus='Partial Discharge' THEN 'Active Placement' ELSE CASE WHEN PLCStatus='Discharge' THEN 'Discharged Placement' END END " +
                                             " END AS PlacementStatus ,(SELECT STUFF(ISNULL((SELECT ', ' + DATA " +
                                             " FROM  " +
                                             " [Split] (IsDays,',') WHERE DATA<>'0' " +
@@ -4409,13 +4878,28 @@ namespace ClientDB.Reports
                     DataTable dt = new DataTable();
                     da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
+                        if (dt != null) csrplog.RowCount = dt.Rows.Count;
                     dt = filterDataTablePlacement(dt);
                     dt = GetSelectedColumnPlacement(dt);
                     dt.DefaultView.Sort = dt.Columns["Client Id"].ColumnName + " ASC";
                     dt = dt.DefaultView.ToTable();
                     var jsonData = JsonConvert.SerializeObject(dt);
                     ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "loadDataFromServerPlacement(" + jsonData + ");", true);
-
+                        csrplog.Status = "Success";
+                }
+                    catch (Exception ex)
+                    {
+                        csrplog.Status = "Failed";
+                        csrplog.ErrorMessage = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        sw.Stop();
+                        csrplog.EndTime = DateTime.Now;
+                        csrplog.DurationMs = sw.ElapsedMilliseconds;
+                        ReportLogger.Save(csrplog);
+                    }
                 }
                 else
                 {
@@ -4645,25 +5129,36 @@ namespace ClientDB.Reports
                 {
                     if (!checkHighcharts.Checked)
                     {
-                        RVClientReport.Visible = false;
+                        Stopwatch sw = Stopwatch.StartNew();
+                        clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                        try
+                        {
+                            csrplog.StartTime = DateTime.Now;
+                            sess = (clsSession)Session["UserSessionClient"];
+                            csrplog.UserId = sess.LoginId;
+                            csrplog.ServerID = Environment.MachineName;
+                            csrplog.ReportName = HeadingDiv.InnerHtml;
+                            csrplog.Parameters = "txtchangeSdate=" + txtchangeSdate.Text +
+                                                "&txtchangeEdate=" + txtchangeEdate.Text;
+                            RVClientReport.Visible = false;
 
-                        //string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
-                        //                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                        //                        " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL " + 
-                        //                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
-                        //                        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                        //                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                        //                        " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " +
-                        //                        " and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                        //                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                        //                        " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                        //                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                        //                        " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
-                        //                        " and ST.StudentPersonalId not in (SELECT Distinct " +
-                        //                        " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0))) FUND WHERE ObjectType='Funder' " +
-                        //                        " AND CONVERT(DATE,EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') " + 
-                        //                        " ORDER BY EventLogId DESC ";
-                        string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM ( " +
+                            //string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                            //                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                            //                        " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL " + 
+                            //                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                            //                        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                            //                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                            //                        " WHERE (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE))  " +
+                            //                        " and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                            //                    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                            //                        " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                            //                    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                            //                        " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+                            //                        " and ST.StudentPersonalId not in (SELECT Distinct " +
+                            //                        " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0))) FUND WHERE ObjectType='Funder' " +
+                            //                        " AND CONVERT(DATE,EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') " + 
+                            //                        " ORDER BY EventLogId DESC ";
+                            string fundingChngQry = " SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM ( " +
                         " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
                         " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue, " +
                         " NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId " +
@@ -4715,16 +5210,32 @@ namespace ClientDB.Reports
                         " AND CONVERT(DATE,EventDate) <= CONVERT(DATE,'" + NewEndDate + "') " +
                         " ORDER BY EventLogId DESC ";
 
-                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
-                        con.Open();
-                        SqlCommand cmd = new SqlCommand(fundingChngQry, con);
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-                        dt = GetSelectedColumnFundingChanges(dt);
-                        var jsonData = JsonConvert.SerializeObject(dt);
-                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                            con.Open();
+                            SqlCommand cmd = new SqlCommand(fundingChngQry, con);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            DataTable dt = new DataTable();
+                            da = new SqlDataAdapter(cmd);
+                            da.Fill(dt);
+                            if (dt != null) csrplog.RowCount = dt.Rows.Count;
+                            dt = GetSelectedColumnFundingChanges(dt);
+                            var jsonData = JsonConvert.SerializeObject(dt);
+                            ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            csrplog.Status = "Success";
+                        }
+                        catch (Exception ex)
+                        {
+                            csrplog.Status = "Failed";
+                            csrplog.ErrorMessage = ex.Message;
+                            throw;
+                        }
+                        finally
+                        {
+                            sw.Stop();
+                            csrplog.EndTime = DateTime.Now;
+                            csrplog.DurationMs = sw.ElapsedMilliseconds;
+                            ReportLogger.Save(csrplog);
+                        }
                     }
                     else
                         RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["FundingChangesReport"];
@@ -4733,178 +5244,259 @@ namespace ClientDB.Reports
                 {
                     if (!checkHighcharts.Checked)
                     {
-                        RVClientReport.Visible = false;
+                        Stopwatch sw = Stopwatch.StartNew();
+                        clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                        try
+                        {
+                            csrplog.StartTime = DateTime.Now;
+                            sess = (clsSession)Session["UserSessionClient"];
+                            csrplog.UserId = sess.LoginId;
+                            csrplog.ServerID = Environment.MachineName;
+                            csrplog.ReportName = HeadingDiv.InnerHtml;
+                            csrplog.Parameters = "txtchangeSdate=" + txtchangeSdate.Text +
+                                                "&txtchangeEdate=" + txtchangeEdate.Text;
+                            RVClientReport.Visible = false;
 
-                        string placementChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
-                                                  " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " +
-                                                  " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
-                                                  " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
-                                                  " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                                                  " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                  " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                                                  " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
-                                                  " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
-                                                  " and ST.StudentPersonalId not in (SELECT Distinct " +
-                                                  " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
-                                                  " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
+                            string placementChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
+                                                      " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " +
+                                                      " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
+                                                      " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Placement' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+                                                      " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                                                      " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                      " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                                                      " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                                                      " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+                                                      " and ST.StudentPersonalId not in (SELECT Distinct " +
+                                                      " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+                                                      " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
 
-                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
-                        con.Open();
-                        SqlCommand cmd = new SqlCommand(placementChngQry, con);
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-                        dt = GetSelectedColumnFundingChanges(dt);
-                        var jsonData = JsonConvert.SerializeObject(dt);
-                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                            con.Open();
+                            SqlCommand cmd = new SqlCommand(placementChngQry, con);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            DataTable dt = new DataTable();
+                            da = new SqlDataAdapter(cmd);
+                            da.Fill(dt);
+                            if (dt != null) csrplog.RowCount = dt.Rows.Count;
+                            dt = GetSelectedColumnFundingChanges(dt);
+                            var jsonData = JsonConvert.SerializeObject(dt);
+                            ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            csrplog.Status = "Success";
+                        }
+                        catch (Exception ex)
+                        {
+                            csrplog.Status = "Failed";
+                            csrplog.ErrorMessage = ex.Message;
+                            throw;
+                        }
+                        finally
+                        {
+                            sw.Stop();
+                            csrplog.EndTime = DateTime.Now;
+                            csrplog.DurationMs = sw.ElapsedMilliseconds;
+                            ReportLogger.Save(csrplog);
+                        }
                     }
                     else
-                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementChangesReport"];
+                        RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["PlacementChangesReport"];
                 }
                 else if (hdnMenu.Value == "btnGuardianChanges")
                 {
                     if (!checkHighcharts.Checked)
                     {
-                        RVClientReport.Visible = false;
+                        Stopwatch sw = Stopwatch.StartNew();
+                        clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                        try
+                        {
+                            csrplog.StartTime = DateTime.Now;
+                            sess = (clsSession)Session["UserSessionClient"];
+                            csrplog.UserId = sess.LoginId;
+                            csrplog.ServerID = Environment.MachineName;
+                            csrplog.ReportName = HeadingDiv.InnerHtml;
+                            csrplog.Parameters = "txtchangeSdate=" + txtchangeSdate.Text +
+                                                "&txtchangeEdate=" + txtchangeEdate.Text;
+                            RVClientReport.Visible = false;
 
-                        //string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
-                        //                             " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                        //                             " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " + 
-                        //                             " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " + 
-                        //                             " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
-                        //                             " WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
-                        //                             " WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL " + 
-                        //                             " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
-                        //                             " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                        //                             " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
-                        //                             " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                        //                             " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                        //                             " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                        //                             " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                        //                             " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
-                        //                             " and ST.StudentPersonalId not in (SELECT Distinct " +
-                        //                             " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
-                        //                             " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
-                                                    string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
-                            " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate, " +
-                            " CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " +
-                            " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " +
-                            " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) END Oldguard, " +
-                            " CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) END Newguard " +
+                            //string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " + 
+                            //                             " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                            //                             " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " + 
+                            //                             " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " + 
+                            //                             " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
+                            //                             " WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal " + 
+                            //                             " WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL " + 
+                            //                             " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                            //                             " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                            //                             " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+                            //                             " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                            //                             " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                            //                             " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                            //                             " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                            //                             " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                            //                             " and ST.StudentPersonalId not in (SELECT Distinct " +
+                            //                             " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+                            //                             " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC ";
+                            string guardianshipChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField, " +
+    " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate, " +
+    " CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' " +
+    " ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard, " +
+    " CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) END Oldguard, " +
+    " CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) END Newguard " +
 
-                            " FROM EventLogs EL " +
-                            " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
+    " FROM EventLogs EL " +
+    " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
 
-                            " OUTER APPLY (SELECT TOP 1 * FROM Placement PLC WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
-                            " AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) AND PLC.Status=1 ORDER BY PLC.StartDate DESC) PLC " +
+    " OUTER APPLY (SELECT TOP 1 * FROM Placement PLC WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
+    " AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) AND PLC.Status=1 ORDER BY PLC.StartDate DESC) PLC " +
 
-                            " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+    " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
 
-                            " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 " +
-                            " AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+    " WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 " +
+    " AND LKP.LookupType = 'Department' and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
 
-                            " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
 
-                            " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
-                            " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+    " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
 
-                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
 
-                            " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' " +
-                            " and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+    " and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' " +
+    " and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
 
-                            " AND CONVERT(DATE, EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
-                            " AND CONVERT(DATE, EventDate) <= CONVERT(DATE,'" + NewEndDate + "') " +
+    " AND CONVERT(DATE, EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
+    " AND CONVERT(DATE, EventDate) <= CONVERT(DATE,'" + NewEndDate + "') " +
 
-                            " ORDER BY EventLogId DESC ";
-                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
-                        con.Open();
-                        SqlCommand cmd = new SqlCommand(guardianshipChngQry, con);
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-                        dt = GetSelectedColumnGuardianChanges(dt);
-                        var jsonData = JsonConvert.SerializeObject(dt);
-                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+    " ORDER BY EventLogId DESC ";
+                            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                            con.Open();
+                            SqlCommand cmd = new SqlCommand(guardianshipChngQry, con);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            DataTable dt = new DataTable();
+                            da = new SqlDataAdapter(cmd);
+                            da.Fill(dt);
+                            if (dt != null) csrplog.RowCount = dt.Rows.Count;
+                            dt = GetSelectedColumnGuardianChanges(dt);
+                            var jsonData = JsonConvert.SerializeObject(dt);
+                            ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            csrplog.Status = "Success";
+                        }
+                        catch (Exception ex)
+                        {
+                            csrplog.Status = "Failed";
+                            csrplog.ErrorMessage = ex.Message;
+                            throw;
+                        }
+                        finally
+                        {
+                            sw.Stop();
+                            csrplog.EndTime = DateTime.Now;
+                            csrplog.DurationMs = sw.ElapsedMilliseconds;
+                            ReportLogger.Save(csrplog);
+                        }
                     }
                     else
-                    RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["GuardianshipChangesReport"];
+                        RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["GuardianshipChangesReport"];
                 }
                 else if (hdnMenu.Value == "btnContactChanges")
                 {
                     if (!checkHighcharts.Checked)
                     {
-                        RVClientReport.Visible = false;
+                        Stopwatch sw = Stopwatch.StartNew();
+                        clsReportExecutionLog csrplog = new clsReportExecutionLog();
+                        try
+                        {
+                            csrplog.StartTime = DateTime.Now;
+                            sess = (clsSession)Session["UserSessionClient"];
+                            csrplog.UserId = sess.LoginId;
+                            csrplog.ServerID = Environment.MachineName;
+                            csrplog.ReportName = HeadingDiv.InnerHtml;
+                            csrplog.Parameters = "txtchangeSdate=" + txtchangeSdate.Text +
+                                                "&txtchangeEdate=" + txtchangeEdate.Text;
+                            RVClientReport.Visible = false;
 
-                        //string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " + 
-                        //                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
-                        //                        " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
-                        //                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
-                        //                        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
-                        //                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
-                        //                        " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
-                        //                        "   and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
-                        //                        " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
-                        //                        " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
-                        //                        " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
-                        //                        " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
-                        //                        " and ST.StudentPersonalId not in (SELECT Distinct " +
-                        //                        " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
-                        //                        " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC";
-                                                    string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " +
-                            " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
-                            " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
+                            //string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " + 
+                            //                        " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS " + 
+                            //                        " PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " + 
+                            //                        " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " + 
+                            //                        " INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId " + 
+                            //                        " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " + 
+                            //                        " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
+                            //                        "   and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " + 
+                            //                        " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+                            //                        " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " + 
+                            //                        " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+                            //                        " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " + 
+                            //                        " and ST.StudentPersonalId not in (SELECT Distinct " +
+                            //                        " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+                            //                        " AND CONVERT(DATE, EventDate) >= CONVERT(DATE, '" + NewStartDate + "') AND CONVERT(DATE, EventDate) <= CONVERT(DATE, '" + NewEndDate + "') ORDER BY EventLogId DESC";
+                            string contactChngQry = " SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,(SELECT LastName+','+FirstName FROM ContactPersonal WHERE ContactPersonalId=ObjectTypeId) ContactName, " +
+    " CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate FROM EventLogs EL " +
+    " JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId " +
 
-                            " OUTER APPLY (SELECT TOP 1 * FROM Placement PLC WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
-                            " AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) AND PLC.Status=1 ORDER BY PLC.StartDate DESC) PLC " +
+    " OUTER APPLY (SELECT TOP 1 * FROM Placement PLC WHERE PLC.StudentPersonalId = SP.StudentPersonalId " +
+    " AND (PLC.EndDate IS NULL OR PLC.EndDate >= CAST(GETDATE() AS DATE)) AND PLC.Status=1 ORDER BY PLC.StartDate DESC) PLC " +
 
-                            " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
+    " INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department " +
 
-                            " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
-                            " and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
+    " WHERE ObjectType='Contact' and (PLC.EndDate is null or PLC.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' " +
+    " and SP.ClientId>0 and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId " +
 
-                            " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
+    " FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId " +
 
-                            " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
+    " WHERE ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0 and ST.StudentPersonalId not in (SELECT Distinct " +
 
-                            " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
+    " ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId " +
 
-                            " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
+    " WHERE (PLC.EndDate is null or plc.EndDate >= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0) " +
 
-                            " and ST.StudentPersonalId not in (SELECT Distinct " +
-                            " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
+    " and ST.StudentPersonalId not in (SELECT Distinct " +
+    " ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client' AND CONVERT(INT,ST.ClientId)>0)) " +
 
-                            " AND CONVERT(DATE, EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
-                            " AND CONVERT(DATE, EventDate) <= CONVERT(DATE,'" + NewEndDate + "') ORDER BY EventLogId DESC";
+    " AND CONVERT(DATE, EventDate) >= CONVERT(DATE,'" + NewStartDate + "') " +
+    " AND CONVERT(DATE, EventDate) <= CONVERT(DATE,'" + NewEndDate + "') ORDER BY EventLogId DESC";
 
 
 
-                        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
-                        con.Open();
-                        SqlCommand cmd = new SqlCommand(contactChngQry, con);
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-                        dt = GetSelectedColumnContactChanges(dt);
-                        var jsonData = JsonConvert.SerializeObject(dt);
-                        ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+                            con.Open();
+                            SqlCommand cmd = new SqlCommand(contactChngQry, con);
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            DataTable dt = new DataTable();
+                            da = new SqlDataAdapter(cmd);
+                            da.Fill(dt);
+                            if (dt != null) csrplog.RowCount = dt.Rows.Count;
+                            dt = GetSelectedColumnContactChanges(dt);
+                            var jsonData = JsonConvert.SerializeObject(dt);
+                            ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServerChanges(" + jsonData + ");", true);
+                            csrplog.Status = "Success";
+                        }
+                        catch (Exception ex)
+                        {
+                            csrplog.Status = "Failed";
+                            csrplog.ErrorMessage = ex.Message;
+                            throw;
+                        }
+                        finally
+                        {
+                            sw.Stop();
+                            csrplog.EndTime = DateTime.Now;
+                            csrplog.DurationMs = sw.ElapsedMilliseconds;
+                            ReportLogger.Save(csrplog);
+                        }
                     }
                     else
                     RVClientReport.ServerReport.ReportPath = ConfigurationManager.AppSettings["ContactChangesReport"];
                 }
-                if (checkHighcharts.Checked)
-                {
-                    RVClientReport.ShowParameterPrompts = false;
-                    ReportParameter[] parm = new ReportParameter[2];
-                    parm[0] = new ReportParameter("StartDate", NewStartDate);
-                    parm[1] = new ReportParameter("EndDate", NewEndDate);
-                    this.RVClientReport.ServerReport.SetParameters(parm);
-                    RVClientReport.ServerReport.Refresh();
+                    if (checkHighcharts.Checked)
+                    {
+                        RVClientReport.ShowParameterPrompts = false;
+                        ReportParameter[] parm = new ReportParameter[2];
+                        parm[0] = new ReportParameter("StartDate", NewStartDate);
+                        parm[1] = new ReportParameter("EndDate", NewEndDate);
+                        this.RVClientReport.ServerReport.SetParameters(parm);
+                        RVClientReport.ServerReport.Refresh();
+                    }
                 }
-            }
             catch (Exception ex)
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "hideLoaderScript", "hideLoader()", true);
@@ -5621,8 +6213,14 @@ namespace ClientDB.Reports
         }
         protected void btnImageConsents_Click(object sender, EventArgs e)
         {
+            Stopwatch sw = Stopwatch.StartNew();
+            clsReportExecutionLog csrplog = new clsReportExecutionLog();
             try
             {
+                csrplog.StartTime = DateTime.Now;
+                sess = (clsSession)Session["UserSessionClient"];
+                csrplog.UserId = sess.LoginId;
+                csrplog.ServerID = Environment.MachineName;
                 divContact.Visible = false;
                 divnodata.Visible = false;
                 DropDownCheckBoxesActive.SelectedValue = hfstatus.Value;
@@ -5640,6 +6238,7 @@ namespace ClientDB.Reports
                 RVClientReport.Visible = false;
                 HeadingDiv.Visible = true;
                 HeadingDiv.InnerHtml = "Image Consents";
+                csrplog.ReportName = HeadingDiv.InnerHtml;
                 divbirthdate.Visible = false;
                 btnShowReportVendor.Visible = false;
                 btnResetVendor.Visible = false;
@@ -5651,14 +6250,25 @@ namespace ClientDB.Reports
                 else
                     Schoolid = 2;
                DataTable alldata = GetData(Schoolid);
+                csrplog.Parameters = "&SchoolId=" + Convert.ToString(Schoolid);
+                if (alldata != null) csrplog.RowCount = alldata.Rows.Count;
                 var jsonData = JsonConvert.SerializeObject(alldata);
                 ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServercons(" + jsonData + ");", true);
-               
+                csrplog.Status = "Success";
             }
             catch (Exception ex)
             {
+                csrplog.Status = "Failed";
+                csrplog.ErrorMessage = ex.Message;
                 throw ex;
             }
+            finally
+            {
+                sw.Stop();
+                csrplog.EndTime = DateTime.Now;
+                csrplog.DurationMs = sw.ElapsedMilliseconds;
+                ReportLogger.Save(csrplog);
+        }
         }
        
         private System.Data.DataTable GetData(int schoolid)
