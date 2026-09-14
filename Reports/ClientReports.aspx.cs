@@ -5619,5 +5619,132 @@ namespace ClientDB.Reports
 
             return dt;
         }
+        protected void btnImageConsents_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                divContact.Visible = false;
+                divnodata.Visible = false;
+                DropDownCheckBoxesActive.SelectedValue = hfstatus.Value;
+                divStatisticalNew.Visible = false;
+                divchanges.Visible = false;
+                divStatistical.Visible = false;
+                divDischarge.Visible = false;
+                divAdmission.Visible = false;
+                divbyBirthdate.Visible = false;
+                divFunder.Visible = false;
+                divPlacement.Visible = false;
+                divPlacementPlanning.Visible = false;
+                hdnMenu.Value = "btnallClient";
+                tdMsg.InnerHtml = "";
+                RVClientReport.Visible = false;
+                HeadingDiv.Visible = true;
+                HeadingDiv.InnerHtml = "Image Consents";
+                divbirthdate.Visible = false;
+                btnShowReportVendor.Visible = false;
+                btnResetVendor.Visible = false;
+                btnImageConsents.Visible= true;
+                int Schoolid = 0;
+                string schooltype = ConfigurationManager.AppSettings["Server"];
+                if (schooltype == "NE")
+                    Schoolid = 1;
+                else
+                    Schoolid = 2;
+               DataTable alldata = GetData(Schoolid);
+                var jsonData = JsonConvert.SerializeObject(alldata);
+                ClientScript.RegisterStartupScript(this.GetType(), "LoadData", "LoadDataFromServercons(" + jsonData + ");", true);
+               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+       
+        private System.Data.DataTable GetData(int schoolid)
+        {
+            System.Data.DataTable Dt = new System.Data.DataTable();
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["dbConnectionString"].ToString());
+            SqlCommand cmd = new SqlCommand("sp_GetClientImgSummary", conn);
+            cmd.CommandTimeout = 1200;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@SchoolId", schoolid);
+            try
+            {
+                conn.Open();
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                System.Data.DataTable dt = new System.Data.DataTable();
+                da.Fill(dt);
+                Dt.Columns.Add("Client ID", typeof(string));
+                Dt.Columns.Add("Client Name", typeof(string));
+                Dt.Columns.Add("Birth Date", typeof(string));
+                Dt.Columns.Add("Age", typeof(string));
+                Dt.Columns.Add("Image Permission", typeof(string));
+                Dt.Columns.Add("Photo Comments", typeof(string));
+                Dt.Columns.Add("Photo Release History", typeof(string));
+                Dt.Columns.Add("Day Location", typeof(string));
+                Dt.Columns.Add("Res Location", typeof(string));
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        DataRow row = Dt.NewRow();
+                        if (dt.Rows[i]["ClientID"] != null)
+                        {
+                            row["Client ID"] = dt.Rows[i]["ClientID"].ToString(); ;
+                        }
+                        if (dt.Rows[i]["ClientName"] != null)
+                        {
+                            row["Client Name"] = dt.Rows[i]["ClientName"].ToString();
+                        }
+                        if (dt.Rows[i]["BirthDate"] != null)
+                        {
+                            DateTime birthDate = Convert.ToDateTime(dt.Rows[i]["BirthDate"]);
+                            row["Birth Date"] = birthDate.ToString("MM/dd/yyyy");
+                        }
+                        if (dt.Rows[i]["Age"] != null)
+                        {
+                            row["Age"] = dt.Rows[i]["Age"].ToString();
+                        }
+                        if (dt.Rows[i]["ImgPerm"] != null)
+                        {
+                            row["Image Permission"] = dt.Rows[i]["ImgPerm"].ToString();
+                        }
+                        if (dt.Rows[i]["PhotoCmnt"] != null)
+                        {
+                            row["Photo Comments"] = dt.Rows[i]["PhotoCmnt"].ToString();
+                        }
+                        if (dt.Rows[i]["PhotoRelHist"] != null)
+                        {
+                            row["Photo Release History"] = dt.Rows[i]["PhotoRelHist"].ToString();
+                        }
+                        if (dt.Rows[i]["DayLoc"] != null)
+                        {
+                            row["Day Location"] = dt.Rows[i]["DayLoc"].ToString();
+                        }
+                        if (dt.Rows[i]["ResLoc"] != null)
+                        {
+                            row["Res Location"] = dt.Rows[i]["ResLoc"].ToString();
+                        }
+                        Dt.Rows.Add(row);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (conn.State == ConnectionState.Open)
+                {
+                    conn.Close();
+                }
+            }
+            return Dt;
+        }
     }
 }

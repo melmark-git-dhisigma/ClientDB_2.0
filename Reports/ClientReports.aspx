@@ -2558,6 +2558,138 @@
             };
             paginationContainer.appendChild(exportButton);
         }
+        function LoadDataFromServercons(data) {
+            fullData = data;
+            rowsPerPage = 15;
+            var tableBody = document.getElementById("tableBody");
+            var tableHeader = document.getElementById("tableHeader");
+            document.getElementById("buttonContainer").style.display = "none";
+            tableBody.innerHTML = '';
+
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="100%">No data available to display</td></tr>';
+                tableHeader.style.display = "none";
+                document.getElementById("paginationControls").innerHTML = '';
+                hideLoader();
+                return;
+            } else {
+                tableHeader.style.removeProperty("display");
+            }
+
+            // Get column headers
+            var columns = Object.keys(data[0]);
+
+            // Clear and build headers
+            tableHeader.innerHTML = '';
+            var headerRow = document.createElement('tr');
+            columns.forEach(function (col, index) {
+                var th = document.createElement('th');
+                th.textContent = col + " ⬍"; // Add default sort icon
+                var headerId = "Changes_header_" + index;
+                th.id = headerId;
+
+                // Add click event to enable sorting
+                th.style.cursor = "pointer";
+                th.onclick = function () {
+                    SortColumns("table", index, headerId, fullData, LoadDataFromServercons);
+                };
+
+                headerRow.appendChild(th);
+            });
+            tableHeader.appendChild(headerRow);
+
+            // Pagination logic
+            var startIndex = (currentPage - 1) * rowsPerPage;
+            var endIndex = startIndex + rowsPerPage;
+            var pageData = data.slice(startIndex, endIndex);
+
+            // Populate table rows
+            pageData.forEach(function (row) {
+                var tr = document.createElement('tr');
+                columns.forEach(function (col) {
+                    var td = document.createElement('td');
+                    td.textContent = row[col];
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+
+            // Create pagination controls
+            createPaginationControlsCons(data.length, data);
+
+            hideLoader();
+        }
+        function createPaginationControlsCons(totalRows, data) {
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            var paginationContainer = document.getElementById("paginationControls");
+
+            paginationContainer.innerHTML = '';
+
+
+            // First button
+            var firstButton = document.createElement('button');
+            firstButton.textContent = 'First';
+            firstButton.type = 'button';
+            firstButton.disabled = currentPage === 1;
+            firstButton.onclick = function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    LoadDataFromServercons(data);
+                }
+            };
+            paginationContainer.appendChild(firstButton);
+
+            var prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.type = 'button';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    LoadDataFromServercons(data);
+                }
+            };
+            paginationContainer.appendChild(prevButton);
+
+            var pageIndicator = document.createElement('span');
+            pageIndicator.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+            paginationContainer.appendChild(pageIndicator);
+
+            var nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.type = 'button';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    LoadDataFromServercons(data);
+                }
+            };
+            paginationContainer.appendChild(nextButton);
+
+            // Last button
+            var lastButton = document.createElement('button');
+            lastButton.textContent = 'Last';
+            lastButton.type = 'button';
+            lastButton.disabled = currentPage === totalPages;
+            lastButton.onclick = function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    LoadDataFromServercons(data);
+                }
+            };
+            paginationContainer.appendChild(lastButton);
+
+            var exportButton = document.createElement('button');
+            exportButton.id = 'BtnExport';
+            exportButton.type = 'button';
+            exportButton.textContent = 'Export';
+            exportButton.onclick = function () {
+                exportToExcelWithImages();
+                //LoadDataFromServerStatistical(data);
+            };
+            paginationContainer.appendChild(exportButton);
+        }
     </script>
     <script>
         //Export Feature
@@ -5785,6 +5917,7 @@
                         <asp:Button ID="btnPlcChange" runat="server" CssClass="leftMenu" Text="Placement Changes" ToolTip="Placement Changes" OnClick="btnPlcChange_Click" OnClientClick="resetVal();"></asp:Button>
                         <asp:Button ID="btnGuardianChanges" runat="server" CssClass="leftMenu" Text="Guardianship Changes" ToolTip="Guardianship Changes" OnClick="btnGuardianChanges_Click" OnClientClick="resetVal();"></asp:Button>
                         <asp:Button ID="btnContactChanges" runat="server" CssClass="leftMenu" Text="Contact Changes" ToolTip="Contact Changes" OnClick="btnContactChanges_Click" OnClientClick="resetVal();"></asp:Button>
+                        <asp:Button ID="btnImageConsents" runat="server" CssClass="leftMenu" Text="Image Consents" ToolTip="Image Consents" OnClick="btnImageConsents_Click" OnClientClick="return handleClientClick();"></asp:Button>
                     </div>
 
 
