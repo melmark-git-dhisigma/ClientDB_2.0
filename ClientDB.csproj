@@ -64,6 +64,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>packages\Microsoft.Office.interop.14.0.4762\lib\net35\Microsoft.Office.Interop.Word.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -142,6 +143,7 @@
     <Compile Include="AppFunctions\ClientPermissions.cs" />
     <Compile Include="AppFunctions\ClsErrorLog.cs" />
     <Compile Include="AppFunctions\clsExport.cs" />
+    <Compile Include="AppFunctions\clsReportExecutionLog.cs" />
     <Compile Include="AppFunctions\clsSessionCon.cs" />
     <Compile Include="AppFunctions\Helper.cs" />
     <Compile Include="AppFunctions\Helpers.cs" />
@@ -150,6 +152,7 @@
     <Compile Include="AppFunctions\ProgressExprtApp.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="AppFunctions\ReportLogger.cs" />
     <Compile Include="Controllers\CallLogController.cs" />
     <Compile Include="Controllers\LetterController.cs" />
     <Compile Include="Controllers\MultiButtonAttribute.cs" />
